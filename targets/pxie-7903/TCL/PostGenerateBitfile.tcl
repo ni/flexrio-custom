@@ -5,4 +5,4 @@ set env(PYTHONPATH) ""
 set env(PYTHONHOME) ""
 
 # Execute the Python script
-exec nihdl create-lvbitfile
+exec nihdl create-lvbitx

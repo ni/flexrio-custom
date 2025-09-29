@@ -1,136 +1,26 @@
-This is a prototype set of tools for developing HDL on LabVIEW FPGA targets.
+# Repo Folder Hierarchy
 
-# Command Line Tools
-The LabVIEW FPGA HDL Tools are accessed by running `nihdl` commands at the command prompt
+* Root repo folder
+    * baseboards - common HDL source used across multiple targets
+    * dependencies - dependencies of targets delivered via zip file from the repo's release artifact
+    * docs - documentation
+    * fixedlogic - common HDL source used across multiple targets
+    * ipcores - common HDL source used across multiple targets
+    * targets - FPGA targets
+        * common - common HDL source used across multiple targets
+        * pxie-7xxx - Specific model number FPGA target
+            * lvFpgaTarget - non-HDL files used to create custom LabVIEW FPGA target plugins
+            * objects - generated file outputs from the HDL tools
+                * gathereddeps - flat folder of dependencies copied from the root dependencies folder
+                * LVTargetPlugin - custom LabVIEW FPGA target plugin files
+                * rtl-lvfpga - ouptut of pxie-7xxx\rtl-lvfpga file that were processed
+                * TCL - output of pxie-7xxx\TCL files that were processed
+                * xdc - output of pxie-7xxx\xdc files that were processed
+            * rtl-lvfpga - HDL files specific to the PXIe-7xxx
+                * lvgen - HDL files that are normally provided by LabVIEW FPGA code generation
+            * TCL - scripts used by Vivado
+            * xdc - timing constraints
+        * lvfpgaexcludefiles.py - list of regular expressions to define files that should not be included in custom LabVIEW FPGA target plugin generation
+        * requirements.txt - Python modules and dependencies installed by pip
 
-Type `nihdl --help` for a list of commands
 
-## Environment Setup
-From the targets folder (e.g. c:/dev/git/flexrio/targets), run: 
-> pip install -r requirements.txt
-
-This will install the LV FPGA HDL Tools module as well as any other dependent modules using pip
-
-## Project Settings File
-The tools use the projectsettings.ini file to specify file paths and other configurations.  It is broken up into multiple sections.
-
-### GeneralSettings
-
-* <b>TargetFamily</b> - NI device product family (e.g. FlexRIO, cRIO)
-* <b>BaseTarget</b> - The NI product model number that is being customized (e.g. PXIe-7903)
-* <b>LabVIEWPath</b> - The disk path where LabVIEW is installed
-
-### VivadoProjectSettings
-This section is used by the create-project and launch-vivado commands
-
-* <b>TopLevelEntity</b> - Top level entity (same as its HDL file name) that gets set in the Vivado project
-* <b>VivadoProjectName</b> - The name of the Vivado project that is created (no spaces allowed)
-* <b>VivadoToolsPath</b> - Path to where the Vivado tools are installed.  You may point to the tools installed by NI LabVIEW FPGA Comile Tools or your own Vivado installation folder.
-* <b>VivadoProjectFilesLits</b> - Text files containing relative paths of source files that will be included in the Vivado project.  Specifying a directory path within the text file will recursively include all files within it.
-* <b>UseGeneratedLVWindowFiles</b> - Boolean (True/False) to specify whether to use the window netlist and supporting files specfied in <b>TheWindowFolder</b>.  If set to False, the Vivado project will use a default stub for TheWindow.vhd which will produce a successful (but non-functional) bitfile.
-
-### LVFPGATargetSettings
-This section is used by the gen-target and install-target commands
-
-#### Inputs
-* <b>LVTargetBoardIO</b> - Path to CSV file that specifies names and datatypes of custom board IO that will appear on the generated custom LV FPGA target
-* <b>IncludeCLIPSocket</b> - Boolean (True/False) to specify whether to include the CLIP socket on the generated custom LV FPGA target
-* <b>IncludeLVTargetBoardIO</b> - Boolean (True/False) to specify whether to include the custom LV Target Board IO on the generated custom LV FPGA target
-* <b>LVTargetName</b> - The LabVIEW project display name of your customized FPGA target.  This is also used to create the folder that contains the custom LV FPGA target plugin.
-* <b>LVTargetGUID</b> - Global Unique Identifer for your custom LV FPGA target plugin - generate one here https://www.guidgenerator.com/
-* <b>LVTargetInstallFolder</b> - Folder where the custom LV FPGA target plugin is installed.  For now, this must be set to "C:\Program Files\NI\LVAddons\flexrioii\1\Targets\NI\FPGA\RIO\79XXR" for the PXIe-7903.  In the future we may support locations outside of NI\LVAddons
-
-#### Templates
-* <b>WindowVhdlTemplate</b> - Path to the mako template for TheWindow.vhd.  This file is processed depending on the settings in the Inputs above.
-* <b>TargetXMLTemplates</b> - List of paths to the mako templates for the target resource XML.  These files are processed depending on the settings in the Inputs above.
-
-#### Outputs
-* <b>WindowVhdlOutput</b> - Stub for TheWindow.vhd used to make signal connections in the top-level HDL file and for early synthesis.  This file will be overridden by TheWindow.vhd that is generated by LabVIEW FPGA during the Export Top VI workflow.
-* <b>WindowInstantiationExample</b> - Instantiation example to help with connecting the many ports of TheWindow.vhd.  This code is not intended to be a complete cut-and-paste into the top level HDL file.  The LVTargetBoardIO signal port assignments will be most useful.
-* <b>LVTargetPluginFolder</b> - Folder where the outputs of the custom target generation script are placed
-* <b>BoardIOXML</b> - Custom board IO resource XML for the custom LV FPGA target
-* <b>ClockXML</b> - Clock resource XML for the custom LV FPGA target
-
-### CLIPMigrationSettings
-This section is used by the migrate-clip command
-
-#### Inputs
-* <b>CLIPXML</b> - Path to the CLIP's XML file
-* <b>CLIPHDLTop</b> - Path to the CLIP's top-level HDL file
-* <b>CLIPXDCIn</b> - Path(s) to the CLIP's XDC constraint files (this setting supports multiple paths)
-* <b>CLIPInstancePath</b> - Instantiation path to the top-level entity of the CLIP within the design hierarchy of the FPGA's top-level entity.  If entity "MyCLIP" is place directly in the FPGA's top level entity, then this setting would simply be "MyCLIP".  If it is placed deeper in the FPGA hiearchy, then that path is specified here.  This is used to process XDC constraint files.
-
-#### Outputs
-* <b>LVTargetBoardIO</b> - The LabVIEW interface IO of the CLIP XML becomes board IO on the generated custom LV FPGA target.  This CSV file is output from the CLIP migration process and will serve as an input to the generate custom LV FPGA target process.
-* <b>CLIPInstantiationExample</b> - Instantiation example to help with connecting the many ports of the CLIP.  This code is not intended to be a complete cut-and-paste into the top level HDL file and will require some adjustments when using it.  
-* <b>CLIPtoWindowSignalDefinitions</b> - Signal definitions for all of the ports in the CLIP entity.  This is used to copy/paste the signal definitions for the ports that connect between the CLIP and TheWindow.vhd.  These signals will need to be defined in the top-level HDL entity.
-* <b>CLIPXDCOutFolder</b> - The CLIP XML is processed to use the new CLIPInstancePath to set the correct entity hierarchy within the constraints.  The contents of these XDC files will be merged into the target's XDC files.
-
-### LVWindowNetListSettings
-This section is used by the get-netlist command
-
-#### Inputs
-* <b>VivadoProjectExportFolder</b> - Path to the Vivado Project Export created from the LabVIEW FPGA project 
-* <b>VivadoProjectName</b> - Name of the Vivado project created by Vivado Project Export << probalby cna get rid of htis and just automatically find the XPR in that folder - the file name is auto-generated by LV and not obvious
-
-#### Outputs
-* <b>TheWindowFolder</b> - The Window netlist and constraints are extracted from the Vivado Project Export and placed into this folder.  The contents of this folder are pulled into the GitHub Vivado project.
-
-## Create Vivado Project
-From the target folder, run:
-> nihdl create-project
-
-This runs the createvivadoproject.py script to generate the Vivado project.  It includes all files from VivadoProjectFilesLits in projectsettings.ini
-
-If this is not the first time creating the Vivado project, one of these command line options are required:
-> -- overwrite - Overwrites the existing Vivado project and creates a new one </br>
-> -- update - Only updates the files in the existing Vivado project </br>
-
-## Migrate CLIP
-In LabVIEW FPGA, the CLIP HDL is defined by an XML file that specifies its  ports.  The ports are grouped into three interfaces:
-* LabVIEW - These ports appear in the LabVIEW project as CLIP IO
-* Socket - These ports are automatically connected by LabVIEW FPGA to the ports on TheWindow.vhd that connect to the FPGA top-level fixed logic
-* Fabric - These ports are automatically connected by LabVIEW FPGA to the ports on TheWindow.vhd that connect to the FPGA top-level fixed logic
-
-![CLIP in LV FPGA](docs/clip_in_lv_fpga.png)
-
-When the CLIP HDL is instantiated directly in the top-level HDL file, the CLIP LabVIEW interfaces become Board IO LabVIEW interfaces.  And the Socket/Fabric interfaces to the CLIP are manually connected in the top-level HDL.
-
-![CLIP in Top Level](docs/clip_in_top_level.png)
-
-To make this migration process easier, we use the CLIP migration script to process the CLIP's files and generate code that is used to instantiate the CLIP HDL directly into the top-level FPGA design.
-
-From the target folder, run:
-> nihdl migrate-clip
-
-Summary of the inputs/outputs of that script:
-
-![Migrate CLIP Files](docs/migrate_clip_files.png)
-
-## Generate LV Target Support
-From the target folder, run:
-> nihdl gen-target
-
-This runs the genlvtargetsupport.py script to create a custom LV FPGA target plugin.  The output of this script is placed in the target's objects directory.  
-
-## Install LV Target Support
-From the target folder, run:
-> nihdl install-target
-
-This runs the installlvtargetsupport.py script to install the custom LV FPGA target plugin into the LVAddons folder.  This allows the LabVIEW to discover this new custom FPGA target so that you can add it to the LabVIEW project.
-
-## Get LV Window Netlist Files
-To bring the netlist for the LabVIEW FPGA top-level VI into the GitHub Vivado project flow, you must first perform a Vivado Project Export of the top-level LabVIEW FPGA VI.
-
-After you have the Vivado Project Export, go to the GitHub target folder and run:
-> nihdl get-netlist
-
-This runs the getwindownetlist.py script to extract the netlist for the LV FPGA top-level VI as well as HDL packages and metadata files needed to build the FPGA bitfile using the GitHub Vivado workflow.
-
-Files are placed into <b>TheWindowFolder</b> specified in projectsettings.ini
-
-The following files are extracted from the Vivado Project Export:
-* TheWindow.edf - netlist for the LV FPGA window containing your top-level VI's code
-* Pkg*.vhd - various package files generated by LabVIEW FPGA
-* TheWindowConstraints.xdc - constraints specific to the HDL in the window netlist that get automatically merged into the custom FPGA target's constraints file
-* CodeGenerationResults.txt - metadata (e.g. NI-RIO host interface FIFOs, controls, indicators) produced by LabVIEW FPGA needed to generate the bitfile .lvbitx for download by the NI-RIO driver

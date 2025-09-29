@@ -4180,7 +4180,7 @@ begin  -- architecture struct
 
 
 
-  UserRTL_PXIe7903_Aurora64b66b_Framing_Crcx4_28p0GHz: entity work.UserRTL_PXIe7903_Aurora64b66b_Framing_Crcx4_28p0GHz (rtl)
+  UserRTL_PXIe7903_Aurora64b66b_Framing_Crcx4_28p0GHz_inst: entity work.UserRTL_PXIe7903_Aurora64b66b_Framing_Crcx4_28p0GHz (rtl)
   port map (
       aResetSl => aDiagramReset,
       aLmkI2cSda => aLmkI2cSda,

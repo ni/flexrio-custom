@@ -8,3 +8,7 @@ transcript
 # Ignore Python bytecode cache files
 __pycache__/
 .Xil/
+# Ignore temporary MS Office files
+~*.xlsx
+~*.pptx
+~*.docx

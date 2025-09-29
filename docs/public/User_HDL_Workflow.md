@@ -1,46 +1,36 @@
+# User Workflow
 
-## User Workflow
-### Prerequisites
+This is a basic "Hello World" workflow to ensure that your system is properly setup.  Refer to the HDL Workflow CLIP Migration Guide to learn about using the full workflow.
+
+## Prerequisites
 1.	Install latest version Git  – https://git-scm.com/downloads
-2.	Install Python (version XYZ officially tested) –  https://www.python.org/downloads/
+2.	Install Python (version 3.11.8 officially tested) –  https://www.python.org/downloads/
 3.	Install LabVIEW FPGA Compilation tool for Vivado 2021.1 – https://www.ni.com/en/support/downloads/software-products/download.package-manager.html
 
-### Phase 1 – Clone the FlexRIO GitHub repo
-1.	Go to the FlexRIO repo on GitHub – https://github.com/ni/flexrio-test
+## Phase 1 – Clone the FlexRIO GitHub repo
+1.	Go to the FlexRIO repo on GitHub (e.g. https://github.com/ni/flexrio)
 2.	Copy the repo HTTPS URL to clipboard
-3.	Open a command prompt in C:\dev\github
+3.	Open a command prompt in your computer's GitHub repo folder (e.g. C:\dev\github)
 4.	Clone the FlexRIO GitHub repo:
-    > git clone <b>[paste FlexRIO GitHub repo URL]</b>
-    >
-    > git clone https://github.com/ni/flexrio-test.git
+    > git clone <b>[FlexRIO GitHub repo URL]</b>
 
-### Phase 2 – Install the LabVIEW FPGA HDL Tools Module
-1. Open a command prompt to the targets folder:
-    > C:\dev\github\flexrio-test\targets
-2. Run pip to install the HDL tools module and any dependencies:
+## Phase 2 – Install LabVIEW FPGA HDL Tools
+1.  Open a command prompt in your target folder (e.g. C:\dev\github\flexrio\pxie-7903)
+    * Note: the PXIe-7xxx folder is the working directory where you will run all commands
+2.  Run this command to pip install the tools and their dependencies
     > pip install -r requirements.txt
 
-### Phase 3 - Install the FlexRIO dependencies
-1.	Download the dependencies zip file from the latest FlexRIO release:
-2.	Put the zip file into this folder:
-    > C:\dev\github\flexrio-test\dependencies
-3.  Go to the targets folder in your command prompt:
-    > C:\dev\github\flexrio-test\targets
-4. Run the nihdl command to extract the dependencies:
+## Phase 3 - Install FlexRIO repo depenencies
+1.  Go to the latest releases of the FlexRIO repo on GitHub
+2.  Download the dependencies.zip artifact into the dependencies folder on your computer (e.g. C:\dev\github\flexrio\dependencies)
+3.  Run the extract dependencies command
     > nihdl extract-deps
 
-#### NOTE - Installing the HDL tools and dependencies are the only commands you run from the "targets" folder.  Everything else is done from the "targets/pxie-6903" folder
-
-### Phase 4 – Create and Build the Vivado Project
-You may skip steps 1-3 if continuing from the previous phase
-1.	Open a command prompt at the PXIe-7903 folder:
-    > C:\dev\github\flexrio-test\targets\pxie-7903
-2.  Run the nihdl help command to see what functions are available:
-    > nihdl --help
-3.	Create the Vivado Project:
+## Phase 4 – Create and Build the Vivado Project
+1.	Create the Vivado project:
     > nihdl create-project
-4.	Launch Vivado:
+2.	Launch Vivado:
     > nihdl launch-vivado
-5.	In the Vivado IDE, click <b>Run Synthesis</b>, then <b>Run Implementation</b>, then <b>Generate Bitstream</b>
+3.	In the Vivado IDE, click <b>Synthesize</b>
 
 

@@ -1,0 +1,854 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!-- National Instruments recommends that you do not change this CLIP declaration file outside of the Configure Component-Level IP wizard. You can modify this declaration file on the Component-Level IP page of the FPGA Target Properties dialog box. -->
+<CLIPDeclaration Name="DummyCLIP">
+    <FormatVersion>4.3</FormatVersion>
+    <Description/>
+    <TopLevelEntityAndArchitecture>
+        <SynthesisModel>
+            <Entity>DummyCLIP</Entity>
+            <Architecture>rtl</Architecture>
+        </SynthesisModel>
+        <SimulationModel>
+            <Entity>DummyCLIP</Entity>
+            <Architecture>rtl</Architecture>
+        </SimulationModel>
+    </TopLevelEntityAndArchitecture>
+    <CompatibleCLIPSocketList>
+        <Socket>FlexRIOIoSocketType7_v1</Socket>
+    </CompatibleCLIPSocketList>
+    <SupportedDeviceFamilies>VirtexUltraScalePlus</SupportedDeviceFamilies>
+    <PortsEnabledList>
+        <Port>IOModuleTx{0..47}</Port>
+        <Port>IOModuleRx{0..47}</Port>
+    </PortsEnabledList>
+    <InterfaceList>
+        <Interface Name="LabVIEW">
+            <InterfaceType>LabVIEW</InterfaceType>
+            <SignalList>
+                <Signal name="DummySignal">
+                    <HDLName>dummysignal</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>FromCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description>
+                    </Description>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>Allowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+            </SignalList>
+        </Interface>
+        <Interface Name="Socket">
+            <InterfaceType>Socket</InterfaceType>
+            <SignalList>
+                <Signal Name="aLmkI2cSda">
+                    <HDLName>aLmkI2cSda</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>Bidirectional</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="aLmkI2cScl">
+                    <HDLName>aLmkI2cScl</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>Bidirectional</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="aLmk1Pdn_n">
+                    <HDLName>aLmk1Pdn_n</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>FromCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="aLmk2Pdn_n">
+                    <HDLName>aLmk2Pdn_n</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>FromCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="aLmk1Gpio0">
+                    <HDLName>aLmk1Gpio0</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>FromCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="aLmk2Gpio0">
+                    <HDLName>aLmk2Gpio0</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>FromCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="aLmk1Status0">
+                    <HDLName>aLmk1Status0</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>ToCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="aLmk1Status1">
+                    <HDLName>aLmk1Status1</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>ToCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="aLmk2Status0">
+                    <HDLName>aLmk2Status0</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>ToCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="aLmk2Status1">
+                    <HDLName>aLmk2Status1</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>ToCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="aIPassPrsnt_n">
+                    <HDLName>aIPassPrsnt_n</HDLName>
+                    <HDLType>std_logic_vector(7 downto 0)</HDLType>
+                    <Direction>ToCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Array>
+                            <Boolean/>
+                            <Size>8</Size>
+                        </Array>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="aIPassIntr_n">
+                    <HDLName>aIPassIntr_n</HDLName>
+                    <HDLType>std_logic_vector(7 downto 0)</HDLType>
+                    <Direction>ToCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Array>
+                            <Boolean/>
+                            <Size>8</Size>
+                        </Array>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="aIPassVccPowerFault_n">
+                    <HDLName>aIPassVccPowerFault_n</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>ToCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="aIPassSCL">
+                    <HDLName>aIPassSCL</HDLName>
+                    <HDLType>std_logic_vector(11 downto 0)</HDLType>
+                    <Direction>Bidirectional</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Array>
+                            <Boolean/>
+                            <Size>12</Size>
+                        </Array>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="aIPassSDA">
+                    <HDLName>aIPassSDA</HDLName>
+                    <HDLType>std_logic_vector(11 downto 0)</HDLType>
+                    <Direction>Bidirectional</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Array>
+                            <Boolean/>
+                            <Size>12</Size>
+                        </Array>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="aPortExpReset_n">
+                    <HDLName>aPortExpReset_n</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>FromCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="aPortExpIntr_n">
+                    <HDLName>aPortExpIntr_n</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>ToCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="aPortExpSda">
+                    <HDLName>aPortExpSda</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>Bidirectional</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="aPortExpScl">
+                    <HDLName>aPortExpScl</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>Bidirectional</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="stIoModuleSupportsFRAGLs">
+                    <HDLName>stIoModuleSupportsFRAGLs</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>FromCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="MgtRefClk_p">
+                    <HDLName>MgtRefClk_p</HDLName>
+                    <HDLType>std_logic_vector(11 downto 0)</HDLType>
+                    <Direction>ToCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Array>
+                            <Boolean/>
+                            <Size>12</Size>
+                        </Array>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="MgtRefClk_n">
+                    <HDLName>MgtRefClk_n</HDLName>
+                    <HDLType>std_logic_vector(11 downto 0)</HDLType>
+                    <Direction>ToCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Array>
+                            <Boolean/>
+                            <Size>12</Size>
+                        </Array>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="MgtPortRx_p">
+                    <HDLName>MgtPortRx_p</HDLName>
+                    <HDLType>std_logic_vector(47 downto 0)</HDLType>
+                    <Direction>ToCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Array>
+                            <Boolean/>
+                            <Size>48</Size>
+                        </Array>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="MgtPortRx_n">
+                    <HDLName>MgtPortRx_n</HDLName>
+                    <HDLType>std_logic_vector(47 downto 0)</HDLType>
+                    <Direction>ToCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Array>
+                            <Boolean/>
+                            <Size>48</Size>
+                        </Array>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="MgtPortTx_p">
+                    <HDLName>MgtPortTx_p</HDLName>
+                    <HDLType>std_logic_vector(47 downto 0)</HDLType>
+                    <Direction>FromCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Array>
+                            <Boolean/>
+                            <Size>48</Size>
+                        </Array>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="MgtPortTx_n">
+                    <HDLName>MgtPortTx_n</HDLName>
+                    <HDLType>std_logic_vector(47 downto 0)</HDLType>
+                    <Direction>FromCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Array>
+                            <Boolean/>
+                            <Size>48</Size>
+                        </Array>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="AxiClk">
+                    <HDLName>AxiClk</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>ToCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xHostAxiStreamToClipTData">
+                    <HDLName>xHostAxiStreamToClipTData</HDLName>
+                    <HDLType>std_logic_vector(31 downto 0)</HDLType>
+                    <Direction>ToCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Array>
+                            <Boolean/>
+                            <Size>32</Size>
+                        </Array>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xHostAxiStreamToClipTLast">
+                    <HDLName>xHostAxiStreamToClipTLast</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>ToCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xHostAxiStreamFromClipTReady">
+                    <HDLName>xHostAxiStreamFromClipTReady</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>FromCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xHostAxiStreamToClipTValid">
+                    <HDLName>xHostAxiStreamToClipTValid</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>ToCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xHostAxiStreamFromClipTData">
+                    <HDLName>xHostAxiStreamFromClipTData</HDLName>
+                    <HDLType>std_logic_vector(31 downto 0)</HDLType>
+                    <Direction>FromCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Array>
+                            <Boolean/>
+                            <Size>32</Size>
+                        </Array>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xHostAxiStreamFromClipTLast">
+                    <HDLName>xHostAxiStreamFromClipTLast</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>FromCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xHostAxiStreamToClipTReady">
+                    <HDLName>xHostAxiStreamToClipTReady</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>ToCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xHostAxiStreamFromClipTValid">
+                    <HDLName>xHostAxiStreamFromClipTValid</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>FromCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xDiagramAxiStreamToClipTData">
+                    <HDLName>xDiagramAxiStreamToClipTData</HDLName>
+                    <HDLType>std_logic_vector(31 downto 0)</HDLType>
+                    <Direction>ToCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Array>
+                            <Boolean/>
+                            <Size>32</Size>
+                        </Array>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xDiagramAxiStreamToClipTLast">
+                    <HDLName>xDiagramAxiStreamToClipTLast</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>ToCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xDiagramAxiStreamFromClipTReady">
+                    <HDLName>xDiagramAxiStreamFromClipTReady</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>FromCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xDiagramAxiStreamToClipTValid">
+                    <HDLName>xDiagramAxiStreamToClipTValid</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>ToCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xDiagramAxiStreamFromClipTData">
+                    <HDLName>xDiagramAxiStreamFromClipTData</HDLName>
+                    <HDLType>std_logic_vector(31 downto 0)</HDLType>
+                    <Direction>FromCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Array>
+                            <Boolean/>
+                            <Size>32</Size>
+                        </Array>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xDiagramAxiStreamFromClipTLast">
+                    <HDLName>xDiagramAxiStreamFromClipTLast</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>FromCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xDiagramAxiStreamToClipTReady">
+                    <HDLName>xDiagramAxiStreamToClipTReady</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>ToCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xDiagramAxiStreamFromClipTValid">
+                    <HDLName>xDiagramAxiStreamFromClipTValid</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>FromCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xClipAxi4LiteMasterARAddr">
+                    <HDLName>xClipAxi4LiteMasterARAddr</HDLName>
+                    <HDLType>std_logic_vector(31 downto 0)</HDLType>
+                    <Direction>FromCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Array>
+                            <Boolean/>
+                            <Size>32</Size>
+                        </Array>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xClipAxi4LiteMasterARProt">
+                    <HDLName>xClipAxi4LiteMasterARProt</HDLName>
+                    <HDLType>std_logic_vector(2 downto 0)</HDLType>
+                    <Direction>FromCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Array>
+                            <Boolean/>
+                            <Size>3</Size>
+                        </Array>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xClipAxi4LiteMasterARReady">
+                    <HDLName>xClipAxi4LiteMasterARReady</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>ToCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xClipAxi4LiteMasterARValid">
+                    <HDLName>xClipAxi4LiteMasterARValid</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>FromCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xClipAxi4LiteMasterAWAddr">
+                    <HDLName>xClipAxi4LiteMasterAWAddr</HDLName>
+                    <HDLType>std_logic_vector(31 downto 0)</HDLType>
+                    <Direction>FromCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Array>
+                            <Boolean/>
+                            <Size>32</Size>
+                        </Array>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xClipAxi4LiteMasterAWProt">
+                    <HDLName>xClipAxi4LiteMasterAWProt</HDLName>
+                    <HDLType>std_logic_vector(2 downto 0)</HDLType>
+                    <Direction>FromCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Array>
+                            <Boolean/>
+                            <Size>3</Size>
+                        </Array>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xClipAxi4LiteMasterAWReady">
+                    <HDLName>xClipAxi4LiteMasterAWReady</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>ToCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xClipAxi4LiteMasterAWValid">
+                    <HDLName>xClipAxi4LiteMasterAWValid</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>FromCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xClipAxi4LiteMasterBReady">
+                    <HDLName>xClipAxi4LiteMasterBReady</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>FromCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xClipAxi4LiteMasterBResp">
+                    <HDLName>xClipAxi4LiteMasterBResp</HDLName>
+                    <HDLType>std_logic_vector(1 downto 0)</HDLType>
+                    <Direction>ToCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Array>
+                            <Boolean/>
+                            <Size>2</Size>
+                        </Array>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xClipAxi4LiteMasterBValid">
+                    <HDLName>xClipAxi4LiteMasterBValid</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>ToCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xClipAxi4LiteMasterRData">
+                    <HDLName>xClipAxi4LiteMasterRData</HDLName>
+                    <HDLType>std_logic_vector(31 downto 0)</HDLType>
+                    <Direction>ToCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Array>
+                            <Boolean/>
+                            <Size>32</Size>
+                        </Array>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xClipAxi4LiteMasterRReady">
+                    <HDLName>xClipAxi4LiteMasterRReady</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>FromCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xClipAxi4LiteMasterRResp">
+                    <HDLName>xClipAxi4LiteMasterRResp</HDLName>
+                    <HDLType>std_logic_vector(1 downto 0)</HDLType>
+                    <Direction>ToCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Array>
+                            <Boolean/>
+                            <Size>2</Size>
+                        </Array>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xClipAxi4LiteMasterRValid">
+                    <HDLName>xClipAxi4LiteMasterRValid</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>ToCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xClipAxi4LiteMasterWData">
+                    <HDLName>xClipAxi4LiteMasterWData</HDLName>
+                    <HDLType>std_logic_vector(31 downto 0)</HDLType>
+                    <Direction>FromCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Array>
+                            <Boolean/>
+                            <Size>32</Size>
+                        </Array>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xClipAxi4LiteMasterWReady">
+                    <HDLName>xClipAxi4LiteMasterWReady</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>ToCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xClipAxi4LiteMasterWStrb">
+                    <HDLName>xClipAxi4LiteMasterWStrb</HDLName>
+                    <HDLType>std_logic_vector(3 downto 0)</HDLType>
+                    <Direction>FromCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Array>
+                            <Boolean/>
+                            <Size>4</Size>
+                        </Array>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xClipAxi4LiteMasterWValid">
+                    <HDLName>xClipAxi4LiteMasterWValid</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>FromCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="xClipAxi4LiteInterrupt">
+                    <HDLName>xClipAxi4LiteInterrupt</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>ToCLIP</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+                <Signal Name="aDio">
+                    <HDLName>aDio</HDLName>
+                    <HDLType>std_logic_vector(7 downto 0)</HDLType>
+                    <Direction>Bidirectional</Direction>
+                    <SignalType>data</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Array>
+                            <Boolean/>
+                            <Size>8</Size>
+                        </Array>
+                    </DataType>
+                    <UseInLabVIEWSingleCycleTimedLoop>NotAllowed</UseInLabVIEWSingleCycleTimedLoop>
+                </Signal>
+            </SignalList>
+        </Interface>
+        <Interface Name="Fabric">
+            <InterfaceType>Fabric</InterfaceType>
+            <SignalList>
+                <Signal Name="aResetSl">
+                    <HDLName>aResetSl</HDLName>
+                    <HDLType>std_logic</HDLType>
+                    <Direction>ToCLIP</Direction>
+                    <SignalType>reset</SignalType>
+                    <Description/>
+                    <DataType>
+                        <Boolean/>
+                    </DataType>
+                </Signal>
+            </SignalList>
+        </Interface>
+    </InterfaceList>
+    <ImplementationList>
+        <Path Name="DummyCLIP.vhd">
+            <TopLevel/>
+            <SimulationFileList>
+                <SimulationModelType>Same as synthesis</SimulationModelType>
+            </SimulationFileList>
+        </Path>
+    </ImplementationList>
+    <NumberOfDCMsNeeded>0</NumberOfDCMsNeeded>
+    <NumberOfMMCMsNeeded>0</NumberOfMMCMsNeeded>
+    <NumberOfBufGsNeeded>0</NumberOfBufGsNeeded>
+    <CLIPVersion>1.0.0</CLIPVersion>
+    <CompatibleIOModuleList>
+        <IOModule>IOModuleID:0x10937AEC</IOModule>
+    </CompatibleIOModuleList>
+</CLIPDeclaration>

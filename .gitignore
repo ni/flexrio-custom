@@ -12,3 +12,4 @@ __pycache__/
 ~*.xlsx
 ~*.pptx
 ~*.docx
+~*.tmp

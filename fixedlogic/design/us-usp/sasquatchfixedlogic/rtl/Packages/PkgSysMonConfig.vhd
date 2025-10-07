@@ -8,7 +8,7 @@
 ------------------------------------------------------------------------------------------
 -- Copyright (c) 2025 National Instruments Corporation
 -- 
--- SPDX-License-Identifier: MIT
+-- All rights reserved.
 ------------------------------------------------------------------------------------------
 --
 -- Purpose: Enumerate the number of Analog Channels, and name each of them.

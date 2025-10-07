@@ -8,7 +8,7 @@
 ------------------------------------------------------------------------------------------
 -- Copyright (c) 2025 National Instruments Corporation
 -- 
--- SPDX-License-Identifier: MIT
+-- All rights reserved.
 ------------------------------------------------------------------------------------------
 --
 -- Purpose: This struct simply puts the two DRAM Banks under a single file, and manages

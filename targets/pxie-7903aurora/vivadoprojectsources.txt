@@ -6,5 +6,6 @@
 ../../deps/flexrio/targets/common/rtl-lvfpga/lvgen/PkgDmaPortCommIfcRegs.vhd
 ../../deps/flexrio/targets/common/rtl-lvfpga/packages/PkgSasquatch.vhd
 ../../deps/flexrio/targets/pxie-7903/rtl-lvfpga/PkgFlexRioTargetConfig.vhd
-objects/rtl-lvfpga/lvgen/TheWindow.vhd
+objects/GeneratedHDL/TheWindow.vhd
+objects/GeneratedHDL/TheWindowFlatWrapper.vhd
 rtl-lvfpga/SasquatchTopTemplate.vhd

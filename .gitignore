@@ -14,3 +14,4 @@ __pycache__/
 ~*.docx
 ~*.tmp
 deps/
+objects_old/

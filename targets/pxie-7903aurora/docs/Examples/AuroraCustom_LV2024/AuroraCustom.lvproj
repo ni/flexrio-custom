@@ -6165,11 +6165,11 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
             <IOModule>IOModuleID:0x10937AEC</IOModule>
          </CompatibleIOModuleList>
          <DeclarationPaths>
-            <Absolute>C:\dev\github8\flexrio-custom\targets\pxie-7903aurora\docs\Examples\AuroraCustom_LV2024\DummyCLIP\DummyCLIP.xml</Absolute>
+            <Absolute>C:\dev\github9\flexrio-custom\targets\pxie-7903aurora\docs\Examples\AuroraCustom_LV2024\DummyCLIP\DummyCLIP.xml</Absolute>
             <MD5>3acefce58384506ce0ef41de4083b19d</MD5>
-            <RelativeToLabVIEW>..\..\..\dev\github8\flexrio-custom\targets\pxie-7903aurora\docs\Examples\AuroraCustom_LV2024\DummyCLIP\DummyCLIP.xml</RelativeToLabVIEW>
-            <RelativeToNiPubDocs>..\..\..\..\dev\github8\flexrio-custom\targets\pxie-7903aurora\docs\Examples\AuroraCustom_LV2024\DummyCLIP\DummyCLIP.xml</RelativeToNiPubDocs>
-            <RelativeToNiSharedDir>..\..\dev\github8\flexrio-custom\targets\pxie-7903aurora\docs\Examples\AuroraCustom_LV2024\DummyCLIP\DummyCLIP.xml</RelativeToNiSharedDir>
+            <RelativeToLabVIEW>..\..\..\dev\github9\flexrio-custom\targets\pxie-7903aurora\docs\Examples\AuroraCustom_LV2024\DummyCLIP\DummyCLIP.xml</RelativeToLabVIEW>
+            <RelativeToNiPubDocs>..\..\..\..\dev\github9\flexrio-custom\targets\pxie-7903aurora\docs\Examples\AuroraCustom_LV2024\DummyCLIP\DummyCLIP.xml</RelativeToNiPubDocs>
+            <RelativeToNiSharedDir>..\..\dev\github9\flexrio-custom\targets\pxie-7903aurora\docs\Examples\AuroraCustom_LV2024\DummyCLIP\DummyCLIP.xml</RelativeToNiSharedDir>
             <RelativeToProject>DummyCLIP\DummyCLIP.xml</RelativeToProject>
             <Valid>true</Valid>
          </DeclarationPaths>
@@ -19090,11 +19090,47 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
 					<Property Name="Comp.Xilinx.SynthGoal" Type="Str">speed</Property>
 					<Property Name="Comp.Xilinx.UseRecommended" Type="Bool">true</Property>
 					<Property Name="DefaultBuildSpec" Type="Bool">false</Property>
-					<Property Name="DestinationDirectory" Type="Path">/C/temp/7903AuroraCustomVPE_C_Fresh</Property>
+					<Property Name="DestinationDirectory" Type="Path">/C/temp/GH9_AC_VPE_C</Property>
 					<Property Name="IsVivadoProjectExport" Type="Bool">true</Property>
-					<Property Name="ProjectPath" Type="Path">/C/dev/github8/flexrio-custom/targets/pxie-7903aurora/docs/Examples/AuroraCustom_LV2024/AuroraCustom.lvproj</Property>
+					<Property Name="ProjectPath" Type="Path">/C/dev/github9/flexrio-custom/targets/pxie-7903aurora/docs/Examples/AuroraCustom_LV2024/AuroraCustom.lvproj</Property>
 					<Property Name="RelativePath" Type="Bool">false</Property>
 					<Property Name="RunWhenLoaded" Type="Bool">false</Property>
+					<Property Name="TargetName" Type="Str">FPGA Target</Property>
+					<Property Name="TopLevelVI" Type="Ref">/My Computer/FPGA Target/PXIe-7903 Aurora Example.lvlib/Top (FPGA)-2-port.vi</Property>
+				</Item>
+				<Item Name="Top (FPGA)-2-port_2" Type="{F4C5E96F-7410-48A5-BB87-3559BC9B167F}">
+					<Property Name="AllowEnableRemoval" Type="Bool">false</Property>
+					<Property Name="BuildSpecDecription" Type="Str"></Property>
+					<Property Name="BuildSpecName" Type="Str">Top (FPGA)-2-port_2</Property>
+					<Property Name="Comp.BitfileName" Type="Str">auroracustom_FPGATarget_Top(FPGA)-2-port_T3mR6GCWjMo.lvbitx</Property>
+					<Property Name="Comp.CustomXilinxParameters" Type="Str"></Property>
+					<Property Name="Comp.MaxFanout" Type="Int">-1</Property>
+					<Property Name="Comp.RandomSeed" Type="Bool">false</Property>
+					<Property Name="Comp.Version.Build" Type="Int">0</Property>
+					<Property Name="Comp.Version.Fix" Type="Int">0</Property>
+					<Property Name="Comp.Version.Major" Type="Int">1</Property>
+					<Property Name="Comp.Version.Minor" Type="Int">0</Property>
+					<Property Name="Comp.VersionAutoIncrement" Type="Bool">false</Property>
+					<Property Name="Comp.Vivado.EnableMultiThreading" Type="Bool">true</Property>
+					<Property Name="Comp.Vivado.OptDirective" Type="Str"></Property>
+					<Property Name="Comp.Vivado.PhysOptDirective" Type="Str"></Property>
+					<Property Name="Comp.Vivado.PlaceDirective" Type="Str"></Property>
+					<Property Name="Comp.Vivado.RouteDirective" Type="Str"></Property>
+					<Property Name="Comp.Vivado.RunPowerOpt" Type="Bool">false</Property>
+					<Property Name="Comp.Vivado.Strategy" Type="Str">Default</Property>
+					<Property Name="Comp.Xilinx.DesignStrategy" Type="Str">balanced</Property>
+					<Property Name="Comp.Xilinx.MapEffort" Type="Str">default(noTiming)</Property>
+					<Property Name="Comp.Xilinx.ParEffort" Type="Str">standard</Property>
+					<Property Name="Comp.Xilinx.SynthEffort" Type="Str">normal</Property>
+					<Property Name="Comp.Xilinx.SynthGoal" Type="Str">speed</Property>
+					<Property Name="Comp.Xilinx.UseRecommended" Type="Bool">true</Property>
+					<Property Name="DefaultBuildSpec" Type="Bool">true</Property>
+					<Property Name="DestinationDirectory" Type="Path">FPGA Bitfiles</Property>
+					<Property Name="ProjectPath" Type="Path">/C/dev/github9/flexrio-custom/targets/pxie-7903aurora/docs/Examples/AuroraCustom_LV2024/AuroraCustom.lvproj</Property>
+					<Property Name="RelativePath" Type="Bool">true</Property>
+					<Property Name="RunWhenLoaded" Type="Bool">false</Property>
+					<Property Name="SupportDownload" Type="Bool">false</Property>
+					<Property Name="SupportResourceEstimation" Type="Bool">false</Property>
 					<Property Name="TargetName" Type="Str">FPGA Target</Property>
 					<Property Name="TopLevelVI" Type="Ref">/My Computer/FPGA Target/PXIe-7903 Aurora Example.lvlib/Top (FPGA)-2-port.vi</Property>
 				</Item>

@@ -8,4 +8,5 @@
 ../../deps/flexrio/targets/pxie-7903/rtl-lvfpga/PkgFlexRioTargetConfig.vhd
 objects/GeneratedHDL/TheWindow.vhd
 objects/GeneratedHDL/TheWindowFlatWrapper.vhd
+objects/GeneratedHDL/PkgTheWindowFlatWrapper.vhd
 rtl-lvfpga/SasquatchTopTemplate.vhd

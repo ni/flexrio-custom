@@ -1,11 +1,3 @@
-../../deps/flexrio/targets/common/rtl-lvfpga/G3UspGtyHostInterface.vhd
-../../deps/flexrio/targets/common/rtl-lvfpga/IoRefClkSelect.vhd
-../../deps/flexrio/targets/common/rtl-lvfpga/SasquatchIoBuffers.vhd
-../../deps/flexrio/targets/common/rtl-lvfpga/SasquatchIoBuffersStage1.vhd
-../../deps/flexrio/targets/common/rtl-lvfpga/lvgen/PkgCommIntConfiguration.vhd
-../../deps/flexrio/targets/common/rtl-lvfpga/lvgen/PkgDmaPortCommIfcRegs.vhd
-../../deps/flexrio/targets/common/rtl-lvfpga/packages/PkgSasquatch.vhd
-../../deps/flexrio/targets/pxie-7903/rtl-lvfpga/PkgFlexRioTargetConfig.vhd
 objects/GeneratedHDL/TheWindow.vhd
 objects/GeneratedHDL/TheWindowFlatWrapper.vhd
 objects/GeneratedHDL/PkgTheWindowFlatWrapper.vhd

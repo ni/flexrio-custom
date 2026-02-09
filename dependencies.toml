@@ -1,5 +1,6 @@
 dependencies = [
     "ni/flexrio:latest",
     "ni/flexrio-deps:latest",
+    "ni/hdl-shared:latest",
     "ni/flexrio-aurora-clip:26.0.0.dev1"
 ]

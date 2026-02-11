@@ -1,4 +1,4 @@
 # githubvisible=true
 
-labview-fpga-hdl-tools==0.1.8
+labview-fpga-hdl-tools~=0.1.0
 

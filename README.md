@@ -1,6 +1,6 @@
 Pre-release custom FlexRIO code for use with LabVIEW FPGA HDL Tools
 
-# Core Concepts
+# What is this? - Core Concepts
 * This repository contains examples of customized FlexRIO FPGA devices
 * These examples use the LabVIEW FPGA HDL Tools to manage dependencies, create Vivado projects and integrate custom HDL with LabVIEW
     * https://github.com/ni/labview-fpga-hdl-tools
@@ -18,6 +18,9 @@ Pre-release custom FlexRIO code for use with LabVIEW FPGA HDL Tools
 * You can communicate between the NI-RIO driver on a host PC and custom HDL directly using
     * Registers
     * DMA FIFOs (future - not yet supported)
+* The PXIe-7903 is currently the only FlexRIO FPGA target supported by these workflows
+* All of this is pre-release and not supported by NI
+    * Use the [Issues](https://github.com/ni/flexrio-custom/issues) and [Discussions](https://github.com/ni/flexrio-custom/discussions) sections in this repository to collaborate with the developers and other lead users
 <br><br><br>
 
 # System Setup
@@ -94,14 +97,14 @@ In Vivado, click "Generate Bitstream" in left-hand tools menu
 ### 2) Edit the projectsettings.ini file in pxie-7903-mycopy
 Set `LVTargetName` to `PXIe-7903custom-mycopy`
 
-Run 'nihdl get-guid' to generate a new GUID
+Run `nihdl get-guid` to generate a new GUID
 
-Copy the new GUID into the 'LVTargetGUID' setting
+Copy the new GUID into the `LVTargetGUID` setting
 
 ### 3) Edit the top-level FPGA file
 Open rtl-lvfpga/SasquatchTopTemplate
 
-Find HdlSharedCommonHostRegs_inst and set kSigniature to 'x"7903FEED"'
+Find `HdlSharedCommonHostRegs_inst` and set `kSigniature` to `x"7903FEED"`
 
 ### 4) Create a Vivado project
 > nihdl create-project

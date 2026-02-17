@@ -1,5 +1,25 @@
 Pre-release custom FlexRIO code for use with LabVIEW FPGA HDL Tools
 
+# Core Concepts
+* This repository contains examples of customized FlexRIO FPGA devices
+* These examples use the LabVIEW FPGA HDL Tools to manage dependencies, create Vivado projects and integrate custom HDL with LabVIEW
+    * https://github.com/ni/labview-fpga-hdl-tools
+    * https://pypi.org/project/labview-fpga-hdl-tools
+* These examples depends on a number of other repositorires that contain FlexRIO and shared HDL source code.  These dependencies are installed (cloned) by the LabVIEW FPGA HDL Tools.
+    * https://github.com/ni/flexrio
+    * https://github.com/ni/flexrio-deps
+    * https://github.com/ni/flexrio-aurora-clip
+    * https://github.com/ni/flexrio-100gbe-clip
+    * https://github.com/ni/hdl-shared
+* You can perform workflows for customizing LabVIEW FPGA targets with HDL
+    * Use HDL-only and Vivado to build a bitfile and communicate with it from the NI-RIO driver on a host PC
+    * Use HDL to make a custom LabVIEW FPGA target that can be extended in LabVIEW FPGA and use the standard LabVIEW FPGA bitfile generation workflow
+    * Use LabVIEW FPGA to make a top-level VI that is exported as a netlist and brought into your custom HDL to build in Vivado
+* You can communicate between the NI-RIO driver on a host PC and custom HDL directly using
+    * Registers
+    * DMA FIFOs (future - not yet supported)
+<br><br><br>
+
 # System Setup
 Follow these steps to setup your machine to use the LabVIEW FPGA HDL Tools with this flexrio-custom GitHub repository
 
@@ -27,7 +47,7 @@ Checkout the repo at a specific tag/version:
 (main branch may be unstable; we recommend checking out the latest version that does not have "dev" in the name)
 
 ## 2) Go to the custom target folder
-> cd C:\dev\github8\flexrio-custom\targets\pxie-7903custom
+> cd C:\dev\github\flexrio-custom\targets\pxie-7903custom
 
 All command line operations are performed from within a target folder
 
@@ -43,18 +63,20 @@ This will install the correct version of the tools that the checked out version 
 > nihdl install-deps
 
 This will download the dependencies specified in the dependencies.toml file found here:
-> C:\dev\github8\flexrio-custom\dependencies.toml
+> C:\dev\github\flexrio-custom\dependencies.toml
 
+<br>
 <b> That's it!  Your computer is setup to use the LabVIEW FPGA HDL Tools to make custom FlexRIO FPGA devices</b>
+<br><br><br>
 
 # Getting Started
 
-## Read the LabVIEW FPGA HDL Tools README
+## Exercise 1 - Read the LabVIEW FPGA HDL Tools README
 https://github.com/ni/labview-fpga-hdl-tools/blob/main/README.md
 
-## Build a bitfile for the custom PXIe-7903 project
+## Exercise 2 - Build a bitfile for the custom PXIe-7903 project
 ### 1) Go to the custom target folder
-> cd C:\dev\github8\flexrio-custom\targets\pxie-7903custom
+> cd C:\dev\github\flexrio-custom\targets\pxie-7903custom
 
 ### 2) Create a Vivado Project
 > nihdl create-project
@@ -65,9 +87,9 @@ https://github.com/ni/labview-fpga-hdl-tools/blob/main/README.md
 ### 4) Build a bitfile
 In Vivado, click "Generate Bitstream" in left-hand tools menu
 
-## Customize your own PXIe-7903
+## Exercise 3 - Customize your own PXIe-7903
 ### 1) Make a copy of the custom target folder
-> C:\dev\github8\flexrio-custom\targets\pxie-7903custom-mycopy
+> C:\dev\github\flexrio-custom\targets\pxie-7903custom-mycopy
 
 ### 2) Edit the projectsettings.ini file in pxie-7903-mycopy
 Set `LVTargetName` to `PXIe-7903custom-mycopy`
@@ -102,6 +124,9 @@ Make sure to use the <b>Open Dynamic Bitfile Reference</b> (and not the normal O
 Use the read/write register subVI's from the hdl-shared repo to access the FPGA's registers
 > C:\dev\github\flexrio-custom\deps\hdl-shared\host_interfaces\register\LabVIEW
 
+Here is an example VI that demonstrates this:
+> C:\dev\github\flexrio-custom\targets\pxie-7903custom\docs\Examples\Custom_FPGA_Target_Host_Example.vi
+
 Use the following register map for the common registers:
 
 | Register | Offset | Access |
@@ -111,12 +136,11 @@ Use the following register map for the common registers:
 | kOldestCompatibleVersionOffset` | 8 | read-only |
 | kScratchOffset | 12 | read-write |
 
-## Migrate a Socketed CLIP to use a custom LabVIEW FPGA target
+## Exercise 4 - Migrate a Socketed CLIP to use a custom LabVIEW FPGA target
 The PXIe-7903Aurora example has the socketed CLIP node instantiated in the FPGA top-level entity to make a custom LabVIEW FPGA target with it.  Read the CLIP Migration Hands-On Guide that walks you through how this was done.
 > C:\dev\github\flexrio-custom\targets\pxie-7903aurora\docs\CLIP Migration Hands-On Guide.pdf
 
-
-
+<br><br><br>
 
 # Repo Folder Hierarchy
 

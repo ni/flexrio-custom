@@ -713,6 +713,13 @@ architecture struct of SasquatchTopTemplate is
   signal xHostAxiStreamToClipTValid: std_logic;
 
   signal bRegPortOutCommonRegs: RegPortOut_t;
+  signal bRegPortOutSharedRegs: RegPortOut_t;
+
+  signal bSharedHostRegFpgaHostWrite : BooleanVector(0 to 3);
+  signal bSharedHostRegFpgaAck : BooleanVector(0 to 3) := (others => false);
+  signal bSharedHostRegFpgaWrite : BooleanVector(0 to 3) := (others => false);
+  signal bSharedHostRegFpgaDataIn : Slv32Ary_t(0 to 3) := (others => (others => '0'));
+  signal bSharedHostRegFpgaDataOut : Slv32Ary_t(0 to 3);
 
   -- Inchworm Reset
   signal aBusReset : boolean := true;
@@ -1324,18 +1331,33 @@ begin  -- architecture struct
 
   bRegPortOut.Data <= bLvWindowRegPortOut.Data or
                       bRegPortOutDram2DP.Data or
-                      bRegPortOutCommonRegs.Data;
+                      bRegPortOutCommonRegs.Data or
+                      bRegPortOutSharedRegs.Data;
 
   bRegPortOut.DataValid <= bLvWindowRegPortOut.DataValid or
                            bRegPortOutDram2DP.DataValid or
-                           bRegPortOutCommonRegs.DataValid;
+                           bRegPortOutCommonRegs.DataValid or
+                           bRegPortOutSharedRegs.DataValid;
 
   bRegPortOut.Ready <= bLvWindowRegPortOut.Ready and
-                       bRegPortOutDram2DP.Ready;
+               bRegPortOutDram2DP.Ready and
+               bRegPortOutCommonRegs.Ready and
+               bRegPortOutSharedRegs.Ready;
 
   bAddressesDram2DP  <= (bRegportIn.Address >= kDram2DPBaseAddress) and
                         (bRegportIn.Address <= (kDram2DPBaseAddress + kDram2DPAddressMask));
 
+  -- Common host registers are recommended for every design so software has a
+  -- standard identification/version interface across targets.
+  --
+  -- They always start at byte offset 0 and use this fixed map:
+  --   offset 0   : signature
+  --   offset 4   : version
+  --   offset 8   : oldest compatible version
+  --   offset 12  : scratch register
+  --
+  -- Keeping this layout consistent across designs simplifies host-driver
+  -- compatibility checks and basic bring-up/debug workflows.
 
   HdlSharedCommonHostRegs_inst : entity work.HdlSharedCommonHostRegs
     generic map(
@@ -1349,6 +1371,68 @@ begin  -- architecture struct
       bRegPortIn  => bRegPortIn,
       bRegPortOut => bRegPortOutCommonRegs
     );
+
+  HdlSharedHostRegisterArray_inst : entity work.HdlSharedHostRegisterArray
+    generic map(
+      kNumRegisters => 4,
+      kBaseAddress  => 16#10#,
+      kDefault      => (x"00000000", x"00000000", x"00000000", x"00000000"),
+      kReadOnly     => (false, false, true, true),
+      kUseFpgaAck   => (false, false, false, false)
+    )
+    port map(
+      BusClk         => BusClk,
+      aReset         => aBusReset,
+      bRegPortIn     => bRegPortIn,
+      bRegPortOut    => bRegPortOutSharedRegs,
+      bFpgaHostWrite => bSharedHostRegFpgaHostWrite,
+      bFpgaAck       => bSharedHostRegFpgaAck,
+      bFpgaWrite     => bSharedHostRegFpgaWrite,
+      bFpgaDataIn    => bSharedHostRegFpgaDataIn,
+      bFpgaDataOut   => bSharedHostRegFpgaDataOut
+    );
+
+  -- Demonstration loopback logic for HdlSharedHostRegisterArray usage.
+  --
+  -- This process is meant only as an example of how FPGA-side logic can interact with 
+  -- host-visible registers.
+  --
+  -- Register behavior used here:
+  --   - Register 0: host read/write input register
+  --   - Register 1: host read/write input register
+  --   - Register 2: host read-only output register (derived from register 0)
+  --   - Register 3: host read-only output register (derived from register 1)
+  --
+  -- Practical effect for software users:
+  --   - Write a value to register 0, then read register 2 to observe value+1.
+  --   - Write a value to register 1, then read register 3 to observe value+1.
+  --
+  -- This demonstrates host-to-FPGA eventing (bFpgaHostWrite), FPGA-side processing, and
+  -- FPGA-to-host updates (bFpgaWrite/bFpgaDataIn) using the shared register interface.
+
+  SharedHostRegisterLoopbackx: process(BusClk, aBusReset)
+  begin
+    if aBusReset then
+      bSharedHostRegFpgaWrite <= (others => false);
+      bSharedHostRegFpgaDataIn <= (others => (others => '0'));
+    elsif rising_edge(BusClk) then
+      -- Default behavior: loop back all register values.
+      bSharedHostRegFpgaDataIn <= bSharedHostRegFpgaDataOut;
+      bSharedHostRegFpgaWrite <= (others => false);
+
+      -- Host writes to lower registers (0 an 1) update upper read-only registers (2 and 3)
+      -- with incremented values.
+      if bSharedHostRegFpgaHostWrite(0) then
+        bSharedHostRegFpgaDataIn(2) <= std_logic_vector(unsigned(bSharedHostRegFpgaDataOut(0)) + 1);
+        bSharedHostRegFpgaWrite(2) <= true;
+      end if;
+
+      if bSharedHostRegFpgaHostWrite(1) then
+        bSharedHostRegFpgaDataIn(3) <= std_logic_vector(unsigned(bSharedHostRegFpgaDataOut(1)) + 1);
+        bSharedHostRegFpgaWrite(3) <= true;
+      end if;
+    end if;
+  end process SharedHostRegisterLoopbackx;
 
 
   MergeRegPortInDram2DP: process(bRegportIn, bAddressesDram2DP)

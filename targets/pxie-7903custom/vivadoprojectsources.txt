@@ -1,8 +1,8 @@
 objects/GeneratedHDL/TheWindow.vhd
-objects/GeneratedHDL/TheWindowFlatWrapper.vhd
-objects/GeneratedHDL/PkgTheWindowFlatWrapper.vhd
+objects/GeneratedHDL/TheLvWindowFlatWrapper.vhd
+objects/GeneratedHDL/PkgTheLvWindowFlatWrapper.vhd
 rtl-lvfpga/SasquatchTopTemplate.vhd
 rtl-lvfpga/UserHdlWindow.vhd
-../../../hdl-shared/host_interfaces/register/HDL/HdlSharedHostRegister.vhd
-../../../hdl-shared/host_interfaces/register/HDL/HdlSharedCommonHostRegs.vhd
-../../../hdl-shared/host_interfaces/register/HDL/HdlSharedHostRegisterArray.vhd
+../../deps/hdl-shared/host_interfaces/register/HDL/HdlSharedHostRegister.vhd
+../../deps/hdl-shared/host_interfaces/register/HDL/HdlSharedCommonHostRegs.vhd
+../../deps/hdl-shared/host_interfaces/register/HDL/HdlSharedHostRegisterArray.vhd

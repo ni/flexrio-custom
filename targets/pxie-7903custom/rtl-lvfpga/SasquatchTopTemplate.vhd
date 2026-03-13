@@ -45,7 +45,7 @@ use work.PkgDmaPortCommIfcMasterPortFlatTypes.all;
 use work.PkgLvFpgaConst.all;
 
 -- The Window Component Instantiation
-use work.PkgTheWindowFlatWrapper.all;
+use work.PkgTheLvWindowFlatWrapper.all;
 
 -- Instruction Fifo
 use work.PkgInstructionFifo.all;
@@ -763,7 +763,7 @@ architecture struct of SasquatchTopTemplate is
   signal dLlbDramWrFifoWrEn: std_logic;
   signal dLlbPhyInitDoneForLvfpga: std_logic;
 
-  -- Internal signals for flattened types to connect to TheWindowFlatWrapper
+  -- Internal signals for flattened types to connect to TheLvWindowFlatWrapper
   signal bRegPortInFlat : std_logic_vector(kRegPortInSize-1 downto 0);
   signal bRegPortOutFlat : std_logic_vector(kRegPortOutSize-1 downto 0);
 
@@ -1540,9 +1540,9 @@ begin  -- architecture struct
   -- base design, the MGT signals in the top-level entity are commented out.
   --
   -- If you are customizing this HDL file directly, then you will add whatever MGT signal ports
-  -- you are using to the top-level entity and connect them to this TheWindow wrapper instance.
+  -- you are using to the top-level entity and connect them to this TheLvWindow wrapper instance.
   --
-  SasquatchWindowWrapper: TheWindowFlatWrapper
+  TheLvWindowWrapper: TheLvWindowFlatWrapper
     port map (
       aBusReset                           => to_stdlogic(aBusReset),                    --in  std_logic
       bRegPortIn                          => bRegPortInFlat,                           --in  RegPortIn_t

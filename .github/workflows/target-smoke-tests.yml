@@ -1,0 +1,88 @@
+name: Target Smoke Tests
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "targets/**"
+      - "dependencies.toml"
+      - "requirements.txt"
+      - ".github/workflows/target-smoke-tests.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "targets/**"
+      - "dependencies.toml"
+      - "requirements.txt"
+      - ".github/workflows/target-smoke-tests.yml"
+
+jobs:
+  nihdl-target-smoke:
+    runs-on: [self-hosted, Windows, X64]
+    timeout-minutes: 360
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install Python dependencies
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Discover target folders
+        id: discover
+        shell: pwsh
+        run: |
+          $targets = Get-ChildItem targets -Directory |
+            Where-Object { Test-Path (Join-Path $_.FullName "projectsettings.ini") } |
+            Sort-Object Name |
+            Select-Object -ExpandProperty Name
+
+          if (-not $targets) {
+            throw "No targets with projectsettings.ini were found under targets/."
+          }
+
+          "targets=$($targets -join ',')" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          Write-Host "Discovered targets: $($targets -join ', ')"
+
+      - name: Run install-deps once
+        shell: pwsh
+        run: |
+          $targets = "${{ steps.discover.outputs.targets }}".Split(',', [System.StringSplitOptions]::RemoveEmptyEntries)
+          $firstTarget = $targets[0]
+
+          Write-Host "Running install-deps from targets/$firstTarget"
+          Push-Location (Join-Path "targets" $firstTarget)
+          try {
+            nihdl install-deps
+          }
+          finally {
+            Pop-Location
+          }
+
+      - name: Run per-target gen-target and create-project
+        shell: pwsh
+        run: |
+          $targets = "${{ steps.discover.outputs.targets }}".Split(',', [System.StringSplitOptions]::RemoveEmptyEntries)
+
+          foreach ($target in $targets) {
+            Write-Host "::group::$target"
+            Push-Location (Join-Path "targets" $target)
+            try {
+              nihdl gen-target
+              nihdl create-project
+            }
+            finally {
+              Pop-Location
+              Write-Host "::endgroup::"
+            }
+          }

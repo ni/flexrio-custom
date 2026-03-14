@@ -2,6 +2,12 @@ name: Target Smoke Tests
 
 on:
   workflow_dispatch:
+    inputs:
+      install_deps_args:
+        description: "Extra args for nihdl install-deps (example: --pre --latest)"
+        required: false
+        default: ""
+        type: string
   pull_request:
     paths:
       - "targets/**"
@@ -19,7 +25,7 @@ on:
 
 jobs:
   nihdl-target-smoke:
-    runs-on: [self-hosted, Windows, X64]
+    runs-on: windows-latest
     timeout-minutes: 360
 
     steps:
@@ -59,11 +65,22 @@ jobs:
         run: |
           $targets = "${{ steps.discover.outputs.targets }}".Split(',', [System.StringSplitOptions]::RemoveEmptyEntries)
           $firstTarget = $targets[0]
+          $inputArgs = ""
+
+          if ("${{ github.event_name }}" -eq "workflow_dispatch") {
+            $inputArgs = "${{ github.event.inputs.install_deps_args }}"
+          }
+
+          $extraArgs = @()
+          if ($inputArgs -and $inputArgs.Trim()) {
+            $extraArgs = $inputArgs.Trim().Split(' ', [System.StringSplitOptions]::RemoveEmptyEntries)
+            Write-Host "Using extra install-deps args: $($extraArgs -join ' ')"
+          }
 
           Write-Host "Running install-deps from targets/$firstTarget"
           Push-Location (Join-Path "targets" $firstTarget)
           try {
-            nihdl install-deps
+            & nihdl install-deps @extraArgs
           }
           finally {
             Pop-Location

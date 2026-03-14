@@ -173,8 +173,6 @@ current_instance $RoutingClipInstanceRestore
 
 # END_LV_FPGA_CLIP_CONSTRAINTS
 
-set TopInstance0 [current_instance .]
-current_instance SasquatchWindowWrapper
 
 # BEGIN_LV_FPGA_FROM_TO_CONSTRAINTS
 
@@ -314,7 +312,5 @@ set_false_path -through [get_nets {*DiagramResetx*aDiagramResetLoc*}]
 
 # END_LV_FPGA_FROM_TO_CONSTRAINTS
 
-current_instance -quiet
-current_instance $TopInstance0
 
 

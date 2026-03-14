@@ -663,10 +663,10 @@ architecture struct of SasquatchTopTemplate is
   signal du0DramAddrFifoWrEn: std_logic;
   signal du0DramPhyInitDone: std_logic;
   signal du0DramRdDataValid: std_logic;
-  signal du0DramRdFifoDataOut: std_logic_vector(639 downto 0);
-  signal du0DramWrFifoDataIn: std_logic_vector(639 downto 0);
+  signal du0DramRdFifoDataOut: std_logic_vector(1279 downto 0);
+  signal du0DramWrFifoDataIn: std_logic_vector(1279 downto 0);
   signal du0DramWrFifoFull: std_logic;
-  signal du0DramWrFifoMaskData: std_logic_vector(79 downto 0);
+  signal du0DramWrFifoMaskData: std_logic_vector(159 downto 0);
   signal du0DramWrFifoWrEn: std_logic;
   signal du1DramAddrFifoAddr: std_logic_vector(29 downto 0);
   signal du1DramAddrFifoCmd: std_logic_vector(2 downto 0);
@@ -674,10 +674,10 @@ architecture struct of SasquatchTopTemplate is
   signal du1DramAddrFifoWrEn: std_logic;
   signal du1DramPhyInitDone: std_logic;
   signal du1DramRdDataValid: std_logic;
-  signal du1DramRdFifoDataOut: std_logic_vector(639 downto 0);
-  signal du1DramWrFifoDataIn: std_logic_vector(639 downto 0);
+  signal du1DramRdFifoDataOut: std_logic_vector(1279 downto 0);
+  signal du1DramWrFifoDataIn: std_logic_vector(1279 downto 0);
   signal du1DramWrFifoFull: std_logic;
-  signal du1DramWrFifoMaskData: std_logic_vector(79 downto 0);
+  signal du1DramWrFifoMaskData: std_logic_vector(159 downto 0);
   signal du1DramWrFifoWrEn: std_logic;
   signal pIntSync100: std_logic;
   signal PxieClk100: std_logic;
@@ -714,7 +714,7 @@ architecture struct of SasquatchTopTemplate is
   signal bSharedHostRegFpgaDataIn : Slv32Ary_t(0 to 3) := (others => (others => '0'));
   signal bSharedHostRegFpgaDataOut : Slv32Ary_t(0 to 3);
 
-  -- DMA engine Reset
+  -- Inchworm Reset
   signal aBusReset : boolean := true;
 
   signal dFlatHighSpeedSinkFromDma : FlatNiDmaHighSpeedSinkFromDma_t;
@@ -824,19 +824,19 @@ architecture struct of SasquatchTopTemplate is
   -- kFamClockSrcSel selects between the 10 MHz and 100 MHz clocks (0 = 10 Mhz, 1 = 100 MHz) and kEnableFamClockSync
   -- enables the clock to the board IO logic.
   --
-  --
-  -- **** COMMENTING OUT THE FOLLOWING BECAUSE THIS EXAMPLE DOES NOT USE THE CLIP SOCKET ****
-  -- constant kExpectedTbIdConst : std_logic_vector(31 downto 0) := kExpectedTbId;
-  -- constant kEnableFamClockSyncConst : std_logic := kEnableFamClockSync;
-  -- constant kFamClockSrcSelConst : std_logic := kFamClockSrcSel;
+  -- By default, this template is set up to use the CLIP socket interface, so these constants get set to the values
+  -- defined in PkgLvFpgaConst.vhd.
+  constant kExpectedTbIdConst : std_logic_vector(31 downto 0) := kExpectedTbId;
+  constant kEnableFamClockSyncConst : std_logic := kEnableFamClockSync;
+  constant kFamClockSrcSelConst : std_logic := kFamClockSrcSel;
   --
   -- If you are not using the CLIP socket interface because you are interfacing with the board IO directly from
   -- this HDL file, you must set kExpectedTbIdConst to X"10937AEC" so that the TbId check matches.  And we set the
   -- clocking constants to enable the 100 MHz clock.
   --
-  constant kExpectedTbIdConst : std_logic_vector(31 downto 0) := X"10937AEC";
-  constant kEnableFamClockSyncConst : std_logic := '1';
-  constant kFamClockSrcSelConst : std_logic := '1';
+  -- constant kExpectedTbIdConst : std_logic_vector(31 downto 0) := X"10937AEC";
+  -- constant kEnableFamClockSyncConst : std_logic := '1';
+  -- constant kFamClockSrcSelConst : std_logic := '1';
 
   -- Disable automatic io_buffer creation for FAM MGTs and signals that will instantiate
   -- their own.
@@ -1327,10 +1327,10 @@ begin  -- architecture struct
       du0DramAddrFifoWrEn   => du0DramAddrFifoWrEn,    --in  std_logic
       du0DramWrFifoFull     => du0DramWrFifoFull,      --out std_logic
       du0DramWrFifoWrEn     => du0DramWrFifoWrEn,      --in  std_logic
-      du0DramWrFifoDataIn   => du0DramWrFifoDataIn,    --in  std_logic_vector(639:0)
-      du0DramWrFifoMaskData => du0DramWrFifoMaskData,  --in  std_logic_vector(79:0)
+      du0DramWrFifoDataIn   => du0DramWrFifoDataIn,    --in  std_logic_vector(1279:0)
+      du0DramWrFifoMaskData => du0DramWrFifoMaskData,  --in  std_logic_vector(159:0)
       du0DramRdDataValid    => du0DramRdDataValid,     --out std_logic
-      du0DramRdFifoDataOut  => du0DramRdFifoDataOut,   --out std_logic_vector(639:0)
+      du0DramRdFifoDataOut  => du0DramRdFifoDataOut,   --out std_logic_vector(1279:0)
       Dram1Clk_p            => Dram1Clk_p,             --out std_logic
       Dram1Clk_n            => Dram1Clk_n,             --out std_logic
       dr1DramCs_n           => dr1DramCs_n,            --out std_logic
@@ -1354,10 +1354,10 @@ begin  -- architecture struct
       du1DramAddrFifoWrEn   => du1DramAddrFifoWrEn,    --in  std_logic
       du1DramWrFifoFull     => du1DramWrFifoFull,      --out std_logic
       du1DramWrFifoWrEn     => du1DramWrFifoWrEn,      --in  std_logic
-      du1DramWrFifoDataIn   => du1DramWrFifoDataIn,    --in  std_logic_vector(639:0)
-      du1DramWrFifoMaskData => du1DramWrFifoMaskData,  --in  std_logic_vector(79:0)
+      du1DramWrFifoDataIn   => du1DramWrFifoDataIn,    --in  std_logic_vector(1279:0)
+      du1DramWrFifoMaskData => du1DramWrFifoMaskData,  --in  std_logic_vector(159:0)
       du1DramRdDataValid    => du1DramRdDataValid,     --out std_logic
-      du1DramRdFifoDataOut  => du1DramRdFifoDataOut);  --out std_logic_vector(639:0)
+      du1DramRdFifoDataOut  => du1DramRdFifoDataOut);  --out std_logic_vector(1279:0)
 
   bRegPortOut.Data <= bLvWindowRegPortOut.Data or
                       bRegPortOutDram2DP.Data or
@@ -1370,9 +1370,9 @@ begin  -- architecture struct
                            bRegPortOutSharedRegs.DataValid;
 
   bRegPortOut.Ready <= bLvWindowRegPortOut.Ready and
-               bRegPortOutDram2DP.Ready and
-               bRegPortOutCommonRegs.Ready and
-               bRegPortOutSharedRegs.Ready;
+                       bRegPortOutDram2DP.Ready and
+                       bRegPortOutCommonRegs.Ready and
+                       bRegPortOutSharedRegs.Ready;
 
   bAddressesDram2DP  <= (bRegportIn.Address >= kDram2DPBaseAddress) and
                         (bRegportIn.Address <= (kDram2DPBaseAddress + kDram2DPAddressMask));
@@ -1424,7 +1424,7 @@ begin  -- architecture struct
 
   -- Demonstration loopback logic for HdlSharedHostRegisterArray usage.
   --
-  -- This process is meant only as an example of how FPGA-side logic can interact with 
+  -- This process is meant only as an example of how FPGA-side logic can interact with
   -- host-visible registers.
   --
   -- Register behavior used here:
@@ -1463,7 +1463,6 @@ begin  -- architecture struct
       end if;
     end if;
   end process SharedHostRegisterLoopbackx;
-
 
   MergeRegPortInDram2DP: process(bRegportIn, bAddressesDram2DP)
   begin
@@ -1540,7 +1539,7 @@ begin  -- architecture struct
   -- base design, the MGT signals in the top-level entity are commented out.
   --
   -- If you are customizing this HDL file directly, then you will add whatever MGT signal ports
-  -- you are using to the top-level entity and connect them to this TheLvWindow wrapper instance.
+  -- you are using to the top-level entity and connect them to this TheWindow wrapper instance.
   --
   TheLvWindowWrapper: TheLvWindowFlatWrapper
     port map (
@@ -1613,8 +1612,84 @@ begin  -- architecture struct
       aPxieDstarC                         => aPxieDstarC,                               --out std_logic
       ---------------------
       -- BEGIN CLIP SOCKET PORTS
-      ---------------------     
-      -- ***** NO CLIP SOCKET PORTS *****    
+      ---------------------
+      AxiClk                              => BusClk,                                    --in  std_logic
+      xDiagramAxiStreamFromClipTData      => xDiagramAxiStreamFromClipTData,            --out std_logic_vector(31:0)
+      xDiagramAxiStreamFromClipTLast      => xDiagramAxiStreamFromClipTLast,            --out std_logic
+      xDiagramAxiStreamFromClipTReady     => xDiagramAxiStreamFromClipTReady,           --out std_logic
+      xDiagramAxiStreamFromClipTValid     => xDiagramAxiStreamFromClipTValid,           --out std_logic
+      xDiagramAxiStreamToClipTData        => xDiagramAxiStreamToClipTData,              --in  std_logic_vector(31:0)
+      xDiagramAxiStreamToClipTLast        => xDiagramAxiStreamToClipTLast,              --in  std_logic
+      xDiagramAxiStreamToClipTReady       => xDiagramAxiStreamToClipTReady,             --in  std_logic
+      xDiagramAxiStreamToClipTValid       => xDiagramAxiStreamToClipTValid,             --in  std_logic
+      xHostAxiStreamFromClipTData         => xHostAxiStreamFromClipTData,               --out std_logic_vector(31:0)
+      xHostAxiStreamFromClipTLast         => xHostAxiStreamFromClipTLast,               --out std_logic
+      xHostAxiStreamFromClipTReady        => xHostAxiStreamFromClipTReady,              --out std_logic
+      xHostAxiStreamFromClipTValid        => xHostAxiStreamFromClipTValid,              --out std_logic
+      xHostAxiStreamToClipTData           => xHostAxiStreamToClipTData,                 --in  std_logic_vector(31:0)
+      xHostAxiStreamToClipTLast           => xHostAxiStreamToClipTLast,                 --in  std_logic
+      xHostAxiStreamToClipTReady          => xHostAxiStreamToClipTReady,                --in  std_logic
+      xHostAxiStreamToClipTValid          => xHostAxiStreamToClipTValid,                --in  std_logic
+      xClipAxi4LiteMasterARAddr           => bdClipAxi4LiteARAddr,                      --out std_logic_vector(31:0)
+      xClipAxi4LiteMasterARProt           => bdClipAxi4LiteARProt,                      --out std_logic_vector(2:0)
+      xClipAxi4LiteMasterARReady          => bdClipAxi4LiteARReady,                     --in  std_logic
+      xClipAxi4LiteMasterARValid          => bdClipAxi4LiteARValid,                     --out std_logic
+      xClipAxi4LiteMasterAWAddr           => bdClipAxi4LiteAWAddr,                      --out std_logic_vector(31:0)
+      xClipAxi4LiteMasterAWProt           => bdClipAxi4LiteAWProt,                      --out std_logic_vector(2:0)
+      xClipAxi4LiteMasterAWReady          => bdClipAxi4LiteAWReady,                     --in  std_logic
+      xClipAxi4LiteMasterAWValid          => bdClipAxi4LiteAWValid,                     --out std_logic
+      xClipAxi4LiteMasterBReady           => bdClipAxi4LiteBReady,                      --out std_logic
+      xClipAxi4LiteMasterBResp            => bdClipAxi4LiteBResp,                       --in  std_logic_vector(1:0)
+      xClipAxi4LiteMasterBValid           => bdClipAxi4LiteBValid,                      --in  std_logic
+      xClipAxi4LiteMasterRData            => bdClipAxi4LiteRData,                       --in  std_logic_vector(31:0)
+      xClipAxi4LiteMasterRReady           => bdClipAxi4LiteRReady,                      --out std_logic
+      xClipAxi4LiteMasterRResp            => bdClipAxi4LiteRResp,                       --in  std_logic_vector(1:0)
+      xClipAxi4LiteMasterRValid           => bdClipAxi4LiteRValid,                      --in  std_logic
+      xClipAxi4LiteMasterWData            => bdClipAxi4LiteWData,                       --out std_logic_vector(31:0)
+      xClipAxi4LiteMasterWReady           => bdClipAxi4LiteWReady,                      --in  std_logic
+      xClipAxi4LiteMasterWStrb            => bdClipAxi4LiteWStrb,                       --out std_logic_vector(3:0)
+      xClipAxi4LiteMasterWValid           => bdClipAxi4LiteWValid,                      --out std_logic
+      xClipAxi4LiteInterrupt              => '0',                                       --in  std_logic
+      stIoModuleSupportsFRAGLs            => stIoModuleSupportsFRAGLs,                  --out std_logic
+      MgtRefClk_p                         => MgtRefClk_p,                               --in  std_logic_vector(11:0)
+      MgtRefClk_n                         => MgtRefClk_n,                               --in  std_logic_vector(11:0)
+      --@@BEGIN COMPONENT_SIGNAL_ASSIGNMENT
+--
+-- TheWindow.vhd is generated by LabVIEW FPGA.  We ship a stub to ensure that we can synthesize the design.
+-- Vivado will error when building a design that has MGT lines in the top level entity that are not connected
+-- to anything.  So we comment out the MGT lines in the top level and in the Window stub.
+--
+-- If you are making a custom FPGA target, the MGT lines will be statically connected to your MGT logic.  If you are
+-- using this FPGA target with a CLIP in LabVIEW FPGA, these MGT signals will be auto-generated by LV FPGA when it
+-- processes the VHDL files.  The @ @ BEGIN / END around these signals is where LV FPGA generates the ports.
+--
+
+      MgtPortRx_p                     => (others => '0'),                               --in  std_logic_vector(47:0)
+      MgtPortRx_n                     => (others => '0'),                               --in  std_logic_vector(47:0)
+      MgtPortTx_p                     => open,                                          --out  std_logic_vector(47:0)
+      MgtPortTx_n                     => open,                                          --out  std_logic_vector(47:0)
+
+      --@@END COMPONENT_SIGNAL_ASSIGNMENT
+      aDio                                => aDio,                                      --inout std_logic_vector(7:0)
+      aLmkI2cSda                          => aLmkI2cSda,                                --inout std_logic
+      aLmkI2cScl                          => aLmkI2cScl,                                --inout std_logic
+      aLmk1Pdn_n                          => aLmk1Pdn_n,                                --out std_logic
+      aLmk2Pdn_n                          => aLmk2Pdn_n,                                --out std_logic
+      aLmk1Gpio0                          => aLmk1Gpio0,                                --out std_logic
+      aLmk2Gpio0                          => aLmk2Gpio0,                                --out std_logic
+      aLmk1Status0                        => aLmk1Status0,                              --in  std_logic
+      aLmk1Status1                        => aLmk1Status1,                              --in  std_logic
+      aLmk2Status0                        => aLmk2Status0,                              --in  std_logic
+      aLmk2Status1                        => aLmk2Status1,                              --in  std_logic
+      aIPassVccPowerFault_n               => aIPassVccPowerFault_n,                     --in  std_logic
+      aIPassPrsnt_n                       => aIPassPrsnt_n,                             --in  std_logic_vector(7:0)
+      aIPassIntr_n                        => aIPassIntr_n,                              --in  std_logic_vector(7:0)
+      aIPassSCL                           => aIPassSCL,                                 --inout std_logic_vector(11:0)
+      aIPassSDA                           => aIPassSDA,                                 --inout std_logic_vector(11:0)
+      aPortExpReset_n                     => aPortExpReset_n,                           --out std_logic
+      aPortExpIntr_n                      => aPortExpIntr_n,                            --in  std_logic
+      aPortExpSda                         => aPortExpSda,                               --inout std_logic
+      aPortExpScl                         => aPortExpScl,                               --inout std_logic
       ----------------------
       -- END CLIP SOCKET PORTS
       ----------------------

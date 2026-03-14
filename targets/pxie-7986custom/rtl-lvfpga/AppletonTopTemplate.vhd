@@ -1,9 +1,9 @@
 ------------------------------------------------------------------------------------------
 --
--- File: SasquatchTopTemplate.vhd
+-- File: AppletonTopTemplate.vhd
 -- Author: National Instruments
--- Original Project: FlexRIO
--- Date: 09 April 2019
+-- Original Project: FlexRio
+-- Date: 15 November 2017
 --
 ------------------------------------------------------------------------------------------
 -- (c) 2026 Copyright National Instruments Corporation
@@ -11,7 +11,7 @@
 -- SPDX-License-Identifier: MIT
 ------------------------------------------------------------------------------------------
 --
--- Purpose: This is the top level file for the 7903
+-- Purpose: This is the top level file for the 7986
 ------------------------------------------------------------------------------------------
 --
 -- githubvisible=true
@@ -25,7 +25,7 @@ use unisim.vcomponents.all;
 
 library work;
 use work.PkgNiUtilities.all;
-use work.PkgSasquatch.all;
+use work.PkgAppleton.all;
 -- DMA engine Imports
 use work.PkgBaRegPort.all;
 use work.PkgCommunicationInterface.all;
@@ -84,7 +84,7 @@ use work.PkgDram2DPConstants.all;
 -- ir     - IsoRxClk (IsoPort)
 -- s      - SidebandClk
 
-entity SasquatchTopTemplate is
+entity AppletonTopTemplate is
   port (
     -------------------------------------------------------------------------------------
     -- Basics
@@ -92,41 +92,34 @@ entity SasquatchTopTemplate is
     -- Clock Inputs
     --Reliable Clk Input. Comes from an oscillator that is always on
     Osc100ClkIn          : in    std_logic;
+    -- HW Revision resistors (unused for now)
+    --vhook_nowarn aFpgaHwRevision
+    aFpgaHwRevision      : in    std_logic_vector(3 downto 0);
     -------------------------------------------------------------------------------------
     -- Board Control
     -------------------------------------------------------------------------------------
-    -- I2C bus enable
-    aI2cBusEnable        : out   std_logic;
-    -- Baseboard monitoring SMBus
+    -- Monitoring SMBus
     bBaseSmbScl          : inout std_logic;
     bBaseSmbSda          : inout std_logic;
     aBaseSmbAlert_n      : in    std_logic; --vhook_nowarn aBaseSmbAlert_n
-    -- Mezanine monitoring SMBus
-    bMezzSmbScl          : inout std_logic;
-    bMezzSmbSda          : inout std_logic;
     -- Control I2C Bus
     bConfigI2cScl        : inout std_logic;
     bConfigI2cSda        : inout std_logic;
     -- Power supply PMBus
     bPwrSupplyPmbScl     : inout std_logic;
     bPwrSupplyPmbSda     : inout std_logic;
-    aPwrSupplyPmbAlert_n : in    std_logic;  --vhook_nowarn aPwrSupplyPmbAlert_n
+    aPwrSupplyPmbAlert_n : in    std_logic; --vhook_nowarn aPwrSupplyPmbAlert_n
+    -- AuxIO Vcc Potentiometer SPI
+    bDigiPotSclk         : out   std_logic;
+    bDigiPotMosi         : out   std_logic;
+    bDigiPotMiso         : in    std_logic;
+    bDigiPotSync_n       : out   std_logic;
     -- Clock enables
     aIoRefClk100En       : out   std_logic;
+    aIoRefClk10En        : out   std_logic;
+    aIoRefSelClk100      : out   std_logic;
     -- Authentication
     aAuthSda             : inout std_logic;
-    -------------------------------------------------------------------------------------
-    -- Power
-    -------------------------------------------------------------------------------------
-    a3v3VDPwrSync        : out std_logic;
-    a1v2PwrSync          : out std_logic;
-    a0v9PwrSync          : out std_logic;
-    aDdr4VttPwrEn        : out std_logic;
-    aMgtavttPwrSync      : out std_logic;
-    a0v85PwrSync         : out std_logic;
-    a1v8fpgaPwrSync      : out std_logic;
-    a3v8PwrSync          : out std_logic;
-    a3v3OptPwrSync       : out std_logic;
     -------------------------------------------------------------------------------------
     -- PXIe
     -------------------------------------------------------------------------------------
@@ -140,7 +133,7 @@ entity SasquatchTopTemplate is
     PcieTx_n             : out   std_logic_vector (7 downto 0);
     -- PXI trigger/control signals
     aPxiGa               : in    std_logic_vector(4 downto 0);
-    aPxiStarData         : in    std_logic;
+    aPxiStar             : in    std_logic;
     aPxiTrigData         : inout std_logic_vector(7 downto 0);
     aPxiTrigDir          : out   std_logic_vector(7 downto 0);
     aPxiTrigOutEn_n      : out   std_logic;
@@ -154,12 +147,46 @@ entity SasquatchTopTemplate is
     PxieClk100_n         : in    std_logic;
     pPxieSync100_p       : in    std_logic;
     pPxieSync100_n       : in    std_logic;
+    pClk10GenD           : out   std_logic;
     -------------------------------------------------------------------------------------
-    -- FAM MGT Plane
+    -- TDC
+    -------------------------------------------------------------------------------------
+    -- On Board TDC
+    aTdcAllPeclEn        : out   std_logic;
+    dvTdcAssert          : out   std_logic;
+    sTdcDeassert         : out   std_logic;
+    aTdcExpandedPulse_p  : in    std_logic;
+    aTdcExpandedPulse_n  : in    std_logic;
+    -------------------------------------------------------------------------------------
+    -- FAM Configuration Plane
+    -------------------------------------------------------------------------------------
+    -- Config Interface TX
+    aConfigTxClkLvds_p   : out   std_logic;
+    aConfigTxClkLvds_n   : out   std_logic;
+    aConfigTxClkSe       : out   std_logic;
+    aConfigTxDataSe      : out   std_logic_vector(6 downto 0);
+
+    -- Config Interface RX
+    aConfigRxClkLvds_p : in std_logic;
+    aConfigRxClkLvds_n : in std_logic;
+    aConfigRxClkSe     : in std_logic;
+    aConfigRxDataSe    : in std_logic_vector(6 downto 0);
+
+    -- Module Detection
+    aModulePresent_n          : in    std_logic;
+    -- RASM
+    bIoSmbScl                 : inout std_logic;
+    bIoSmbSda                 : inout std_logic;
+    aIoSmbAlert_n             : in    std_logic;
+    aFamPowerGood             : in    std_logic;
+    -------------------------------------------------------------------------------------
+    -- MGT Plane
     -------------------------------------------------------------------------------------
     -- RefClks
-    MgtRefClk_p          : in    std_logic_vector (11 downto 0);
-    MgtRefClk_n          : in    std_logic_vector (11 downto 0);
+    MgtRefClk_p               : in    std_logic_vector (3 downto 0);
+    MgtRefClk_n               : in    std_logic_vector (3 downto 0);
+    AuxIoMgtRefClk_p          : in    std_logic;
+    AuxIoMgtRefClk_n          : in    std_logic;
     -- MGTs
     --@@BEGIN TOP_LEVEL_PORT
 --
@@ -174,341 +201,236 @@ entity SasquatchTopTemplate is
 -- processes the VHDL files.  The @ @ BEGIN / END around these signals is where LV FPGA generates the ports.
 --
 --
---    MgtPortRxLane0_p     : in    std_logic;
---    MgtPortRxLane1_p     : in    std_logic;
---    MgtPortRxLane2_p     : in    std_logic;
---    MgtPortRxLane3_p     : in    std_logic;
---    MgtPortRxLane4_p     : in    std_logic;
---    MgtPortRxLane5_p     : in    std_logic;
---    MgtPortRxLane6_p     : in    std_logic;
---    MgtPortRxLane7_p     : in    std_logic;
---    MgtPortRxLane8_p     : in    std_logic;
---    MgtPortRxLane9_p     : in    std_logic;
---    MgtPortRxLane10_p    : in    std_logic;
---    MgtPortRxLane11_p    : in    std_logic;
---    MgtPortRxLane12_p    : in    std_logic;
---    MgtPortRxLane13_p    : in    std_logic;
---    MgtPortRxLane14_p    : in    std_logic;
---    MgtPortRxLane15_p    : in    std_logic;
---    MgtPortRxLane16_p    : in    std_logic;
---    MgtPortRxLane17_p    : in    std_logic;
---    MgtPortRxLane18_p    : in    std_logic;
---    MgtPortRxLane19_p    : in    std_logic;
---    MgtPortRxLane20_p    : in    std_logic;
---    MgtPortRxLane21_p    : in    std_logic;
---    MgtPortRxLane22_p    : in    std_logic;
---    MgtPortRxLane23_p    : in    std_logic;
---    MgtPortRxLane24_p    : in    std_logic;
---    MgtPortRxLane25_p    : in    std_logic;
---    MgtPortRxLane26_p    : in    std_logic;
---    MgtPortRxLane27_p    : in    std_logic;
---    MgtPortRxLane28_p    : in    std_logic;
---    MgtPortRxLane29_p    : in    std_logic;
---    MgtPortRxLane30_p    : in    std_logic;
---    MgtPortRxLane31_p    : in    std_logic;
---    MgtPortRxLane32_p    : in    std_logic;
---    MgtPortRxLane33_p    : in    std_logic;
---    MgtPortRxLane34_p    : in    std_logic;
---    MgtPortRxLane35_p    : in    std_logic;
---    MgtPortRxLane36_p    : in    std_logic;
---    MgtPortRxLane37_p    : in    std_logic;
---    MgtPortRxLane38_p    : in    std_logic;
---    MgtPortRxLane39_p    : in    std_logic;
---    MgtPortRxLane40_p    : in    std_logic;
---    MgtPortRxLane41_p    : in    std_logic;
---    MgtPortRxLane42_p    : in    std_logic;
---    MgtPortRxLane43_p    : in    std_logic;
---    MgtPortRxLane44_p    : in    std_logic;
---    MgtPortRxLane45_p    : in    std_logic;
---    MgtPortRxLane46_p    : in    std_logic;
---    MgtPortRxLane47_p    : in    std_logic;
---    MgtPortRxLane0_n     : in    std_logic;
---    MgtPortRxLane1_n     : in    std_logic;
---    MgtPortRxLane2_n     : in    std_logic;
---    MgtPortRxLane3_n     : in    std_logic;
---    MgtPortRxLane4_n     : in    std_logic;
---    MgtPortRxLane5_n     : in    std_logic;
---    MgtPortRxLane6_n     : in    std_logic;
---    MgtPortRxLane7_n     : in    std_logic;
---    MgtPortRxLane8_n     : in    std_logic;
---    MgtPortRxLane9_n     : in    std_logic;
---    MgtPortRxLane10_n    : in    std_logic;
---    MgtPortRxLane11_n    : in    std_logic;
---    MgtPortRxLane12_n    : in    std_logic;
---    MgtPortRxLane13_n    : in    std_logic;
---    MgtPortRxLane14_n    : in    std_logic;
---    MgtPortRxLane15_n    : in    std_logic;
---    MgtPortRxLane16_n    : in    std_logic;
---    MgtPortRxLane17_n    : in    std_logic;
---    MgtPortRxLane18_n    : in    std_logic;
---    MgtPortRxLane19_n    : in    std_logic;
---    MgtPortRxLane20_n    : in    std_logic;
---    MgtPortRxLane21_n    : in    std_logic;
---    MgtPortRxLane22_n    : in    std_logic;
---    MgtPortRxLane23_n    : in    std_logic;
---    MgtPortRxLane24_n    : in    std_logic;
---    MgtPortRxLane25_n    : in    std_logic;
---    MgtPortRxLane26_n    : in    std_logic;
---    MgtPortRxLane27_n    : in    std_logic;
---    MgtPortRxLane28_n    : in    std_logic;
---    MgtPortRxLane29_n    : in    std_logic;
---    MgtPortRxLane30_n    : in    std_logic;
---    MgtPortRxLane31_n    : in    std_logic;
---    MgtPortRxLane32_n    : in    std_logic;
---    MgtPortRxLane33_n    : in    std_logic;
---    MgtPortRxLane34_n    : in    std_logic;
---    MgtPortRxLane35_n    : in    std_logic;
---    MgtPortRxLane36_n    : in    std_logic;
---    MgtPortRxLane37_n    : in    std_logic;
---    MgtPortRxLane38_n    : in    std_logic;
---    MgtPortRxLane39_n    : in    std_logic;
---    MgtPortRxLane40_n    : in    std_logic;
---    MgtPortRxLane41_n    : in    std_logic;
---    MgtPortRxLane42_n    : in    std_logic;
---    MgtPortRxLane43_n    : in    std_logic;
---    MgtPortRxLane44_n    : in    std_logic;
---    MgtPortRxLane45_n    : in    std_logic;
---    MgtPortRxLane46_n    : in    std_logic;
---    MgtPortRxLane47_n    : in    std_logic;
---    MgtPortTxLane0_p     : out   std_logic;
---    MgtPortTxLane1_p     : out   std_logic;
---    MgtPortTxLane2_p     : out   std_logic;
---    MgtPortTxLane3_p     : out   std_logic;
---    MgtPortTxLane4_p     : out   std_logic;
---    MgtPortTxLane5_p     : out   std_logic;
---    MgtPortTxLane6_p     : out   std_logic;
---    MgtPortTxLane7_p     : out   std_logic;
---    MgtPortTxLane8_p     : out   std_logic;
---    MgtPortTxLane9_p     : out   std_logic;
---    MgtPortTxLane10_p    : out   std_logic;
---    MgtPortTxLane11_p    : out   std_logic;
---    MgtPortTxLane12_p    : out   std_logic;
---    MgtPortTxLane13_p    : out   std_logic;
---    MgtPortTxLane14_p    : out   std_logic;
---    MgtPortTxLane15_p    : out   std_logic;
---    MgtPortTxLane16_p    : out   std_logic;
---    MgtPortTxLane17_p    : out   std_logic;
---    MgtPortTxLane18_p    : out   std_logic;
---    MgtPortTxLane19_p    : out   std_logic;
---    MgtPortTxLane20_p    : out   std_logic;
---    MgtPortTxLane21_p    : out   std_logic;
---    MgtPortTxLane22_p    : out   std_logic;
---    MgtPortTxLane23_p    : out   std_logic;
---    MgtPortTxLane24_p    : out   std_logic;
---    MgtPortTxLane25_p    : out   std_logic;
---    MgtPortTxLane26_p    : out   std_logic;
---    MgtPortTxLane27_p    : out   std_logic;
---    MgtPortTxLane28_p    : out   std_logic;
---    MgtPortTxLane29_p    : out   std_logic;
---    MgtPortTxLane30_p    : out   std_logic;
---    MgtPortTxLane31_p    : out   std_logic;
---    MgtPortTxLane32_p    : out   std_logic;
---    MgtPortTxLane33_p    : out   std_logic;
---    MgtPortTxLane34_p    : out   std_logic;
---    MgtPortTxLane35_p    : out   std_logic;
---    MgtPortTxLane36_p    : out   std_logic;
---    MgtPortTxLane37_p    : out   std_logic;
---    MgtPortTxLane38_p    : out   std_logic;
---    MgtPortTxLane39_p    : out   std_logic;
---    MgtPortTxLane40_p    : out   std_logic;
---    MgtPortTxLane41_p    : out   std_logic;
---    MgtPortTxLane42_p    : out   std_logic;
---    MgtPortTxLane43_p    : out   std_logic;
---    MgtPortTxLane44_p    : out   std_logic;
---    MgtPortTxLane45_p    : out   std_logic;
---    MgtPortTxLane46_p    : out   std_logic;
---    MgtPortTxLane47_p    : out   std_logic;
---    MgtPortTxLane0_n     : out   std_logic;
---    MgtPortTxLane1_n     : out   std_logic;
---    MgtPortTxLane2_n     : out   std_logic;
---    MgtPortTxLane3_n     : out   std_logic;
---    MgtPortTxLane4_n     : out   std_logic;
---    MgtPortTxLane5_n     : out   std_logic;
---    MgtPortTxLane6_n     : out   std_logic;
---    MgtPortTxLane7_n     : out   std_logic;
---    MgtPortTxLane8_n     : out   std_logic;
---    MgtPortTxLane9_n     : out   std_logic;
---    MgtPortTxLane10_n    : out   std_logic;
---    MgtPortTxLane11_n    : out   std_logic;
---    MgtPortTxLane12_n    : out   std_logic;
---    MgtPortTxLane13_n    : out   std_logic;
---    MgtPortTxLane14_n    : out   std_logic;
---    MgtPortTxLane15_n    : out   std_logic;
---    MgtPortTxLane16_n    : out   std_logic;
---    MgtPortTxLane17_n    : out   std_logic;
---    MgtPortTxLane18_n    : out   std_logic;
---    MgtPortTxLane19_n    : out   std_logic;
---    MgtPortTxLane20_n    : out   std_logic;
---    MgtPortTxLane21_n    : out   std_logic;
---    MgtPortTxLane22_n    : out   std_logic;
---    MgtPortTxLane23_n    : out   std_logic;
---    MgtPortTxLane24_n    : out   std_logic;
---    MgtPortTxLane25_n    : out   std_logic;
---    MgtPortTxLane26_n    : out   std_logic;
---    MgtPortTxLane27_n    : out   std_logic;
---    MgtPortTxLane28_n    : out   std_logic;
---    MgtPortTxLane29_n    : out   std_logic;
---    MgtPortTxLane30_n    : out   std_logic;
---    MgtPortTxLane31_n    : out   std_logic;
---    MgtPortTxLane32_n    : out   std_logic;
---    MgtPortTxLane33_n    : out   std_logic;
---    MgtPortTxLane34_n    : out   std_logic;
---    MgtPortTxLane35_n    : out   std_logic;
---    MgtPortTxLane36_n    : out   std_logic;
---    MgtPortTxLane37_n    : out   std_logic;
---    MgtPortTxLane38_n    : out   std_logic;
---    MgtPortTxLane39_n    : out   std_logic;
---    MgtPortTxLane40_n    : out   std_logic;
---    MgtPortTxLane41_n    : out   std_logic;
---    MgtPortTxLane42_n    : out   std_logic;
---    MgtPortTxLane43_n    : out   std_logic;
---    MgtPortTxLane44_n    : out   std_logic;
---    MgtPortTxLane45_n    : out   std_logic;
---    MgtPortTxLane46_n    : out   std_logic;
---    MgtPortTxLane47_n    : out   std_logic;
+--    MgtPortRxLane0_p          : in    std_logic;
+--    MgtPortRxLane1_p          : in    std_logic;
+--    MgtPortRxLane2_p          : in    std_logic;
+--    MgtPortRxLane3_p          : in    std_logic;
+--    MgtPortRxLane4_p          : in    std_logic;
+--    MgtPortRxLane5_p          : in    std_logic;
+--    MgtPortRxLane6_p          : in    std_logic;
+--    MgtPortRxLane7_p          : in    std_logic;
+--    MgtPortRxLane8_p          : in    std_logic;
+--    MgtPortRxLane9_p          : in    std_logic;
+--    MgtPortRxLane10_p         : in    std_logic;
+--    MgtPortRxLane11_p         : in    std_logic;
+--    MgtPortRxLane12_p         : in    std_logic;
+--    MgtPortRxLane13_p         : in    std_logic;
+--    MgtPortRxLane14_p         : in    std_logic;
+--    MgtPortRxLane15_p         : in    std_logic;
+--    MgtPortRxLane0_n          : in    std_logic;
+--    MgtPortRxLane1_n          : in    std_logic;
+--    MgtPortRxLane2_n          : in    std_logic;
+--    MgtPortRxLane3_n          : in    std_logic;
+--    MgtPortRxLane4_n          : in    std_logic;
+--    MgtPortRxLane5_n          : in    std_logic;
+--    MgtPortRxLane6_n          : in    std_logic;
+--    MgtPortRxLane7_n          : in    std_logic;
+--    MgtPortRxLane8_n          : in    std_logic;
+--    MgtPortRxLane9_n          : in    std_logic;
+--    MgtPortRxLane10_n         : in    std_logic;
+--    MgtPortRxLane11_n         : in    std_logic;
+--    MgtPortRxLane12_n         : in    std_logic;
+--    MgtPortRxLane13_n         : in    std_logic;
+--    MgtPortRxLane14_n         : in    std_logic;
+--    MgtPortRxLane15_n         : in    std_logic;
+--    MgtPortTxLane0_p          : out   std_logic;
+--    MgtPortTxLane1_p          : out   std_logic;
+--    MgtPortTxLane2_p          : out   std_logic;
+--    MgtPortTxLane3_p          : out   std_logic;
+--    MgtPortTxLane4_p          : out   std_logic;
+--    MgtPortTxLane5_p          : out   std_logic;
+--    MgtPortTxLane6_p          : out   std_logic;
+--    MgtPortTxLane7_p          : out   std_logic;
+--    MgtPortTxLane8_p          : out   std_logic;
+--    MgtPortTxLane9_p          : out   std_logic;
+--    MgtPortTxLane10_p         : out   std_logic;
+--    MgtPortTxLane11_p         : out   std_logic;
+--    MgtPortTxLane12_p         : out   std_logic;
+--    MgtPortTxLane13_p         : out   std_logic;
+--    MgtPortTxLane14_p         : out   std_logic;
+--    MgtPortTxLane15_p         : out   std_logic;
+--    MgtPortTxLane0_n          : out   std_logic;
+--    MgtPortTxLane1_n          : out   std_logic;
+--    MgtPortTxLane2_n          : out   std_logic;
+--    MgtPortTxLane3_n          : out   std_logic;
+--    MgtPortTxLane4_n          : out   std_logic;
+--    MgtPortTxLane5_n          : out   std_logic;
+--    MgtPortTxLane6_n          : out   std_logic;
+--    MgtPortTxLane7_n          : out   std_logic;
+--    MgtPortTxLane8_n          : out   std_logic;
+--    MgtPortTxLane9_n          : out   std_logic;
+--    MgtPortTxLane10_n         : out   std_logic;
+--    MgtPortTxLane11_n         : out   std_logic;
+--    MgtPortTxLane12_n         : out   std_logic;
+--    MgtPortTxLane13_n         : out   std_logic;
+--    MgtPortTxLane14_n         : out   std_logic;
+--    MgtPortTxLane15_n         : out   std_logic;
+--    AuxIoMgtRxLane0_p         : in    std_logic;
+--    AuxIoMgtRxLane1_p         : in    std_logic;
+--    AuxIoMgtRxLane2_p         : in    std_logic;
+--    AuxIoMgtRxLane3_p         : in    std_logic;
+--    AuxIoMgtRxLane0_n         : in    std_logic;
+--    AuxIoMgtRxLane1_n         : in    std_logic;
+--    AuxIoMgtRxLane2_n         : in    std_logic;
+--    AuxIoMgtRxLane3_n         : in    std_logic;
+--    AuxIoMgtTxLane0_p         : out   std_logic;
+--    AuxIoMgtTxLane1_p         : out   std_logic;
+--    AuxIoMgtTxLane2_p         : out   std_logic;
+--    AuxIoMgtTxLane3_p         : out   std_logic;
+--    AuxIoMgtTxLane0_n         : out   std_logic;
+--    AuxIoMgtTxLane1_n         : out   std_logic;
+--    AuxIoMgtTxLane2_n         : out   std_logic;
+--    AuxIoMgtTxLane3_n         : out   std_logic;
     --@@END TOP_LEVEL_PORT
     --VSMake doesn't like prefix-less signals.
     --vhook_nodgv {.*Mgt(Port)?[TR]x_[pn]}
     -------------------------------------------------------------------------------------
-    -- FAM Control and Status
+    -- FAM Synchronization Plane
     -------------------------------------------------------------------------------------
-    aLmkI2cSda            : inout std_logic;
-    aLmkI2cScl            : inout std_logic;
-    aLmk1Pdn_n            : out   std_logic;
-    aLmk2Pdn_n            : out   std_logic;
-    aLmk1Gpio0            : out   std_logic;
-    aLmk2Gpio0            : out   std_logic;
-    aLmk1Status0          : in    std_logic;
-    aLmk1Status1          : in    std_logic;
-    aLmk2Status0          : in    std_logic;
-    aLmk2Status1          : in    std_logic;
-    aIPassVccPowerFault_n : in    std_logic;
-    aIPassPrsnt_n         : in    std_logic_vector(7 downto 0);
-    aIPassIntr_n          : in    std_logic_vector(7 downto 0);
-    aIPassSCL             : inout std_logic_vector(11 downto 0);
-    aIPassSDA             : inout std_logic_vector(11 downto 0);
-    aPortExpReset_n       : out   std_logic;
-    aPortExpIntr_n        : in    std_logic;
-    aPortExpSda           : inout std_logic;
-    aPortExpScl           : inout std_logic;
+    -- TimeBase Clock
+    DeviceClk_p               : in    std_logic;
+    DeviceClk_n               : in    std_logic;
+    -- SubClass 1 Synchronization
+    dvJesd204SysRef_p         : in    std_logic;
+    dvJesd204SysRef_n         : in    std_logic;
+    aJesd204SyncReqOut_n      : out   std_logic;
+    aJesd204SyncReqIn_n       : in    std_logic;
+    -- Sync Pulses
+    aGpoSync                  : out   std_logic_vector(1 downto 0);
+    -- Triggers
+    aTriggerIn_p              : in    std_logic;
+    aTriggerIn_n              : in    std_logic;
+    aTriggerOut_p             : out   std_logic;
+    aTriggerOut_n             : out   std_logic;
     -------------------------------------------------------------------------------------
-    -- DIO
+    -- FAM Gpio
     -------------------------------------------------------------------------------------
-    aDio                 : inout std_logic_vector(7 downto 0);
-    aFpgaReady_n         : out   std_logic;
+    aRsrvGpio_p               : inout std_logic_vector (4 downto 0);
+    aRsrvGpio_n               : inout std_logic_vector (4 downto 0);
     -------------------------------------------------------------------------------------
     -- Reconfiguration CPLD
     -------------------------------------------------------------------------------------
-    SidebandClk          : out   std_logic;
-    sSidebandDataOut     : out   std_logic_vector(3 downto 0);
-    aSidebandDataIn      : in    std_logic;
-    aSidebandFifoFull    : in    std_logic;
-    aFpgaStage2Done      : out   std_logic;
+    SidebandClk               : out   std_logic;
+    sSidebandDataOut          : out   std_logic_vector(3 downto 0);
+    aSidebandDataIn           : in    std_logic;
+    aSidebandFifoFull         : in    std_logic;
+    aFpgaStage2Done           : out   std_logic;
+    -------------------------------------------------------------------------------------
+    -- Aux Connector
+    -------------------------------------------------------------------------------------
+    -- Data and direction
+    aAuxIoData                : inout std_logic_vector(7 downto 0);
+    aAuxIoOutputEn            : out   std_logic_vector(7 downto 0);
+    aAuxIoEnable_n            : out   std_logic;
+    -- Power Supplies control and monitoring
+    aAuxVccAEnable            : out   std_logic;
+    aAux5vEnable              : out   std_logic;
+    aAux3v3Enable             : out   std_logic;
+    aAux3v3Fault_n            : in    std_logic;
     -------------------------------------------------------------------------------------
     -- DRAM signals
     -------------------------------------------------------------------------------------
     -- External oscillators for DRAM controllers
-    Dram0RefClk_p        : in    std_logic;
-    Dram0RefClk_n        : in    std_logic;
-    Dram1RefClk_p        : in    std_logic;
-    Dram1RefClk_n        : in    std_logic;
+    Dram0RefClk_p             : in    std_logic;
+    Dram0RefClk_n             : in    std_logic;
+    Dram1RefClk_p             : in    std_logic;
+    Dram1RefClk_n             : in    std_logic;
     -------------------------------------------------------------------------------------
     -- Bank 0
     -------------------------------------------------------------------------------------
     -- Outgoing clock
-    Dram0Clk_p           : out   std_logic;
-    Dram0Clk_n           : out   std_logic;
+    Dram0Clk_p                : out   std_logic;
+    Dram0Clk_n                : out   std_logic;
     -- Data
-    dr0DramDq            : inout std_logic_vector(79 downto 0);
-    dr0DramDmDbi_n       : inout std_logic_vector(9 downto 0);
-    dr0DramDqs_p         : inout std_logic_vector(9 downto 0);
-    dr0DramDqs_n         : inout std_logic_vector(9 downto 0);
+    dr0DramDq                 : inout std_logic_vector(63 downto 0);
+    dr0DramDmDbi_n            : inout std_logic_vector(7 downto 0);
+    dr0DramDqs_p              : inout std_logic_vector(7 downto 0);
+    dr0DramDqs_n              : inout std_logic_vector(7 downto 0);
     -- Address/Command
-    dr0DramCs_n          : out   std_logic;
-    dr0DramAddr          : out   std_logic_vector(16 downto 0);
-    dr0DramBankAddr      : out   std_logic_vector(1 downto 0);
-    dr0DramBg            : out   std_logic_vector(0 downto 0);
-    dr0DramAct_n         : out   std_logic;
+    dr0DramCs_n               : out   std_logic;
+    dr0DramAddr               : out   std_logic_vector(16 downto 0);
+    dr0DramBankAddr           : out   std_logic_vector(1 downto 0);
+    dr0DramBg                 : out   std_logic_vector(0 downto 0);
+    dr0DramAct_n              : out   std_logic;
     -- Control/Clocking
-    dr0DramClkEn         : out   std_logic;
-    dr0DramOdt           : out   std_logic;
-    dr0DramReset_n       : out   std_logic;
+    dr0DramClkEn              : out   std_logic;
+    dr0DramOdt                : out   std_logic;
+    dr0DramReset_n            : out   std_logic;
     -- Test Pin
-    dr0DramTestMode      : out   std_logic;
+    dr0DramTestMode           : out   std_logic;
     -------------------------------------------------------------------------------------
     -- Bank 1
     -------------------------------------------------------------------------------------
     -- Outgoing clock
-    Dram1Clk_p           : out   std_logic;
-    Dram1Clk_n           : out   std_logic;
+    Dram1Clk_p                : out   std_logic;
+    Dram1Clk_n                : out   std_logic;
     -- Data
-    dr1DramDq            : inout std_logic_vector(79 downto 0);
-    dr1DramDmDbi_n       : inout std_logic_vector(9 downto 0);
-    dr1DramDqs_p         : inout std_logic_vector(9 downto 0);
-    dr1DramDqs_n         : inout std_logic_vector(9 downto 0);
+    dr1DramDq                 : inout std_logic_vector(63 downto 0);
+    dr1DramDmDbi_n            : inout std_logic_vector(7 downto 0);
+    dr1DramDqs_p              : inout std_logic_vector(7 downto 0);
+    dr1DramDqs_n              : inout std_logic_vector(7 downto 0);
     -- Address/Command
-    dr1DramCs_n          : out   std_logic;
-    dr1DramAddr          : out   std_logic_vector(16 downto 0);
-    dr1DramBankAddr      : out   std_logic_vector(1 downto 0);
-    dr1DramBg            : out   std_logic_vector(0 downto 0);
-    dr1DramAct_n         : out   std_logic;
+    dr1DramCs_n               : out   std_logic;
+    dr1DramAddr               : out   std_logic_vector(16 downto 0);
+    dr1DramBankAddr           : out   std_logic_vector(1 downto 0);
+    dr1DramBg                 : out   std_logic_vector(0 downto 0);
+    dr1DramAct_n              : out   std_logic;
     -- Control/Clocking
-    dr1DramClkEn         : out   std_logic;
-    dr1DramOdt           : out   std_logic;
-    dr1DramReset_n       : out   std_logic;
-    dr1DramTestMode      : out   std_logic;
+    dr1DramClkEn              : out   std_logic;
+    dr1DramOdt                : out   std_logic;
+    dr1DramReset_n            : out   std_logic;
+    dr1DramTestMode           : out   std_logic;
     -------------------------------------------------------------------------------------
     -- System Monitor
     -------------------------------------------------------------------------------------
     --vhook_nodgv {aSysMon_(\w+)_[pn]}
-    aSysMon_3v3AMezz_Divided_p     : in   std_logic;
-    aSysMon_3v3AMezz_Divided_n     : in   std_logic;
-    aSysMon_3v3VDMezz_Divided_p    : in   std_logic;
-    aSysMon_3v3VDMezz_Divided_n    : in   std_logic;
-    aSysMon_VccioMezz_Divided_p    : in   std_logic;
-    aSysMon_VccioMezz_Divided_n    : in   std_logic;
-    aSysMon_1v2MgtAvtt_Divided_p   : in   std_logic;
-    aSysMon_1v2MgtAvtt_Divided_n   : in   std_logic;
-    aSysMon_0v9MgtAvcc_Divided_p   : in   std_logic;
-    aSysMon_0v9MgtAvcc_Divided_n   : in   std_logic;
-    aSysMon_3v3A_Divided_p         : in   std_logic;
-    aSysMon_3v3A_Divided_n         : in   std_logic;
-    aSysMon_3v8_Divided_p          : in   std_logic;
-    aSysMon_3v8_Divided_n          : in   std_logic;
-    aSysMon_3v3D_Divided_p         : in   std_logic;
-    aSysMon_3v3D_Divided_n         : in   std_logic;
-    aSysMon_DramVpp_Divided_p      : in   std_logic;
-    aSysMon_DramVpp_Divided_n      : in   std_logic;
-    aSysMon_1v8A_Divided_p         : in   std_logic;
-    aSysMon_1v8A_Divided_n         : in   std_logic;
-    aSysMon_Dram0Vtt_Sense_p       : in   std_logic;
-    aSysMon_Dram0Vtt_Sense_n       : in   std_logic;
-    aSysMon_1v8MgtVccaux_Divided_p : in   std_logic;
-    aSysMon_1v8MgtVccaux_Divided_n : in   std_logic;
-    aSysMon_DramVref_Sense_p       : in   std_logic;
-    aSysMon_DramVref_Sense_n       : in   std_logic;
-    aSysMon_1v2_Divided_p          : in   std_logic;
-    aSysMon_1v2_Divided_n          : in   std_logic;
+    aSysMon_MgtAvcc_Divided_p   : in    std_logic;
+    aSysMon_MgtAvcc_Divided_n   : in    std_logic;
+    aSysMon_MgtAvtt_Divided_p   : in    std_logic;
+    aSysMon_MgtAvtt_Divided_n   : in    std_logic;
+    aSysMon_MgtVccaux_Divided_p : in    std_logic;
+    aSysMon_MgtVccaux_Divided_n : in    std_logic;
+
+    aSysMon_Dram0Vpp_Divided_p  : in    std_logic;
+    aSysMon_Dram0Vpp_Divided_n  : in    std_logic;
+    aSysMon_Dram0Vref_Sense_p   : in    std_logic;
+    aSysMon_Dram0Vref_Sense_n   : in    std_logic;
+    aSysMon_Dram0Vtt_Sense_p    : in    std_logic;
+    aSysMon_Dram0Vtt_Sense_n    : in    std_logic;
+
+    aSysMon_Dram1Vpp_Divided_p  : in    std_logic;
+    aSysMon_Dram1Vpp_Divided_n  : in    std_logic;
+    aSysMon_Dram1Vref_Sense_p   : in    std_logic;
+    aSysMon_Dram1Vref_Sense_n   : in    std_logic;
+    aSysMon_Dram1Vtt_Sense_p    : in    std_logic;
+    aSysMon_Dram1Vtt_Sense_n    : in    std_logic;
+
+    aSysMon_3v3Cpld_Divided_p   : in    std_logic;
+    aSysMon_3v3Cpld_Divided_n   : in    std_logic;
+    aSysMon_3v3Clk_Divided_p    : in    std_logic;
+    aSysMon_3v3Clk_Divided_n    : in    std_logic;
+    aSysMon_3v8Int_Divided_p    : in    std_logic;
+    aSysMon_3v8Int_Divided_n    : in    std_logic;
+
+    aSysMon_3v3Aux_Divided_p    : in    std_logic;
+    aSysMon_3v3Aux_Divided_n    : in    std_logic;
+    aSysMon_5vAux_Divided_p     : in    std_logic;
+    aSysMon_5vAux_Divided_n     : in    std_logic;
+    aSysMon_VccAuxA_Divided_p   : in    std_logic;
+    aSysMon_VccAuxA_Divided_n   : in    std_logic;
     -------------------------------------------------------------------------------------
     -- CPLD JTAG Field Update
     -------------------------------------------------------------------------------------
-    aFldUpdJtagSel       : out   std_logic;
-    bFldUpdJtagTck       : out   std_logic;
-    bFldUpdJtagTdi       : out   std_logic;
-    aFldUpdJtagTdo       : in    std_logic;
-    bFldUpdJtagTms       : out   std_logic;
-    -------------------------------------------------------------------------------------
-    -- New Pins
-    -------------------------------------------------------------------------------------
-    aFpgaB2bSpare1     : in  std_logic;
-    aFpgaB2bSpare2     : in  std_logic; --vhook_nowarn aFpgaB2bSpare*
-    dr0DramAlert_n     : in  std_logic;
-    dr1DramAlert_n     : in  std_logic; --vhook_nowarn dr*DramAlert_n
-    aPllCtrlStatusEn_n : out std_logic
-  );
-end entity SasquatchTopTemplate;
+    aFldUpdJtagSel            : out   std_logic;
+    bFldUpdJtagTck            : out   std_logic;
+    bFldUpdJtagTdi            : out   std_logic;
+    aFldUpdJtagTdo            : in    std_logic;
+    bFldUpdJtagTms            : out   std_logic
+    );
 
-architecture struct of SasquatchTopTemplate is
+end entity AppletonTopTemplate;
+
+architecture struct of AppletonTopTemplate is
 
   component PxieUspTimingEngine
     port (
@@ -547,19 +469,25 @@ architecture struct of SasquatchTopTemplate is
   end component;
 
   --vhook_sigstart
-  signal aPxiTrigDataTri: std_logic_vector(7 downto 0);
   signal MbClk: std_logic;
   --vhook_sigend
 
-  signal aAuthSdaInBuf: std_logic;
+    signal aAuthSdaInBuf: std_logic;
   signal aAuthSdaOutBuf: std_logic;
   signal abBusReset: boolean;
   signal abDiagramReset: boolean;
+  signal aConfigRxClkLvds: std_logic;
+  signal aConfigRxClkSeBuf: std_logic;
+  signal aConfigRxDataSeBuf: std_logic_vector(6 downto 0);
+  signal aConfigTxClkLvds: std_logic;
+  signal aConfigTxClkSeBuf: std_logic;
+  signal aConfigTxDataSeBuf: std_logic_vector(6 downto 0);
   signal aDiagramReset: std_logic;
   signal aDramPonReset: boolean;
   signal aDramReady: std_logic;
   signal aEnableClk10: boolean;
-  signal aGa: std_logic_vector(4 downto 0);
+  signal aFldUpdJtagSelBuf: std_logic;
+  signal aFldUpdJtagTdoBuf: std_logic;
   signal aI2cSclIn: std_logic_vector(kNumI2cIfcs-1 downto 0);
   signal aI2cSclOut: std_logic_vector(kNumI2cIfcs-1 downto 0);
   signal aI2cSclTri: std_logic_vector(kNumI2cIfcs-1 downto 0);
@@ -569,10 +497,15 @@ architecture struct of SasquatchTopTemplate is
   signal aIntClk10: std_logic;
   signal aPcieRst: std_logic;
   signal aPonReset: boolean;
-  signal aPxieDstarB: std_logic;
-  signal aPxieDstarC: std_logic;
-  signal aPxiTrigDataIn: std_logic_vector(7 downto 0);
-  signal aPxiTrigDataOut: std_logic_vector(7 downto 0);
+  signal aPxieDstarBBuf: std_logic;
+  signal aPxieDstarCBuf: std_logic;
+  signal aPxiStarBuf: std_logic;
+  signal aPxiTrigDataInBuf: std_logic_vector(7 downto 0);
+  signal aPxiTrigDataOutBuf: std_logic_vector(7 downto 0);
+  signal aPxiTrigExtTriBuf: std_logic_vector(7 downto 0);
+  signal aPxiTrigFpgaTriBuf: std_logic_vector(7 downto 0);
+  signal aReservedFromClip: std_logic_vector(15 downto 0);
+  signal aReservedToClip: std_logic_vector(15 downto 0);
   signal aResetFromInchworm: boolean;
   signal aResetToInchworm_n: std_logic;
   signal aSidebandDataInBuf: std_logic;
@@ -580,6 +513,9 @@ architecture struct of SasquatchTopTemplate is
   signal aStage2Enabled: boolean;
   signal aSysMonVector_n: std_logic_vector(15 downto 0);
   signal aSysMonVector_p: std_logic_vector(15 downto 0);
+  signal aTdcExpandedPulse: std_logic;
+  signal aTriggerIn: std_logic;
+  signal aTriggerOut: std_logic;
   signal bAxiStreamDataFromCtrl: AxiStreamData_t;
   signal bAxiStreamDataToCtrl: AxiStreamData_t;
   signal bAxiStreamReadyFromCtrl: boolean;
@@ -612,6 +548,10 @@ architecture struct of SasquatchTopTemplate is
   signal bdIFifoWrData: std_logic_vector(63 downto 0);
   signal bdIFifoWrDataValid: std_logic;
   signal bdIFifoWrReadyForOutput: std_logic;
+  signal bDigiPotMisoBuf: std_logic;
+  signal bDigiPotMosiBuf: std_logic;
+  signal bDigiPotSclkBuf: std_logic;
+  signal bDigiPotSync_nBuf: std_logic;
   signal bdIoRefClk100Enabled: std_logic;
   signal bdIoRefClk10Enabled: std_logic;
   signal bdIoRefClkSwitch: std_logic;
@@ -620,6 +560,10 @@ architecture struct of SasquatchTopTemplate is
   signal bdSelectIoRefClk100: std_logic;
   signal bdSetIoRefClk100Enable: std_logic;
   signal bdSetIoRefClk10Enable: std_logic;
+  signal bFamOutputEnable: std_logic;
+  signal bFldUpdJtagTckBuf: std_logic;
+  signal bFldUpdJtagTdiBuf: std_logic;
+  signal bFldUpdJtagTmsBuf: std_logic;
   signal bIrqToInterface: IrqToInterfaceArray_t(Larger(kNumberOfIrqs,1)-1 downto 0);
   -- Regport interface between Shim and DmaPortCommInt/TheWindow
   signal bRegPortOut: RegPortOut_t;
@@ -657,28 +601,32 @@ architecture struct of SasquatchTopTemplate is
   signal Dram0ClkUser: std_logic;
   signal Dram1ClkUser: std_logic;
   signal DramClkLvFpga: std_logic;
-  signal du0DramAddrFifoAddr: std_logic_vector(29 downto 0);
+  signal dtDevClkEn: std_logic;
+  signal dtTdcAssert: std_logic;
+  signal du0DramAddrFifoAddr: std_logic_vector(28 downto 0);
   signal du0DramAddrFifoCmd: std_logic_vector(2 downto 0);
   signal du0DramAddrFifoFull: std_logic;
   signal du0DramAddrFifoWrEn: std_logic;
   signal du0DramPhyInitDone: std_logic;
   signal du0DramRdDataValid: std_logic;
-  signal du0DramRdFifoDataOut: std_logic_vector(639 downto 0);
-  signal du0DramWrFifoDataIn: std_logic_vector(639 downto 0);
+  signal du0DramRdFifoDataOut: std_logic_vector(511 downto 0);
+  signal du0DramWrFifoDataIn: std_logic_vector(511 downto 0);
   signal du0DramWrFifoFull: std_logic;
-  signal du0DramWrFifoMaskData: std_logic_vector(79 downto 0);
+  signal du0DramWrFifoMaskData: std_logic_vector(63 downto 0);
   signal du0DramWrFifoWrEn: std_logic;
-  signal du1DramAddrFifoAddr: std_logic_vector(29 downto 0);
+  signal du1DramAddrFifoAddr: std_logic_vector(28 downto 0);
   signal du1DramAddrFifoCmd: std_logic_vector(2 downto 0);
   signal du1DramAddrFifoFull: std_logic;
   signal du1DramAddrFifoWrEn: std_logic;
   signal du1DramPhyInitDone: std_logic;
   signal du1DramRdDataValid: std_logic;
-  signal du1DramRdFifoDataOut: std_logic_vector(639 downto 0);
-  signal du1DramWrFifoDataIn: std_logic_vector(639 downto 0);
+  signal du1DramRdFifoDataOut: std_logic_vector(511 downto 0);
+  signal du1DramWrFifoDataIn: std_logic_vector(511 downto 0);
   signal du1DramWrFifoFull: std_logic;
-  signal du1DramWrFifoMaskData: std_logic_vector(79 downto 0);
+  signal du1DramWrFifoMaskData: std_logic_vector(63 downto 0);
   signal du1DramWrFifoWrEn: std_logic;
+  signal dvJesd204SysRef: std_logic;
+  signal ExportedMgtRefClk: std_logic;
   signal pIntSync100: std_logic;
   signal PxieClk100: std_logic;
   signal rBaseClksValid: std_logic;
@@ -705,6 +653,20 @@ architecture struct of SasquatchTopTemplate is
   signal xHostAxiStreamToClipTReady: std_logic;
   signal xHostAxiStreamToClipTValid: std_logic;
 
+  -- Inchworm Reset
+  signal aBusReset : boolean := true;
+
+  signal dFlatHighSpeedSinkFromDma : FlatNiDmaHighSpeedSinkFromDma_t;
+
+  -- Aux IO
+  signal aLvAuxDioOutputData   : std_logic_vector(kNumAuxIoData-1 downto 0);
+  signal aLvAuxDioInputData    : std_logic_vector(kNumAuxIoData-1 downto 0);
+  signal aLvAuxDioOutputEnable : std_logic_vector(kNumAuxIoData-1 downto 0);
+  signal bdRequestaLvAuxDio    : std_logic_vector(kNumAuxIoData-1 downto 0);
+  signal bdDirectionaLvAuxDio  : std_logic_vector(kNumAuxIoData-1 downto 0);
+  signal bdDoneaLvAuxDio       : std_logic_vector(kNumAuxIoData-1 downto 0);
+
+  signal bAddressesDram2DP : boolean;
   signal bRegPortOutCommonRegs: RegPortOut_t;
   signal bRegPortOutSharedRegs: RegPortOut_t;
 
@@ -714,12 +676,6 @@ architecture struct of SasquatchTopTemplate is
   signal bSharedHostRegFpgaDataIn : Slv32Ary_t(0 to 3) := (others => (others => '0'));
   signal bSharedHostRegFpgaDataOut : Slv32Ary_t(0 to 3);
 
-  -- DMA engine Reset
-  signal aBusReset : boolean := true;
-
-  signal dFlatHighSpeedSinkFromDma : FlatNiDmaHighSpeedSinkFromDma_t;
-
-  signal bAddressesDram2DP : boolean;
   signal bRegPortOutDram2DP : RegPortOut_t;
   signal bRegPortInDram2DP : RegPortIn_t;
   signal bRegPortShiftAddress : unsigned(kAlignedAddressWidth - 1 downto 0);
@@ -824,19 +780,27 @@ architecture struct of SasquatchTopTemplate is
   -- kFamClockSrcSel selects between the 10 MHz and 100 MHz clocks (0 = 10 Mhz, 1 = 100 MHz) and kEnableFamClockSync
   -- enables the clock to the board IO logic.
   --
+  -- The default voltage level for the AUX DIO lines is set in the LabVIEW FPGA project and gets generated into
+  -- kAuxDioDefaultVoltage in PkgLvFpgaConst.vhd.  If you are controlling the AUX DIO from this HDL file instead of
+  -- the CLIP node, you can set kAuxDioDefaultVoltageConst to what you need.  This constant is the voltage level
+  -- in milivolts.  The ONLY valid values are:
+  --                          3300 (for 3.3V), 2500 (for 2.5v), 1800 (for 1.8V), and 1100 (for 1.1V).
   --
-  -- **** COMMENTING OUT THE FOLLOWING BECAUSE THIS EXAMPLE DOES NOT USE THE CLIP SOCKET ****
-  -- constant kExpectedTbIdConst : std_logic_vector(31 downto 0) := kExpectedTbId;
-  -- constant kEnableFamClockSyncConst : std_logic := kEnableFamClockSync;
-  -- constant kFamClockSrcSelConst : std_logic := kFamClockSrcSel;
+  -- By default, this template is set up to use the CLIP socket interface, so these constants get set to the values
+  -- defined in PkgLvFpgaConst.vhd.
+  constant kExpectedTbIdConst : std_logic_vector(31 downto 0) := kExpectedTbId;
+  constant kEnableFamClockSyncConst : std_logic := kEnableFamClockSync;
+  constant kFamClockSrcSelConst : std_logic := kFamClockSrcSel;
+  constant kAuxDioDefaultVoltageConst : natural := kAuxDioDefaultVoltage;
   --
   -- If you are not using the CLIP socket interface because you are interfacing with the board IO directly from
-  -- this HDL file, you must set kExpectedTbIdConst to X"10937AEC" so that the TbId check matches.  And we set the
-  -- clocking constants to enable the 100 MHz clock.
+  -- this HDL file, you must set kExpectedTbIdConst to match which IO frontend your module is using so that the
+  -- TbId check matches.  And we set the clocking constants to enable the 100 MHz clock.
   --
-  constant kExpectedTbIdConst : std_logic_vector(31 downto 0) := X"10937AEC";
-  constant kEnableFamClockSyncConst : std_logic := '1';
-  constant kFamClockSrcSelConst : std_logic := '1';
+  -- constant kExpectedTbIdConst : std_logic_vector(31 downto 0) := X"FFFFFFFF";  -- Set this to match your IO frontend
+  -- constant kEnableFamClockSyncConst : std_logic := '1';
+  -- constant kFamClockSrcSelConst : std_logic := '1';
+  -- constant kAuxDioDefaultVoltageConst : natural := 3300;
 
   -- Disable automatic io_buffer creation for FAM MGTs and signals that will instantiate
   -- their own.
@@ -846,55 +810,88 @@ architecture struct of SasquatchTopTemplate is
   -- MGT RefClks
   attribute io_buffer_type of MgtRefClk_p      : signal is "none";
   attribute io_buffer_type of MgtRefClk_n      : signal is "none";
+  attribute io_buffer_type of AuxIoMgtRefClk_p : signal is "none";
+  attribute io_buffer_type of AuxIoMgtRefClk_n : signal is "none";
 
   --System Monitor
-  attribute io_buffer_type of aSysMon_3v3AMezz_Divided_p     : signal is "none";
-  attribute io_buffer_type of aSysMon_3v3AMezz_Divided_n     : signal is "none";
-  attribute io_buffer_type of aSysMon_3v3VDMezz_Divided_p    : signal is "none";
-  attribute io_buffer_type of aSysMon_3v3VDMezz_Divided_n    : signal is "none";
-  attribute io_buffer_type of aSysMon_VccioMezz_Divided_p    : signal is "none";
-  attribute io_buffer_type of aSysMon_VccioMezz_Divided_n    : signal is "none";
-  attribute io_buffer_type of aSysMon_1v2MgtAvtt_Divided_p   : signal is "none";
-  attribute io_buffer_type of aSysMon_1v2MgtAvtt_Divided_n   : signal is "none";
-  attribute io_buffer_type of aSysMon_0v9MgtAvcc_Divided_p   : signal is "none";
-  attribute io_buffer_type of aSysMon_0v9MgtAvcc_Divided_n   : signal is "none";
-  attribute io_buffer_type of aSysMon_3v3A_Divided_p         : signal is "none";
-  attribute io_buffer_type of aSysMon_3v3A_Divided_n         : signal is "none";
-  attribute io_buffer_type of aSysMon_3v8_Divided_p          : signal is "none";
-  attribute io_buffer_type of aSysMon_3v8_Divided_n          : signal is "none";
-  attribute io_buffer_type of aSysMon_3v3D_Divided_p         : signal is "none";
-  attribute io_buffer_type of aSysMon_3v3D_Divided_n         : signal is "none";
-  attribute io_buffer_type of aSysMon_DramVpp_Divided_p      : signal is "none";
-  attribute io_buffer_type of aSysMon_DramVpp_Divided_n      : signal is "none";
-  attribute io_buffer_type of aSysMon_1v8A_Divided_p         : signal is "none";
-  attribute io_buffer_type of aSysMon_1v8A_Divided_n         : signal is "none";
-  attribute io_buffer_type of aSysMon_Dram0Vtt_Sense_p       : signal is "none";
-  attribute io_buffer_type of aSysMon_Dram0Vtt_Sense_n       : signal is "none";
-  attribute io_buffer_type of aSysMon_1v8MgtVccaux_Divided_p : signal is "none";
-  attribute io_buffer_type of aSysMon_1v8MgtVccaux_Divided_n : signal is "none";
-  attribute io_buffer_type of aSysMon_DramVref_Sense_p       : signal is "none";
-  attribute io_buffer_type of aSysMon_DramVref_Sense_n       : signal is "none";
-  attribute io_buffer_type of aSysMon_1v2_Divided_p          : signal is "none";
-  attribute io_buffer_type of aSysMon_1v2_Divided_n          : signal is "none";
+  attribute io_buffer_type of aSysMon_MgtAvcc_Divided_p   : signal is "none";
+  attribute io_buffer_type of aSysMon_MgtAvcc_Divided_n   : signal is "none";
+  attribute io_buffer_type of aSysMon_MgtAvtt_Divided_p   : signal is "none";
+  attribute io_buffer_type of aSysMon_MgtAvtt_Divided_n   : signal is "none";
+  attribute io_buffer_type of aSysMon_MgtVccaux_Divided_p : signal is "none";
+  attribute io_buffer_type of aSysMon_MgtVccaux_Divided_n : signal is "none";
+
+  attribute io_buffer_type of aSysMon_Dram0Vpp_Divided_p  : signal is "none";
+  attribute io_buffer_type of aSysMon_Dram0Vpp_Divided_n  : signal is "none";
+  attribute io_buffer_type of aSysMon_Dram0Vref_Sense_p   : signal is "none";
+  attribute io_buffer_type of aSysMon_Dram0Vref_Sense_n   : signal is "none";
+  attribute io_buffer_type of aSysMon_Dram0Vtt_Sense_p    : signal is "none";
+  attribute io_buffer_type of aSysMon_Dram0Vtt_Sense_n    : signal is "none";
+
+  attribute io_buffer_type of aSysMon_Dram1Vpp_Divided_p  : signal is "none";
+  attribute io_buffer_type of aSysMon_Dram1Vpp_Divided_n  : signal is "none";
+  attribute io_buffer_type of aSysMon_Dram1Vref_Sense_p   : signal is "none";
+  attribute io_buffer_type of aSysMon_Dram1Vref_Sense_n   : signal is "none";
+  attribute io_buffer_type of aSysMon_Dram1Vtt_Sense_p    : signal is "none";
+  attribute io_buffer_type of aSysMon_Dram1Vtt_Sense_n    : signal is "none";
+
+  attribute io_buffer_type of aSysMon_3v3Cpld_Divided_p   : signal is "none";
+  attribute io_buffer_type of aSysMon_3v3Cpld_Divided_n   : signal is "none";
+  attribute io_buffer_type of aSysMon_3v3Clk_Divided_p    : signal is "none";
+  attribute io_buffer_type of aSysMon_3v3Clk_Divided_n    : signal is "none";
+  attribute io_buffer_type of aSysMon_3v8Int_Divided_p    : signal is "none";
+  attribute io_buffer_type of aSysMon_3v8Int_Divided_n    : signal is "none";
+
+  attribute io_buffer_type of aSysMon_3v3Aux_Divided_p    : signal is "none";
+  attribute io_buffer_type of aSysMon_3v3Aux_Divided_n    : signal is "none";
+  attribute io_buffer_type of aSysMon_5vAux_Divided_p     : signal is "none";
+  attribute io_buffer_type of aSysMon_5vAux_Divided_n     : signal is "none";
+  attribute io_buffer_type of aSysMon_VccAuxA_Divided_p   : signal is "none";
+  attribute io_buffer_type of aSysMon_VccAuxA_Divided_n   : signal is "none";
 
   -- Tandem signals with explicit IOBUF instantiations
   -- This prevents inserting additional buffers which can mess up the stage 1 constraints.
   attribute io_buffer_type of Osc100ClkIn     : signal is "none";
-  attribute io_buffer_type of PxieClk100_p    : signal is "none";
-  attribute io_buffer_type of PxieClk100_n    : signal is "none";
-  attribute io_buffer_type of pPxieSync100_p  : signal is "none";
-  attribute io_buffer_type of pPxieSync100_n  : signal is "none";
-  attribute io_buffer_type of aPxiGa          : signal is "none";
-  attribute io_buffer_type of aAuthSda        : signal is "none";
+  attribute io_buffer_type of PxieClk100_p   : signal is "none";
+  attribute io_buffer_type of PxieClk100_n   : signal is "none";
+  attribute io_buffer_type of pPxieSync100_p : signal is "none";
+  attribute io_buffer_type of pPxieSync100_n : signal is "none";
+
+  attribute io_buffer_type of aAuthSda       : signal is "none";
+  attribute io_buffer_type of aPxiTrigData    : signal is "none";
+  attribute io_buffer_type of aPxiTrigDir     : signal is "none";
+  attribute io_buffer_type of aPxiStar        : signal is "none";
+  attribute io_buffer_type of aPxieDStarB_p   : signal is "none";
+  attribute io_buffer_type of aPxieDStarB_n   : signal is "none";
+  attribute io_buffer_type of aPxieDStarC_p   : signal is "none";
+  attribute io_buffer_type of aPxieDStarC_n   : signal is "none";
+
+  attribute io_buffer_type of bDigiPotSclk    : signal is "none";
+  attribute io_buffer_type of bDigiPotMosi    : signal is "none";
+  attribute io_buffer_type of bDigiPotMiso    : signal is "none";
+  attribute io_buffer_type of bDigiPotSync_n  : signal is "none";
+
+  attribute io_buffer_type of SidebandClk      : signal is "none";
+  attribute io_buffer_type of sSidebandDataOut : signal is "none";
+  attribute io_buffer_type of aSidebandDataIn  : signal is "none";
+  attribute io_buffer_type of aSidebandFifoFull  : signal is "none";
+
+  attribute io_buffer_type of aFldUpdJtagSel  : signal is "none";
+  attribute io_buffer_type of bFldUpdJtagTck  : signal is "none";
+  attribute io_buffer_type of bFldUpdJtagTdi  : signal is "none";
+  attribute io_buffer_type of aFldUpdJtagTdo  : signal is "none";
+  attribute io_buffer_type of bFldUpdJtagTms  : signal is "none";
 
   attribute io_buffer_type of aPcieRst_n      : signal is "none";
 
   -- Tandem IO Buffer block
-  attribute dont_touch of SasquatchIoBuffersStage1x : label is true;
+  attribute dont_touch of AppletonIoBuffersStage1x : label is true;
 
 begin  -- architecture struct
 
   -- Tags for software's autogeneration
+  -- These are not used directly for Appleton, but it makes
+  -- software's life easier
   --@@BEGIN LOCAL_SIGNAL_ASSIGNMENT
   --@@END LOCAL_SIGNAL_ASSIGNMENT
 
@@ -908,9 +905,6 @@ begin  -- architecture struct
   --vhook_# DRAM
   --vhook_a aDramClocksValid    to_Boolean(bDramClocksValid)
   --vhook_a aDramPllLocked      true
-  --vhook_# Clk10 is not used
-  --vhook_a pClk10GenD   open
-  --vhook_a aEnableClk10 false
   --vhook_# Unused
   --vhook_a adlyReset           open
   --vhook_a bTePllLocked        open
@@ -936,10 +930,10 @@ begin  -- architecture struct
       aStage2Enabled     => aStage2Enabled,                --in  boolean
       pPxieSync100_p     => pPxieSync100_p,                --in  std_logic
       pPxieSync100_n     => pPxieSync100_n,                --in  std_logic
-      pClk10GenD         => open,                          --out std_logic
+      pClk10GenD         => pClk10GenD,                    --out std_logic
       pIntSync100        => pIntSync100,                   --out std_logic
       aIntClk10          => aIntClk10,                     --out std_logic
-      aEnableClk10       => false,                         --in  boolean
+      aEnableClk10       => aEnableClk10,                  --in  boolean
       aDramClocksValid   => to_Boolean(bDramClocksValid),  --in  boolean
       aDramPllLocked     => true,                          --in  boolean
       aDramPonReset      => aDramPonReset,                 --out boolean
@@ -956,7 +950,8 @@ begin  -- architecture struct
   --VSMake doesn't like prefix-less signals.
   --vhook_nodgv {^Pcie[RT]x_[pn]}
 
-  --vhook_e G3UspGtyHostInterface HostInterfacex
+  --vhook_e G3UspHostInterface HostInterfacex
+  --vhook_a aGa                 aPxiGa
   --vhook_# Use BusClk for AxiClk and ViClk
   --vhook_a AxiClk              BusClk
   --vhook_a {x(AxiStream.+)}    xHost$1
@@ -966,14 +961,15 @@ begin  -- architecture struct
   --vhook_a DmaClockSource      DmaClk
   --vhook_a aAuthSdaIn          aAuthSdaInBuf
   --vhook_a aAuthSdaOut         aAuthSdaOutBuf
+  --vhook_# Tie PCIe DRP to constants
+  --vhook_a GtDrpClk             open
+  --vhook_a gGt*                 open            mode=out
+  --vhook_a gGt*                 (others => '0') mode=in
+  --vhook_a aIbertEyescanResetIn (others => '0')
   --vhook_a bLvWindowRegPortIn  bRegPortIn
   --vhook_a bLvWindowRegPortOut bRegPortOut
   --vhook_g kHmbInUse true
-  --vhook_a GtDrpClk              open
-  --vhook_a gGt*                  (others => '0') mode=in
-  --vhook_a gGt*                  open            mode=out
-  --vhook_a aIbertEyescanResetIn  (others => '0')
-  HostInterfacex: entity work.G3UspGtyHostInterface (struct)
+  HostInterfacex: entity work.G3UspHostInterface (struct)
     generic map (kHmbInUse => true)  --boolean:=false
     port map (
       PcieRefClk_p                             => PcieRefClk_p,                              --in  std_logic
@@ -982,7 +978,7 @@ begin  -- architecture struct
       PcieRx_n                                 => PcieRx_n,                                  --in  std_logic_vector(7:0)
       PcieTx_p                                 => PcieTx_p,                                  --out std_logic_vector(7:0)
       PcieTx_n                                 => PcieTx_n,                                  --out std_logic_vector(7:0)
-      aGa                                      => aGa,                                       --in  std_logic_vector(4:0)
+      aGa                                      => aPxiGa,                                    --in  std_logic_vector(4:0)
       DmaClockSource                           => DmaClk,                                    --out std_logic
       DmaClk                                   => DmaClk,                                    --in  std_logic
       BusClk                                   => BusClk,                                    --in  std_logic
@@ -1062,18 +1058,29 @@ begin  -- architecture struct
   ---------------------------------------------------------------------------------------
 
   --vhook_e FixedLogicWrapper
+  --vhook_a FastTdcClk                          DlyRefClk
   --vhook_# I2c
   --vhook_a {^b(.*?)(Scl|Sda)(In|Out|Tri)}      aI2c$2$3(k$1Index)
+  --vhook_a aPxiTrigExtTri aPxiTrigExtTriBuf
+  --vhook_a aFldUpdJtagSel aFldUpdJtagSelBuf
+  --vhook_a bFldUpdJtagTck bFldUpdJtagTckBuf
+  --vhook_a bFldUpdJtagTdi bFldUpdJtagTdiBuf
+  --vhook_a aFldUpdJtagTdo aFldUpdJtagTdoBuf
+  --vhook_a bFldUpdJtagTms bFldUpdJtagTmsBuf
+  --vhook_a bDigiPotSclk   bDigiPotSclkBuf
+  --vhook_a bDigiPotMosi   bDigiPotMosiBuf
+  --vhook_a bDigiPotMiso   bDigiPotMisoBuf
+  --vhook_a bDigiPotSync_n bDigiPotSync_nBuf
   --vhook_a SidebandClk       SidebandClkBuf
   --vhook_a sSidebandDataOut  sSidebandDataOutBuf
   --vhook_a aSidebandDataIn   aSidebandDataInBuf
   --vhook_a aSidebandFifoFull aSidebandFifoFullBuf
-  --vhook_a a3v3APwrGood '1'
-  --vhook_a a1v8APwrGood '1'
-  --vhook_a aPxiTrigExtTri aPxiTrigDir
   --vhook_g kExpectedTbIdGeneric kExpectedTbIdConst
+  --vhook_g kAuxDioDefaultVoltageGeneric kAuxDioDefaultVoltageConst
   FixedLogicWrapperx: entity work.FixedLogicWrapper (struct)
-    generic map (kExpectedTbIdGeneric => kExpectedTbIdConst)  --std_logic_vector(31:0)
+    generic map (
+      kExpectedTbIdGeneric         => kExpectedTbIdConst,          --std_logic_vector(31:0)
+      kAuxDioDefaultVoltageGeneric => kAuxDioDefaultVoltageConst)  --natural
     port map (
       aPonReset                          => aPonReset,                           --in  boolean
       aBusReset                          => aBusReset,                           --in  boolean
@@ -1081,6 +1088,7 @@ begin  -- architecture struct
       DmaClk                             => DmaClk,                              --in  std_logic
       BusClk                             => BusClk,                              --in  std_logic
       MbClk                              => MbClk,                               --in  std_logic
+      FastTdcClk                         => DlyRefClk,                           --in  std_logic
       dFixedLogicBaRegPortIn             => dFixedLogicBaRegPortIn,              --in  BaRegPortIn_t
       dFixedLogicBaRegPortOut            => dFixedLogicBaRegPortOut,             --out BaRegPortOut_t
       bTriggerRoutingBaRegPortInAddress  => bTriggerRoutingBaRegPortInAddress,   --out std_logic_vector(BaRegPortAddress_t'range)
@@ -1115,17 +1123,19 @@ begin  -- architecture struct
       bPwrSupplyPmbSdaIn                 => aI2cSdaIn(kPwrSupplyPmbIndex),       --in  std_logic
       bPwrSupplyPmbSdaOut                => aI2cSdaOut(kPwrSupplyPmbIndex),      --out std_logic
       bPwrSupplyPmbSdaTri                => aI2cSdaTri(kPwrSupplyPmbIndex),      --out std_logic
-      bMezzSmbSclIn                      => aI2cSclIn(kMezzSmbIndex),            --in  std_logic
-      bMezzSmbSclOut                     => aI2cSclOut(kMezzSmbIndex),           --out std_logic
-      bMezzSmbSclTri                     => aI2cSclTri(kMezzSmbIndex),           --out std_logic
-      bMezzSmbSdaIn                      => aI2cSdaIn(kMezzSmbIndex),            --in  std_logic
-      bMezzSmbSdaOut                     => aI2cSdaOut(kMezzSmbIndex),           --out std_logic
-      bMezzSmbSdaTri                     => aI2cSdaTri(kMezzSmbIndex),           --out std_logic
+      bIoSmbSclIn                        => aI2cSclIn(kIoSmbIndex),              --in  std_logic
+      bIoSmbSclOut                       => aI2cSclOut(kIoSmbIndex),             --out std_logic
+      bIoSmbSclTri                       => aI2cSclTri(kIoSmbIndex),             --out std_logic
+      bIoSmbSdaIn                        => aI2cSdaIn(kIoSmbIndex),              --in  std_logic
+      bIoSmbSdaOut                       => aI2cSdaOut(kIoSmbIndex),             --out std_logic
+      bIoSmbSdaTri                       => aI2cSdaTri(kIoSmbIndex),             --out std_logic
+      bDigiPotSclk                       => bDigiPotSclkBuf,                     --out std_logic
+      bDigiPotMosi                       => bDigiPotMosiBuf,                     --out std_logic
+      bDigiPotMiso                       => bDigiPotMisoBuf,                     --in  std_logic
+      bDigiPotSync_n                     => bDigiPotSync_nBuf,                   --out std_logic
+      aTdcAllPeclEn                      => aTdcAllPeclEn,                       --out std_logic
+      aTdcExpandedPulse                  => aTdcExpandedPulse,                   --in  std_logic
       bDramClocksValid                   => bDramClocksValid,                    --out std_logic
-      a3v3APwrGood                       => '1',                                 --in  std_logic
-      a1v8APwrGood                       => '1',                                 --in  std_logic
-      a0v85PwrSync                       => a0v85PwrSync,                        --out std_logic
-      abDiagramReset                     => abDiagramReset,                      --out boolean
       bdSetIoRefClk100Enable             => bdSetIoRefClk100Enable,              --out std_logic
       bdClearIoRefClk100Enable           => bdClearIoRefClk100Enable,            --out std_logic
       bdSetIoRefClk10Enable              => bdSetIoRefClk10Enable,               --out std_logic
@@ -1135,6 +1145,9 @@ begin  -- architecture struct
       bdIoRefClk100Enabled               => bdIoRefClk100Enabled,                --in  std_logic
       bdIoRefClk10Enabled                => bdIoRefClk10Enabled,                 --in  std_logic
       bdIoRefClkSwitch                   => bdIoRefClkSwitch,                    --in  std_logic
+      aModulePresent_n                   => aModulePresent_n,                    --in  std_logic
+      aFamPowerGood                      => aFamPowerGood,                       --in  std_logic
+      bFamOutputEnable                   => bFamOutputEnable,                    --out std_logic
       stIoModuleSupportsFRAGLs           => stIoModuleSupportsFRAGLs,            --in  std_logic
       bdClipAxi4LiteArAddr               => bdClipAxi4LiteArAddr,                --in  std_logic_vector(31:0)
       bdClipAxi4LiteArProt               => bdClipAxi4LiteArProt,                --in  std_logic_vector(2:0)
@@ -1159,55 +1172,65 @@ begin  -- architecture struct
       sSidebandDataOut                   => sSidebandDataOutBuf,                 --out std_logic_vector(3:0)
       aSidebandDataIn                    => aSidebandDataInBuf,                  --in  std_logic
       aSidebandFifoFull                  => aSidebandFifoFullBuf,                --in  std_logic
-      aPxiTrigExtTri                     => aPxiTrigDir,                         --out std_logic_vector(7:0)
+      aAuxIoEnable_n                     => aAuxIoEnable_n,                      --out std_logic
+      aAuxVccAEnable                     => aAuxVccAEnable,                      --out std_logic
+      aAux5vEnable                       => aAux5vEnable,                        --out std_logic
+      aAux3v3Enable                      => aAux3v3Enable,                       --out std_logic
+      aAux3v3Fault_n                     => aAux3v3Fault_n,                      --in  std_logic
+      abDiagramReset                     => abDiagramReset,                      --out boolean
+      bdRequestaLvAuxDio                 => bdRequestaLvAuxDio,                  --in  std_logic_vector(7:0)
+      bdDirectionaLvAuxDio               => bdDirectionaLvAuxDio,                --in  std_logic_vector(7:0)
+      bdDoneaLvAuxDio                    => bdDoneaLvAuxDio,                     --out std_logic_vector(7:0)
+      aAuxIoOutputEn                     => aAuxIoOutputEn,                      --out std_logic_vector(7:0)
+      aPxiTrigExtTri                     => aPxiTrigExtTriBuf,                   --out std_logic_vector(7:0)
       aSysMonVector_p                    => aSysMonVector_p,                     --in  std_logic_vector(15:0)
       aSysMonVector_n                    => aSysMonVector_n,                     --in  std_logic_vector(15:0)
-      aFldUpdJtagSel                     => aFldUpdJtagSel,                      --out std_logic
-      bFldUpdJtagTck                     => bFldUpdJtagTck,                      --out std_logic
-      bFldUpdJtagTdi                     => bFldUpdJtagTdi,                      --out std_logic
-      aFldUpdJtagTdo                     => aFldUpdJtagTdo,                      --in  std_logic
-      bFldUpdJtagTms                     => bFldUpdJtagTms,                      --out std_logic
+      aFldUpdJtagSel                     => aFldUpdJtagSelBuf,                   --out std_logic
+      bFldUpdJtagTck                     => bFldUpdJtagTckBuf,                   --out std_logic
+      bFldUpdJtagTdi                     => bFldUpdJtagTdiBuf,                   --out std_logic
+      aFldUpdJtagTdo                     => aFldUpdJtagTdoBuf,                   --in  std_logic
+      bFldUpdJtagTms                     => bFldUpdJtagTmsBuf,                   --out std_logic
       dIrqFromFixedLogic                 => dIrqFromFixedLogic);                 --out std_logic
 
-  aSysMonVector_p <= (kSysMon_DramVref_Sense       => aSysMon_DramVref_Sense_p,
-                      kSysMon_Dram0Vtt_Sense       => aSysMon_Dram0Vtt_Sense_p,
-                      kSysMon_DramVpp_Divided      => aSysMon_DramVpp_Divided_p,
-                      kSysMon_3v8_Divided          => aSysMon_3v8_Divided_p,
-                      kSysMon_VccioMezz_Divided    => aSysMon_VccioMezz_Divided_p,
-                      kSysMon_3v3AMezz_Divided     => aSysMon_3v3AMezz_Divided_p,
-                      kSysMon_1v2MgtAvtt_Divided   => aSysMon_1v2MgtAvtt_Divided_p,
-                      kSysMon_1v8MgtVccaux_Divided => aSysMon_1v8MgtVccaux_Divided_p,
-                      kSysMon_1v8A_Divided         => aSysMon_1v8A_Divided_p,
-                      kSysMon_3v3D_Divided         => aSysMon_3v3D_Divided_p,
-                      kSysMon_3v3A_Divided         => aSysMon_3v3A_Divided_p,
-                      kSysMon_3v3VDMezz_Divided    => aSysMon_3v3VDMezz_Divided_p,
-                      kSysMon_0v9MgtAvcc_Divided   => aSysMon_0v9MgtAvcc_Divided_p,
-                      kSysMon_1v2_Divided          => aSysMon_1v2_Divided_p,
-                      others                       => '0');
+  aSysMonVector_p <= (kSysMon_VccAuxA_Divided   => aSysMon_VccAuxA_Divided_p,
+                      kSysMon_3v3Cpld_Divided   => aSysMon_3v3Cpld_Divided_p,
+                      kSysMon_3v3Aux_Divided    => aSysMon_3v3Aux_Divided_p,
+                      kSysMon_Dram0Vpp_Divided  => aSysMon_Dram0Vpp_Divided_p,
+                      kSysMon_3v3Clk_Divided    => aSysMon_3v3Clk_Divided_p,
+                      kSysMon_3v8Int_Divided    => aSysMon_3v8Int_Divided_p,
+                      kSysMon_5vAux_Divided     => aSysMon_5vAux_Divided_p,
+                      kSysMon_Dram0Vtt_Sense    => aSysMon_Dram0Vtt_Sense_p,
+                      kSysMon_MgtAvtt_Divided   => aSysMon_MgtAvtt_Divided_p,
+                      kSysMon_MgtVccaux_Divided => aSysMon_MgtVccaux_Divided_p,
+                      kSysMon_Dram0Vref_Sense   => aSysMon_Dram0Vref_Sense_p,
+                      kSysMon_MgtAvcc_Divided   => aSysMon_MgtAvcc_Divided_p,
+                      kSysMon_Dram1Vpp_Divided  => aSysMon_Dram1Vpp_Divided_p,
+                      kSysMon_Dram1Vtt_Sense    => aSysMon_Dram1Vtt_Sense_p,
+                      kSysMon_Dram1Vref_Sense   => aSysMon_Dram1Vref_Sense_p,
+                      others                    => '0');
 
-  aSysMonVector_n <= (kSysMon_DramVref_Sense       => aSysMon_DramVref_Sense_n,
-                      kSysMon_Dram0Vtt_Sense       => aSysMon_Dram0Vtt_Sense_n,
-                      kSysMon_DramVpp_Divided      => aSysMon_DramVpp_Divided_n,
-                      kSysMon_3v8_Divided          => aSysMon_3v8_Divided_n,
-                      kSysMon_VccioMezz_Divided    => aSysMon_VccioMezz_Divided_n,
-                      kSysMon_3v3AMezz_Divided     => aSysMon_3v3AMezz_Divided_n,
-                      kSysMon_1v2MgtAvtt_Divided   => aSysMon_1v2MgtAvtt_Divided_n,
-                      kSysMon_1v8MgtVccaux_Divided => aSysMon_1v8MgtVccaux_Divided_n,
-                      kSysMon_1v8A_Divided         => aSysMon_1v8A_Divided_n,
-                      kSysMon_3v3D_Divided         => aSysMon_3v3D_Divided_n,
-                      kSysMon_3v3A_Divided         => aSysMon_3v3A_Divided_n,
-                      kSysMon_3v3VDMezz_Divided    => aSysMon_3v3VDMezz_Divided_n,
-                      kSysMon_0v9MgtAvcc_Divided   => aSysMon_0v9MgtAvcc_Divided_n,
-                      kSysMon_1v2_Divided          => aSysMon_1v2_Divided_n,
-                      others                       => '0');
+  aSysMonVector_n <= (kSysMon_VccAuxA_Divided   => aSysMon_VccAuxA_Divided_n,
+                      kSysMon_3v3Cpld_Divided   => aSysMon_3v3Cpld_Divided_n,
+                      kSysMon_3v3Aux_Divided    => aSysMon_3v3Aux_Divided_n,
+                      kSysMon_Dram0Vpp_Divided  => aSysMon_Dram0Vpp_Divided_n,
+                      kSysMon_3v3Clk_Divided    => aSysMon_3v3Clk_Divided_n,
+                      kSysMon_3v8Int_Divided    => aSysMon_3v8Int_Divided_n,
+                      kSysMon_5vAux_Divided     => aSysMon_5vAux_Divided_n,
+                      kSysMon_Dram0Vtt_Sense    => aSysMon_Dram0Vtt_Sense_n,
+                      kSysMon_MgtAvtt_Divided   => aSysMon_MgtAvtt_Divided_n,
+                      kSysMon_MgtVccaux_Divided => aSysMon_MgtVccaux_Divided_n,
+                      kSysMon_Dram0Vref_Sense   => aSysMon_Dram0Vref_Sense_n,
+                      kSysMon_MgtAvcc_Divided   => aSysMon_MgtAvcc_Divided_n,
+                      kSysMon_Dram1Vpp_Divided  => aSysMon_Dram1Vpp_Divided_n,
+                      kSysMon_Dram1Vtt_Sense    => aSysMon_Dram1Vtt_Sense_n,
+                      kSysMon_Dram1Vref_Sense   => aSysMon_Dram1Vref_Sense_n,
+                      others                    => '0');
 
   --vhook_e IoRefClkSelect
-  --vhook_g kEnableFamClockSync kEnableFamClockSyncConst
-  --vhook_g kFamClockSrcSel kFamClockSrcSelConst
   IoRefClkSelectx: entity work.IoRefClkSelect (rtl)
     generic map (
-      kEnableFamClockSync => kEnableFamClockSyncConst,  --std_logic
-      kFamClockSrcSel     => kFamClockSrcSelConst)      --std_logic
+      kEnableFamClockSync => kEnableFamClockSync,  --std_logic
+      kFamClockSrcSel     => kFamClockSrcSel)      --std_logic
     port map (
       BusClk                   => BusClk,                    --in  std_logic
       abDiagramReset           => abDiagramReset,            --in  boolean
@@ -1225,78 +1248,177 @@ begin  -- architecture struct
 
   -- Outputs
   aIoRefClk100En  <= bdIoRefClk100Enabled;
+  aIoRefClk10En   <= bdIoRefClk10Enabled;
+  aIoRefSelClk100 <= bdIoRefClkSwitch;
   -- To TimingEngine
-  aEnableClk10 <= false;
+  aEnableClk10    <= to_Boolean(bdIoRefClk10Enabled);
 
   ---------------------------------------------------------------------------------------
   -- IO BUFFERs
   ---------------------------------------------------------------------------------------
 
-  --vhook_e  SasquatchIoBuffers
+  --vhook_e  MacallanIoBuffers
   --vhook_#  I2C Outputs
-  --vhook_af {aI2c(Scl|Sda)$}(kMezzSmbIndex)            {bMezzSmb$1}                continue=true
+  --vhook_af {aI2c(Scl|Sda)$}(kIoSmbIndex)              {bIoSmb$1}            continue=true
   --vhook_af {aI2c(Scl|Sda)$}(kBaseSmbIndex)            {bBaseSmb$1}          continue=true
   --vhook_af {aI2c(Scl|Sda)$}(kConfigI2cIndex)          {bConfigI2c$1}        continue=true
   --vhook_af {aI2c(Scl|Sda)$}(kPwrSupplyPmbIndex)       {bPwrSupplyPmb$1}
+  --vhook_a  aPxieDStarB_p                              '0'
+  --vhook_a  aPxieDStarB_n                              '0'
+  --vhook_a  aPxieDStarB                                open
+  --vhook_a  aPxieDStarC_p                              open
+  --vhook_a  aPxieDStarC_n                              open
+  --vhook_a  aPxieDStarC                                '0'
   --vhook_#  Out Enables that are currently unused
   --vhook_a  aPxieDStarCEn_n                            '0'
-  SasquatchIoBuffersx: entity work.SasquatchIoBuffers (struct)
-    generic map (kNumI2cIfcs => kNumI2cIfcs)  --natural:=5
+  --vhook_# Loopback doesn't exist
+  --vhook_a aFpgaLoopbackOut            '0'
+  --vhook_a aFpgaLoopbackOut_p          open
+  --vhook_a aFpgaLoopbackOut_n          open
+  --vhook_a aFpgaLoopbackIn             open
+  --vhook_a aFpgaLoopbackIn_p           '0'
+  --vhook_a aFpgaLoopbackIn_n           '0'
+  --vhook_# Triggers are in stage 1
+  --vhook_a aPxiTrigDataIn              open
+  --vhook_a aPxiTrigDataOut             (others => '0')
+  --vhook_a aPxiTrigDataTri             (others => '0')
+  --vhook_a aPxiTrigData                open
+  MacallanIoBuffersx: entity work.MacallanIoBuffers (struct)
+    generic map (
+      kNumI2cIfcs   => kNumI2cIfcs,    --natural:=5
+      kNumAuxIoData => kNumAuxIoData)  --natural:=8
     port map (
-      aI2cSclIn                   => aI2cSclIn,             --out std_logic_vector(kNumI2cIfcs-1:0)
-      aI2cSclOut                  => aI2cSclOut,            --in  std_logic_vector(kNumI2cIfcs-1:0)
-      aI2cSclTri                  => aI2cSclTri,            --in  std_logic_vector(kNumI2cIfcs-1:0)
-      aI2cScl(kMezzSmbIndex)      => bMezzSmbScl,           --inout std_logic_vector(kNumI2cIfcs-1:0)
-      aI2cScl(kBaseSmbIndex)      => bBaseSmbScl,           --inout std_logic_vector(kNumI2cIfcs-1:0)
-      aI2cScl(kConfigI2cIndex)    => bConfigI2cScl,         --inout std_logic_vector(kNumI2cIfcs-1:0)
-      aI2cScl(kPwrSupplyPmbIndex) => bPwrSupplyPmbScl,      --inout std_logic_vector(kNumI2cIfcs-1:0)
-      aI2cSdaIn                   => aI2cSdaIn,             --out std_logic_vector(kNumI2cIfcs-1:0)
-      aI2cSdaOut                  => aI2cSdaOut,            --in  std_logic_vector(kNumI2cIfcs-1:0)
-      aI2cSdaTri                  => aI2cSdaTri,            --in  std_logic_vector(kNumI2cIfcs-1:0)
-      aI2cSda(kMezzSmbIndex)      => bMezzSmbSda,           --inout std_logic_vector(kNumI2cIfcs-1:0)
-      aI2cSda(kBaseSmbIndex)      => bBaseSmbSda,           --inout std_logic_vector(kNumI2cIfcs-1:0)
-      aI2cSda(kConfigI2cIndex)    => bConfigI2cSda,         --inout std_logic_vector(kNumI2cIfcs-1:0)
-      aI2cSda(kPwrSupplyPmbIndex) => bPwrSupplyPmbSda,      --inout std_logic_vector(kNumI2cIfcs-1:0)
-      aPxiTrigDataIn              => aPxiTrigDataIn,        --out std_logic_vector(7:0)
-      aPxiTrigDataOut             => aPxiTrigDataOut,       --in  std_logic_vector(7:0)
-      aPxiTrigDataTri             => aPxiTrigDataTri,       --in  std_logic_vector(7:0)
-      aPxiTrigData                => aPxiTrigData,          --inout std_logic_vector(7:0)
-      aPxieDStarB                 => aPxieDStarB,           --out std_logic
-      aPxieDStarB_p               => aPxieDStarB_p,         --in  std_logic
-      aPxieDStarB_n               => aPxieDStarB_n,         --in  std_logic
-      aPxieDStarC                 => aPxieDStarC,           --in  std_logic
-      aPxieDStarCEn_n             => '0',                   --in  std_logic
-      aPxieDStarC_p               => aPxieDStarC_p,         --out std_logic
-      aPxieDStarC_n               => aPxieDStarC_n,         --out std_logic
-      SidebandClk                 => SidebandClk,           --out std_logic
-      sSidebandDataOut            => sSidebandDataOut,      --out std_logic_vector(3:0)
-      aSidebandDataIn             => aSidebandDataIn,       --in  std_logic
-      aSidebandFifoFull           => aSidebandFifoFull,     --in  std_logic
-      SidebandClkBuf              => SidebandClkBuf,        --in  std_logic
-      sSidebandDataOutBuf         => sSidebandDataOutBuf,   --in  std_logic_vector(3:0)
-      aSidebandDataInBuf          => aSidebandDataInBuf,    --out std_logic
-      aSidebandFifoFullBuf        => aSidebandFifoFullBuf,  --out std_logic
-      aFpgaStage2Done             => aFpgaStage2Done);      --out std_logic
+      aI2cSclIn                   => aI2cSclIn,              --out std_logic_vector(kNumI2cIfcs-1:0)
+      aI2cSclOut                  => aI2cSclOut,             --in  std_logic_vector(kNumI2cIfcs-1:0)
+      aI2cSclTri                  => aI2cSclTri,             --in  std_logic_vector(kNumI2cIfcs-1:0)
+      aI2cScl(kIoSmbIndex)        => bIoSmbScl,              --inout std_logic_vector(kNumI2cIfcs-1:0)
+      aI2cScl(kBaseSmbIndex)      => bBaseSmbScl,            --inout std_logic_vector(kNumI2cIfcs-1:0)
+      aI2cScl(kConfigI2cIndex)    => bConfigI2cScl,          --inout std_logic_vector(kNumI2cIfcs-1:0)
+      aI2cScl(kPwrSupplyPmbIndex) => bPwrSupplyPmbScl,       --inout std_logic_vector(kNumI2cIfcs-1:0)
+      aI2cSdaIn                   => aI2cSdaIn,              --out std_logic_vector(kNumI2cIfcs-1:0)
+      aI2cSdaOut                  => aI2cSdaOut,             --in  std_logic_vector(kNumI2cIfcs-1:0)
+      aI2cSdaTri                  => aI2cSdaTri,             --in  std_logic_vector(kNumI2cIfcs-1:0)
+      aI2cSda(kIoSmbIndex)        => bIoSmbSda,              --inout std_logic_vector(kNumI2cIfcs-1:0)
+      aI2cSda(kBaseSmbIndex)      => bBaseSmbSda,            --inout std_logic_vector(kNumI2cIfcs-1:0)
+      aI2cSda(kConfigI2cIndex)    => bConfigI2cSda,          --inout std_logic_vector(kNumI2cIfcs-1:0)
+      aI2cSda(kPwrSupplyPmbIndex) => bPwrSupplyPmbSda,       --inout std_logic_vector(kNumI2cIfcs-1:0)
+      aPxiTrigDataIn              => open,                   --out std_logic_vector(7:0)
+      aPxiTrigDataOut             => (others => '0'),        --in  std_logic_vector(7:0)
+      aPxiTrigDataTri             => (others => '0'),        --in  std_logic_vector(7:0)
+      aPxiTrigData                => open,                   --inout std_logic_vector(7:0)
+      aPxieDStarB                 => open,                   --out std_logic
+      aPxieDStarB_p               => '0',                    --in  std_logic
+      aPxieDStarB_n               => '0',                    --in  std_logic
+      aPxieDStarC                 => '0',                    --in  std_logic
+      aPxieDStarCEn_n             => '0',                    --in  std_logic
+      aPxieDStarC_p               => open,                   --out std_logic
+      aPxieDStarC_n               => open,                   --out std_logic
+      aFpgaLoopbackOut            => '0',                    --in  std_logic
+      aFpgaLoopbackOut_p          => open,                   --out std_logic
+      aFpgaLoopbackOut_n          => open,                   --out std_logic
+      aFpgaLoopbackIn             => open,                   --out std_logic
+      aFpgaLoopbackIn_p           => '0',                    --in  std_logic
+      aFpgaLoopbackIn_n           => '0',                    --in  std_logic
+      aAuxIoData                  => aAuxIoData,             --inout std_logic_vector(kNumAuxIoData-1:0)
+      aLvAuxDioOutputData         => aLvAuxDioOutputData,    --in  std_logic_vector(kNumAuxIoData-1:0)
+      aLvAuxDioInputData          => aLvAuxDioInputData,     --out std_logic_vector(kNumAuxIoData-1:0)
+      aLvAuxDioOutputEnable       => aLvAuxDioOutputEnable); --in  std_logic_vector(kNumAuxIoData-1:0)
 
-  --vhook_e SasquatchIoBuffersStage1
-  SasquatchIoBuffersStage1x: entity work.SasquatchIoBuffersStage1 (struct)
+  --vhook_e MacallanIoBuffersFam
+  --vhook_a aFamOutputEnable            bFamOutputEnable
+  MacallanIoBuffersFamx: entity work.MacallanIoBuffersFam (struct)
     port map (
-      aStage2Enabled => aStage2Enabled,  --in  boolean
-      aAuthSda       => aAuthSda,        --inout std_logic
-      aAuthSdaInBuf  => aAuthSdaInBuf,   --out std_logic
-      aAuthSdaOutBuf => aAuthSdaOutBuf,  --in  std_logic
-      aPxiGa         => aPxiGa,          --in  std_logic_vector(4:0)
-      aGa            => aGa,             --out std_logic_vector(4:0)
-      aPcieRst_n     => aPcieRst_n,      --in  std_logic
-      aPcieRst       => aPcieRst);       --out std_logic
+      dvJesd204SysRef     => dvJesd204SysRef,      --out std_logic
+      dvJesd204SysRef_p   => dvJesd204SysRef_p,    --in  std_logic
+      dvJesd204SysRef_n   => dvJesd204SysRef_n,    --in  std_logic
+      aFamOutputEnable    => bFamOutputEnable,     --in  std_logic
+      aTriggerOut         => aTriggerOut,          --in  std_logic
+      aTriggerOut_p       => aTriggerOut_p,        --out std_logic
+      aTriggerOut_n       => aTriggerOut_n,        --out std_logic
+      aTriggerIn          => aTriggerIn,           --out std_logic
+      aTriggerIn_p        => aTriggerIn_p,         --in  std_logic
+      aTriggerIn_n        => aTriggerIn_n,         --in  std_logic
+      aTdcExpandedPulse_p => aTdcExpandedPulse_p,  --in  std_logic
+      aTdcExpandedPulse_n => aTdcExpandedPulse_n,  --in  std_logic
+      aTdcExpandedPulse   => aTdcExpandedPulse,    --out std_logic
+      aConfigTxClkLvds_p  => aConfigTxClkLvds_p,   --out std_logic
+      aConfigTxClkLvds_n  => aConfigTxClkLvds_n,   --out std_logic
+      aConfigTxClkSe      => aConfigTxClkSe,       --out std_logic
+      aConfigTxDataSe     => aConfigTxDataSe,      --out std_logic_vector(6:0)
+      aConfigRxClkLvds_p  => aConfigRxClkLvds_p,   --in  std_logic
+      aConfigRxClkLvds_n  => aConfigRxClkLvds_n,   --in  std_logic
+      aConfigRxClkSe      => aConfigRxClkSe,       --in  std_logic
+      aConfigRxDataSe     => aConfigRxDataSe,      --in  std_logic_vector(6:0)
+      aConfigTxClkLvds    => aConfigTxClkLvds,     --in  std_logic
+      aConfigTxClkSeBuf   => aConfigTxClkSeBuf,    --in  std_logic
+      aConfigTxDataSeBuf  => aConfigTxDataSeBuf,   --in  std_logic_vector(6:0)
+      aConfigRxClkLvds    => aConfigRxClkLvds,     --out std_logic
+      aConfigRxClkSeBuf   => aConfigRxClkSeBuf,    --out std_logic
+      aConfigRxDataSeBuf  => aConfigRxDataSeBuf,   --out std_logic_vector(6:0)
+      DeviceClk           => DeviceClk,            --out std_logic
+      DeviceClk_p         => DeviceClk_p,          --in  std_logic
+      DeviceClk_n         => DeviceClk_n);         --in  std_logic
+
+  --vhook_e AppletonIoBuffersStage1
+  --vhook_g kGenDigiPotBufs  true
+  AppletonIoBuffersStage1x: entity work.AppletonIoBuffersStage1 (struct)
+    generic map (kGenDigiPotBufs => true)  --boolean
+    port map (
+      aStage2Enabled       => aStage2Enabled,        --in  boolean
+      aAuthSda             => aAuthSda,              --inout std_logic
+      aAuthSdaInBuf        => aAuthSdaInBuf,         --out std_logic
+      aAuthSdaOutBuf       => aAuthSdaOutBuf,        --in  std_logic
+      aPxiTrigData         => aPxiTrigData,          --inout std_logic_vector(7:0)
+      aPxiTrigDir          => aPxiTrigDir,           --out std_logic_vector(7:0)
+      aPxiStar             => aPxiStar,              --in  std_logic
+      aPxieDStarB_p        => aPxieDStarB_p,         --in  std_logic
+      aPxieDStarB_n        => aPxieDStarB_n,         --in  std_logic
+      aPxieDStarC_p        => aPxieDStarC_p,         --out std_logic
+      aPxieDStarC_n        => aPxieDStarC_n,         --out std_logic
+      aPxiTrigDataInBuf    => aPxiTrigDataInBuf,     --out std_logic_vector(7:0)
+      aPxiTrigDataOutBuf   => aPxiTrigDataOutBuf,    --in  std_logic_vector(7:0)
+      aPxiTrigFpgaTriBuf   => aPxiTrigFpgaTriBuf,    --in  std_logic_vector(7:0)
+      aPxiTrigExtTriBuf    => aPxiTrigExtTriBuf,     --in  std_logic_vector(7:0)
+      aPxiStarBuf          => aPxiStarBuf,           --out std_logic
+      aPxieDStarBBuf       => aPxieDStarBBuf,        --out std_logic
+      aPxieDStarCBuf       => aPxieDStarCBuf,        --in  std_logic
+      bDigiPotSclk         => bDigiPotSclk,          --out std_logic
+      bDigiPotMosi         => bDigiPotMosi,          --out std_logic
+      bDigiPotMiso         => bDigiPotMiso,          --in  std_logic
+      bDigiPotSync_n       => bDigiPotSync_n,        --out std_logic
+      bDigiPotSclkBuf      => bDigiPotSclkBuf,       --in  std_logic
+      bDigiPotMosiBuf      => bDigiPotMosiBuf,       --in  std_logic
+      bDigiPotMisoBuf      => bDigiPotMisoBuf,       --out std_logic
+      bDigiPotSync_nBuf    => bDigiPotSync_nBuf,     --in  std_logic
+      SidebandClk          => SidebandClk,           --out std_logic
+      sSidebandDataOut     => sSidebandDataOut,      --out std_logic_vector(3:0)
+      aSidebandDataIn      => aSidebandDataIn,       --in  std_logic
+      aSidebandFifoFull    => aSidebandFifoFull,     --in  std_logic
+      SidebandClkBuf       => SidebandClkBuf,        --in  std_logic
+      sSidebandDataOutBuf  => sSidebandDataOutBuf,   --in  std_logic_vector(3:0)
+      aSidebandDataInBuf   => aSidebandDataInBuf,    --out std_logic
+      aSidebandFifoFullBuf => aSidebandFifoFullBuf,  --out std_logic
+      aFldUpdJtagSel       => aFldUpdJtagSel,        --out std_logic
+      bFldUpdJtagTck       => bFldUpdJtagTck,        --out std_logic
+      bFldUpdJtagTdi       => bFldUpdJtagTdi,        --out std_logic
+      aFldUpdJtagTdo       => aFldUpdJtagTdo,        --in  std_logic
+      bFldUpdJtagTms       => bFldUpdJtagTms,        --out std_logic
+      aFldUpdJtagSelBuf    => aFldUpdJtagSelBuf,     --in  std_logic
+      bFldUpdJtagTckBuf    => bFldUpdJtagTckBuf,     --in  std_logic
+      bFldUpdJtagTdiBuf    => bFldUpdJtagTdiBuf,     --in  std_logic
+      aFldUpdJtagTdoBuf    => aFldUpdJtagTdoBuf,     --out std_logic
+      bFldUpdJtagTmsBuf    => bFldUpdJtagTmsBuf,     --in  std_logic
+      aPcieRst_n           => aPcieRst_n,            --in  std_logic
+      aPcieRst             => aPcieRst,              --out std_logic
+      aFpgaStage2Done      => aFpgaStage2Done);      --out std_logic
 
   aPxiTrigOutEn_n <= '0';
 
   ---------------------------------------------------------------------------------------
   -- DRAM Instantiation
   ---------------------------------------------------------------------------------------
-  --vhook_e SasquatchDram
-  SasquatchDramx: entity work.SasquatchDram (struct)
+  --vhook_e AppletonDram
+  AppletonDramx: entity work.AppletonDram (struct)
     port map (
       aDramPonReset         => aDramPonReset,          --in  boolean
       Dram0RefClk_p         => Dram0RefClk_p,          --in  std_logic
@@ -1314,23 +1436,23 @@ begin  -- architecture struct
       dr0DramClkEn          => dr0DramClkEn,           --out std_logic
       dr0DramOdt            => dr0DramOdt,             --out std_logic
       dr0DramReset_n        => dr0DramReset_n,         --out std_logic
-      dr0DramDmDbi_n        => dr0DramDmDbi_n,         --inout std_logic_vector(9:0)
-      dr0DramDq             => dr0DramDq,              --inout std_logic_vector(79:0)
-      dr0DramDqs_p          => dr0DramDqs_p,           --inout std_logic_vector(9:0)
-      dr0DramDqs_n          => dr0DramDqs_n,           --inout std_logic_vector(9:0)
+      dr0DramDmDbi_n        => dr0DramDmDbi_n,         --inout std_logic_vector(7:0)
+      dr0DramDq             => dr0DramDq,              --inout std_logic_vector(63:0)
+      dr0DramDqs_p          => dr0DramDqs_p,           --inout std_logic_vector(7:0)
+      dr0DramDqs_n          => dr0DramDqs_n,           --inout std_logic_vector(7:0)
       dr0DramTestMode       => dr0DramTestMode,        --out std_logic
       Dram0ClkUser          => Dram0ClkUser,           --out std_logic
       du0DramPhyInitDone    => du0DramPhyInitDone,     --out std_logic
       du0DramAddrFifoFull   => du0DramAddrFifoFull,    --out std_logic
-      du0DramAddrFifoAddr   => du0DramAddrFifoAddr,    --in  std_logic_vector(29:0)
+      du0DramAddrFifoAddr   => du0DramAddrFifoAddr,    --in  std_logic_vector(28:0)
       du0DramAddrFifoCmd    => du0DramAddrFifoCmd,     --in  std_logic_vector(2:0)
       du0DramAddrFifoWrEn   => du0DramAddrFifoWrEn,    --in  std_logic
       du0DramWrFifoFull     => du0DramWrFifoFull,      --out std_logic
       du0DramWrFifoWrEn     => du0DramWrFifoWrEn,      --in  std_logic
-      du0DramWrFifoDataIn   => du0DramWrFifoDataIn,    --in  std_logic_vector(639:0)
-      du0DramWrFifoMaskData => du0DramWrFifoMaskData,  --in  std_logic_vector(79:0)
+      du0DramWrFifoDataIn   => du0DramWrFifoDataIn,    --in  std_logic_vector(511:0)
+      du0DramWrFifoMaskData => du0DramWrFifoMaskData,  --in  std_logic_vector(63:0)
       du0DramRdDataValid    => du0DramRdDataValid,     --out std_logic
-      du0DramRdFifoDataOut  => du0DramRdFifoDataOut,   --out std_logic_vector(639:0)
+      du0DramRdFifoDataOut  => du0DramRdFifoDataOut,   --out std_logic_vector(511:0)
       Dram1Clk_p            => Dram1Clk_p,             --out std_logic
       Dram1Clk_n            => Dram1Clk_n,             --out std_logic
       dr1DramCs_n           => dr1DramCs_n,            --out std_logic
@@ -1341,23 +1463,23 @@ begin  -- architecture struct
       dr1DramClkEn          => dr1DramClkEn,           --out std_logic
       dr1DramOdt            => dr1DramOdt,             --out std_logic
       dr1DramReset_n        => dr1DramReset_n,         --out std_logic
-      dr1DramDmDbi_n        => dr1DramDmDbi_n,         --inout std_logic_vector(9:0)
-      dr1DramDq             => dr1DramDq,              --inout std_logic_vector(79:0)
-      dr1DramDqs_p          => dr1DramDqs_p,           --inout std_logic_vector(9:0)
-      dr1DramDqs_n          => dr1DramDqs_n,           --inout std_logic_vector(9:0)
+      dr1DramDmDbi_n        => dr1DramDmDbi_n,         --inout std_logic_vector(7:0)
+      dr1DramDq             => dr1DramDq,              --inout std_logic_vector(63:0)
+      dr1DramDqs_p          => dr1DramDqs_p,           --inout std_logic_vector(7:0)
+      dr1DramDqs_n          => dr1DramDqs_n,           --inout std_logic_vector(7:0)
       dr1DramTestMode       => dr1DramTestMode,        --out std_logic
       Dram1ClkUser          => Dram1ClkUser,           --out std_logic
       du1DramPhyInitDone    => du1DramPhyInitDone,     --out std_logic
       du1DramAddrFifoFull   => du1DramAddrFifoFull,    --out std_logic
-      du1DramAddrFifoAddr   => du1DramAddrFifoAddr,    --in  std_logic_vector(29:0)
+      du1DramAddrFifoAddr   => du1DramAddrFifoAddr,    --in  std_logic_vector(28:0)
       du1DramAddrFifoCmd    => du1DramAddrFifoCmd,     --in  std_logic_vector(2:0)
       du1DramAddrFifoWrEn   => du1DramAddrFifoWrEn,    --in  std_logic
       du1DramWrFifoFull     => du1DramWrFifoFull,      --out std_logic
       du1DramWrFifoWrEn     => du1DramWrFifoWrEn,      --in  std_logic
-      du1DramWrFifoDataIn   => du1DramWrFifoDataIn,    --in  std_logic_vector(639:0)
-      du1DramWrFifoMaskData => du1DramWrFifoMaskData,  --in  std_logic_vector(79:0)
+      du1DramWrFifoDataIn   => du1DramWrFifoDataIn,    --in  std_logic_vector(511:0)
+      du1DramWrFifoMaskData => du1DramWrFifoMaskData,  --in  std_logic_vector(63:0)
       du1DramRdDataValid    => du1DramRdDataValid,     --out std_logic
-      du1DramRdFifoDataOut  => du1DramRdFifoDataOut);  --out std_logic_vector(639:0)
+      du1DramRdFifoDataOut  => du1DramRdFifoDataOut);  --out std_logic_vector(511:0)
 
   bRegPortOut.Data <= bLvWindowRegPortOut.Data or
                       bRegPortOutDram2DP.Data or
@@ -1370,9 +1492,9 @@ begin  -- architecture struct
                            bRegPortOutSharedRegs.DataValid;
 
   bRegPortOut.Ready <= bLvWindowRegPortOut.Ready and
-               bRegPortOutDram2DP.Ready and
-               bRegPortOutCommonRegs.Ready and
-               bRegPortOutSharedRegs.Ready;
+                       bRegPortOutDram2DP.Ready and
+                       bRegPortOutCommonRegs.Ready and
+                       bRegPortOutSharedRegs.Ready;
 
   bAddressesDram2DP  <= (bRegportIn.Address >= kDram2DPBaseAddress) and
                         (bRegportIn.Address <= (kDram2DPBaseAddress + kDram2DPAddressMask));
@@ -1391,7 +1513,7 @@ begin  -- architecture struct
 
   HdlSharedCommonHostRegs_inst : entity work.HdlSharedCommonHostRegs
     generic map(
-      kSignature               => x"7903BEEF",
+      kSignature               => x"7986BEEF",
       kVersion                 => x"00000001",
       kOldestCompatibleVersion => x"00000001"
     )
@@ -1424,7 +1546,7 @@ begin  -- architecture struct
 
   -- Demonstration loopback logic for HdlSharedHostRegisterArray usage.
   --
-  -- This process is meant only as an example of how FPGA-side logic can interact with 
+  -- This process is meant only as an example of how FPGA-side logic can interact with
   -- host-visible registers.
   --
   -- Register behavior used here:
@@ -1463,8 +1585,6 @@ begin  -- architecture struct
       end if;
     end if;
   end process SharedHostRegisterLoopbackx;
-
-
   MergeRegPortInDram2DP: process(bRegportIn, bAddressesDram2DP)
   begin
     bRegPortInDram2DP <= bRegportIn;
@@ -1540,14 +1660,14 @@ begin  -- architecture struct
   -- base design, the MGT signals in the top-level entity are commented out.
   --
   -- If you are customizing this HDL file directly, then you will add whatever MGT signal ports
-  -- you are using to the top-level entity and connect them to this TheLvWindow wrapper instance.
+  -- you are using to the top-level entity and connect them to this TheWindow wrapper instance.
   --
   TheLvWindowWrapper: TheLvWindowFlatWrapper
     port map (
-      aBusReset                           => to_stdlogic(aBusReset),                    --in  std_logic
-      bRegPortIn                          => bRegPortInFlat,                           --in  RegPortIn_t
-      bRegPortOut                         => bRegPortOutFlat,                          --out RegPortOut_t
-      bRegPortTimeout                     => to_stdlogic(bLvWindowRegPortTimeout),      --in  std_logic
+      aBusReset                           => to_stdlogic(aBusReset),                                 --in  boolean
+      bRegPortIn                          => bRegPortInFlat,                                --in  RegPortIn_t
+      bRegPortOut                         => bRegPortOutFlat,                       --out RegPortOut_t
+      bRegPortTimeout                     => to_stdlogic(bLvWindowRegPortTimeout),                   --in  boolean
       dInputStreamInterfaceToFifo         => dInputStreamInterfaceToFifoFlat,               --in  InputStreamInterfaceToFifoArray_t(Larger(kNumberOfDmaChannels, 1)-1:0)
       dInputStreamInterfaceFromFifo       => dInputStreamInterfaceFromFifoFlat,             --out InputStreamInterfaceFromFifoArray_t(Larger(kNumberOfDmaChannels, 1)-1:0)
       dOutputStreamInterfaceToFifo        => dOutputStreamInterfaceToFifoFlat,              --in  OutputStreamInterfaceToFifoArray_t(Larger(kNumberOfDmaChannels, 1)-1:0)
@@ -1574,6 +1694,70 @@ begin  -- architecture struct
       Dram1ClkUser                        => Dram1ClkUser,                              --in  std_logic
       dHmbDmaClkSocket                    => DmaClk,                                    --in  std_logic
       dLlbDmaClkSocket                    => DmaClk,                                    --in  std_logic
+      aLvAuxDio0OutputData                => aLvAuxDioOutputData(0),                    --out std_logic
+      aLvAuxDio0InputData                 => aLvAuxDioInputData(0),                     --in  std_logic
+      aLvAuxDio0OutputEnable              => aLvAuxDioOutputEnable(0),                  --out std_logic
+      oClkaLvAuxDio0                      => BusClk,                                    --in  std_logic
+      aoResetaLvAuxDio0                   => to_StdLogic(abDiagramReset),               --in  std_logic
+      oDoneaLvAuxDio0                     => bdDoneaLvAuxDio(0),                        --in  std_logic
+      oDirectionaLvAuxDio0                => bdDirectionaLvAuxDio(0),                   --out std_logic:='0'
+      oRequestaLvAuxDio0                  => bdRequestaLvAuxDio(0),                     --out std_logic:='1'
+      aLvAuxDio1OutputData                => aLvAuxDioOutputData(1),                    --out std_logic
+      aLvAuxDio1InputData                 => aLvAuxDioInputData(1),                     --in  std_logic
+      aLvAuxDio1OutputEnable              => aLvAuxDioOutputEnable(1),                  --out std_logic
+      oClkaLvAuxDio1                      => BusClk,                                    --in  std_logic
+      aoResetaLvAuxDio1                   => to_StdLogic(abDiagramReset),               --in  std_logic
+      oDoneaLvAuxDio1                     => bdDoneaLvAuxDio(1),                        --in  std_logic
+      oDirectionaLvAuxDio1                => bdDirectionaLvAuxDio(1),                   --out std_logic:='0'
+      oRequestaLvAuxDio1                  => bdRequestaLvAuxDio(1),                     --out std_logic:='1'
+      aLvAuxDio2OutputData                => aLvAuxDioOutputData(2),                    --out std_logic
+      aLvAuxDio2InputData                 => aLvAuxDioInputData(2),                     --in  std_logic
+      aLvAuxDio2OutputEnable              => aLvAuxDioOutputEnable(2),                  --out std_logic
+      oClkaLvAuxDio2                      => BusClk,                                    --in  std_logic
+      aoResetaLvAuxDio2                   => to_StdLogic(abDiagramReset),               --in  std_logic
+      oDoneaLvAuxDio2                     => bdDoneaLvAuxDio(2),                        --in  std_logic
+      oDirectionaLvAuxDio2                => bdDirectionaLvAuxDio(2),                   --out std_logic:='0'
+      oRequestaLvAuxDio2                  => bdRequestaLvAuxDio(2),                     --out std_logic:='1'
+      aLvAuxDio3OutputData                => aLvAuxDioOutputData(3),                    --out std_logic
+      aLvAuxDio3InputData                 => aLvAuxDioInputData(3),                     --in  std_logic
+      aLvAuxDio3OutputEnable              => aLvAuxDioOutputEnable(3),                  --out std_logic
+      oClkaLvAuxDio3                      => BusClk,                                    --in  std_logic
+      aoResetaLvAuxDio3                   => to_StdLogic(abDiagramReset),               --in  std_logic
+      oDoneaLvAuxDio3                     => bdDoneaLvAuxDio(3),                        --in  std_logic
+      oDirectionaLvAuxDio3                => bdDirectionaLvAuxDio(3),                   --out std_logic:='0'
+      oRequestaLvAuxDio3                  => bdRequestaLvAuxDio(3),                     --out std_logic:='1'
+      aLvAuxDio4OutputData                => aLvAuxDioOutputData(4),                    --out std_logic
+      aLvAuxDio4InputData                 => aLvAuxDioInputData(4),                     --in  std_logic
+      aLvAuxDio4OutputEnable              => aLvAuxDioOutputEnable(4),                  --out std_logic
+      oClkaLvAuxDio4                      => BusClk,                                    --in  std_logic
+      aoResetaLvAuxDio4                   => to_StdLogic(abDiagramReset),               --in  std_logic
+      oDoneaLvAuxDio4                     => bdDoneaLvAuxDio(4),                        --in  std_logic
+      oDirectionaLvAuxDio4                => bdDirectionaLvAuxDio(4),                   --out std_logic:='0'
+      oRequestaLvAuxDio4                  => bdRequestaLvAuxDio(4),                     --out std_logic:='1'
+      aLvAuxDio5OutputData                => aLvAuxDioOutputData(5),                    --out std_logic
+      aLvAuxDio5InputData                 => aLvAuxDioInputData(5),                     --in  std_logic
+      aLvAuxDio5OutputEnable              => aLvAuxDioOutputEnable(5),                  --out std_logic
+      oClkaLvAuxDio5                      => BusClk,                                    --in  std_logic
+      aoResetaLvAuxDio5                   => to_StdLogic(abDiagramReset),               --in  std_logic
+      oDoneaLvAuxDio5                     => bdDoneaLvAuxDio(5),                        --in  std_logic
+      oDirectionaLvAuxDio5                => bdDirectionaLvAuxDio(5),                   --out std_logic:='0'
+      oRequestaLvAuxDio5                  => bdRequestaLvAuxDio(5),                     --out std_logic:='1'
+      aLvAuxDio6OutputData                => aLvAuxDioOutputData(6),                    --out std_logic
+      aLvAuxDio6InputData                 => aLvAuxDioInputData(6),                     --in  std_logic
+      aLvAuxDio6OutputEnable              => aLvAuxDioOutputEnable(6),                  --out std_logic
+      oClkaLvAuxDio6                      => BusClk,                                    --in  std_logic
+      aoResetaLvAuxDio6                   => to_StdLogic(abDiagramReset),               --in  std_logic
+      oDoneaLvAuxDio6                     => bdDoneaLvAuxDio(6),                        --in  std_logic
+      oDirectionaLvAuxDio6                => bdDirectionaLvAuxDio(6),                   --out std_logic:='0'
+      oRequestaLvAuxDio6                  => bdRequestaLvAuxDio(6),                     --out std_logic:='1'
+      aLvAuxDio7OutputData                => aLvAuxDioOutputData(7),                    --out std_logic
+      aLvAuxDio7InputData                 => aLvAuxDioInputData(7),                     --in  std_logic
+      aLvAuxDio7OutputEnable              => aLvAuxDioOutputEnable(7),                  --out std_logic
+      oClkaLvAuxDio7                      => BusClk,                                    --in  std_logic
+      aoResetaLvAuxDio7                   => to_StdLogic(abDiagramReset),               --in  std_logic
+      oDoneaLvAuxDio7                     => bdDoneaLvAuxDio(7),                        --in  std_logic
+      oDirectionaLvAuxDio7                => bdDirectionaLvAuxDio(7),                   --out std_logic:='0'
+      oRequestaLvAuxDio7                  => bdRequestaLvAuxDio(7),                     --out std_logic:='1'
       pIntSync100                         => pIntSync100,                               --in  std_logic
       aIntClk10                           => aIntClk10,                                 --in  std_logic
       bdIFifoRdData                       => bdIFifoRdData,                             --out std_logic_vector(63:0)
@@ -1593,7 +1777,9 @@ begin  -- architecture struct
       bdAxiStreamWrFromClipTReady         => xDiagramAxiStreamFromClipTReady,           --in  std_logic
       PxieClk100Trigger                   => PxieClk100,                                --in  std_logic
       pIntSync100Trigger                  => pIntSync100,                               --in  std_logic
-      dDevClkEn                           => '0',                                       --in  std_logic
+      dTdcAssert                          => dtTdcAssert,                               --out std_logic
+      dDevClkEn                           => dtDevClkEn,                                --in  std_logic
+      sTdcDeassert                        => sTdcDeassert,                              --out std_logic
       aIntClk10Trigger                    => aIntClk10,                                 --in  std_logic
       bRoutingClipPresent                 => bRoutingClipPresent,                       --out std_logic
       bRoutingClipNiCompatible            => bRoutingClipNiCompatible,                  --out std_logic
@@ -1605,16 +1791,103 @@ begin  -- architecture struct
       bTriggerRoutingBaRegPortInRdStrobe  => bTriggerRoutingBaRegPortInRdStrobe,        --in  std_logic_vector(7:0)
       bTriggerRoutingBaRegPortOutData     => bTriggerRoutingBaRegPortOutData,           --out std_logic_vector(63:0)
       bTriggerRoutingBaRegPortOutAck      => bTriggerRoutingBaRegPortOutAck,            --out std_logic
-      aPxiTrigDataIn                      => aPxiTrigDataIn,                            --in  std_logic_vector(7:0)
-      aPxiTrigDataOut                     => aPxiTrigDataOut,                           --out std_logic_vector(7:0)
-      aPxiTrigDataTri                     => aPxiTrigDataTri,                           --out std_logic_vector(7:0)
-      aPxiStarData                        => aPxiStarData,                              --in  std_logic
-      aPxieDstarB                         => aPxieDstarB,                               --in  std_logic
-      aPxieDstarC                         => aPxieDstarC,                               --out std_logic
+      aPxiTrigDataIn                      => aPxiTrigDataInBuf,                         --in  std_logic_vector(7:0)
+      aPxiTrigDataOut                     => aPxiTrigDataOutBuf,                        --out std_logic_vector(7:0)
+      aPxiTrigDataTri                     => aPxiTrigFpgaTriBuf,                        --out std_logic_vector(7:0)
+      aPxiStarData                        => aPxiStarBuf,                               --in  std_logic
+      aPxieDstarB                         => aPxieDstarBBuf,                            --in  std_logic
+      aPxieDstarC                         => aPxieDstarCBuf,                            --out std_logic
       ---------------------
       -- BEGIN CLIP SOCKET PORTS
-      ---------------------     
-      -- ***** NO CLIP SOCKET PORTS *****    
+      ---------------------
+      AxiClk                              => BusClk,                                    --in  std_logic
+      xDiagramAxiStreamFromClipTData      => xDiagramAxiStreamFromClipTData,            --out std_logic_vector(31:0)
+      xDiagramAxiStreamFromClipTLast      => xDiagramAxiStreamFromClipTLast,            --out std_logic
+      xDiagramAxiStreamFromClipTReady     => xDiagramAxiStreamFromClipTReady,           --out std_logic
+      xDiagramAxiStreamFromClipTValid     => xDiagramAxiStreamFromClipTValid,           --out std_logic
+      xDiagramAxiStreamToClipTData        => xDiagramAxiStreamToClipTData,              --in  std_logic_vector(31:0)
+      xDiagramAxiStreamToClipTLast        => xDiagramAxiStreamToClipTLast,              --in  std_logic
+      xDiagramAxiStreamToClipTReady       => xDiagramAxiStreamToClipTReady,             --in  std_logic
+      xDiagramAxiStreamToClipTValid       => xDiagramAxiStreamToClipTValid,             --in  std_logic
+      xHostAxiStreamFromClipTData         => xHostAxiStreamFromClipTData,               --out std_logic_vector(31:0)
+      xHostAxiStreamFromClipTLast         => xHostAxiStreamFromClipTLast,               --out std_logic
+      xHostAxiStreamFromClipTReady        => xHostAxiStreamFromClipTReady,              --out std_logic
+      xHostAxiStreamFromClipTValid        => xHostAxiStreamFromClipTValid,              --out std_logic
+      xHostAxiStreamToClipTData           => xHostAxiStreamToClipTData,                 --in  std_logic_vector(31:0)
+      xHostAxiStreamToClipTLast           => xHostAxiStreamToClipTLast,                 --in  std_logic
+      xHostAxiStreamToClipTReady          => xHostAxiStreamToClipTReady,                --in  std_logic
+      xHostAxiStreamToClipTValid          => xHostAxiStreamToClipTValid,                --in  std_logic
+      xClipAxi4LiteMasterARAddr           => bdClipAxi4LiteARAddr,                      --out std_logic_vector(31:0)
+      xClipAxi4LiteMasterARProt           => bdClipAxi4LiteARProt,                      --out std_logic_vector(2:0)
+      xClipAxi4LiteMasterARReady          => bdClipAxi4LiteARReady,                     --in  std_logic
+      xClipAxi4LiteMasterARValid          => bdClipAxi4LiteARValid,                     --out std_logic
+      xClipAxi4LiteMasterAWAddr           => bdClipAxi4LiteAWAddr,                      --out std_logic_vector(31:0)
+      xClipAxi4LiteMasterAWProt           => bdClipAxi4LiteAWProt,                      --out std_logic_vector(2:0)
+      xClipAxi4LiteMasterAWReady          => bdClipAxi4LiteAWReady,                     --in  std_logic
+      xClipAxi4LiteMasterAWValid          => bdClipAxi4LiteAWValid,                     --out std_logic
+      xClipAxi4LiteMasterBReady           => bdClipAxi4LiteBReady,                      --out std_logic
+      xClipAxi4LiteMasterBResp            => bdClipAxi4LiteBResp,                       --in  std_logic_vector(1:0)
+      xClipAxi4LiteMasterBValid           => bdClipAxi4LiteBValid,                      --in  std_logic
+      xClipAxi4LiteMasterRData            => bdClipAxi4LiteRData,                       --in  std_logic_vector(31:0)
+      xClipAxi4LiteMasterRReady           => bdClipAxi4LiteRReady,                      --out std_logic
+      xClipAxi4LiteMasterRResp            => bdClipAxi4LiteRResp,                       --in  std_logic_vector(1:0)
+      xClipAxi4LiteMasterRValid           => bdClipAxi4LiteRValid,                      --in  std_logic
+      xClipAxi4LiteMasterWData            => bdClipAxi4LiteWData,                       --out std_logic_vector(31:0)
+      xClipAxi4LiteMasterWReady           => bdClipAxi4LiteWReady,                      --in  std_logic
+      xClipAxi4LiteMasterWStrb            => bdClipAxi4LiteWStrb,                       --out std_logic_vector(3:0)
+      xClipAxi4LiteMasterWValid           => bdClipAxi4LiteWValid,                      --out std_logic
+      xClipAxi4LiteInterrupt              => '0',                                       --in  std_logic
+      aConfigTxClkLvds                    => aConfigTxClkLvds,                          --out std_logic
+      aConfigTxClkSe                      => aConfigTxClkSeBuf,                         --out std_logic
+      aConfigTxDataSe                     => aConfigTxDataSeBuf,                        --out std_logic_vector(6:0)
+      aConfigRxClkLvds                    => aConfigRxClkLvds,                          --in  std_logic
+      aConfigRxClkSe                      => aConfigRxClkSeBuf,                         --in  std_logic
+      aConfigRxDataSe                     => aConfigRxDataSeBuf,                        --in  std_logic_vector(6:0)
+      aRsrvGpio_n                         => aRsrvGpio_n,                               --inout std_logic_vector(4:0)
+      aRsrvGpio_p                         => aRsrvGpio_p,                               --inout std_logic_vector(4:0)
+      aReservedToClip                     => aReservedToClip,                           --in  std_logic_vector(15:0)
+      aReservedFromClip                   => aReservedFromClip,                         --out std_logic_vector(15:0)
+      stIoModuleSupportsFRAGLs            => stIoModuleSupportsFRAGLs,                  --out std_logic
+      aGpoSync                            => aGpoSync,                                  --out std_logic_vector(1:0)
+      aTriggerIn                          => aTriggerIn,                                --in  std_logic
+      aTriggerOut                         => aTriggerOut,                               --out std_logic
+      DeviceClk                           => DeviceClk,                                 --in  std_logic
+      aJesd204SyncReqIn_n                 => aJesd204SyncReqIn_n,                       --in  std_logic
+      aJesd204SyncReqOut_n                => aJesd204SyncReqOut_n,                      --out std_logic
+      dvJesd204SysRef                     => dvJesd204SysRef,                           --in  std_logic
+      dvTdcAssert                         => dvTdcAssert,                               --out std_logic
+      dtTdcAssert                         => dtTdcAssert,                               --in  std_logic
+      dtDevClkEn                          => dtDevClkEn,                                --out std_logic
+      MgtRefClk_p                         => MgtRefClk_p,                               --in  std_logic_vector(3:0)
+      MgtRefClk_n                         => MgtRefClk_n,                               --in  std_logic_vector(3:0)
+      ExportedMgtRefClk                   => ExportedMgtRefClk,                         --out std_logic
+      DioMgtRefClk_p                      => AuxIoMgtRefClk_p,                          --in  std_logic
+      DioMgtRefClk_n                      => AuxIoMgtRefClk_n,                          --in  std_logic
+      DioMgtRefClkFromFam                 => ExportedMgtRefClk,                         --in  std_logic
+      --@@BEGIN COMPONENT_SIGNAL_ASSIGNMENT
+--
+-- TheWindow.vhd is generated by LabVIEW FPGA.  We ship a stub to ensure that we can synthesize the design.
+-- Vivado will error when building a design that has MGT lines in the top level entity that are not connected
+-- to anything.  So we comment out the MGT lines in the top level and in the Window stub.
+--
+-- If you are making a custom FPGA target, the MGT lines will be statically connected to your MGT logic.  If you are
+-- using this FPGA target with a CLIP in LabVIEW FPGA, these MGT signals will be auto-generated by LV FPGA when it
+-- processes the VHDL files.  The @ @ BEGIN / END around these signals is where LV FPGA generates the ports.
+--
+
+      MgtPortRx_p                     => (others => '0'),                               --in  std_logic_vector(15:0)
+      MgtPortRx_n                     => (others => '0'),                               --in  std_logic_vector(15:0)
+      MgtPortTx_p                     => open,                                          --out  std_logic_vector(15:0)
+      MgtPortTx_n                     => open,                                          --out  std_logic_vector(15:0)
+
+      DioMgtRx_p                     => (others => '0'),                               --in  std_logic_vector(3:0)
+      DioMgtRx_n                     => (others => '0'),                               --in  std_logic_vector(3:0)
+      DioMgtTx_p                     => open,                                          --out  std_logic_vector(3:0)
+      DioMgtTx_n                     => open,                                          --out  std_logic_vector(3:0)
+
+      --@@END COMPONENT_SIGNAL_ASSIGNMENT
+      SocketClk80                         => BusClk,                                    --in  std_logic
+      sDioMgtRefClkFromFamPresent         => '1',                                       --in  std_logic
       ----------------------
       -- END CLIP SOCKET PORTS
       ----------------------
@@ -1625,27 +1898,27 @@ begin  -- architecture struct
       -- END CUSTOM LV FPGA BOARD IO PORTS
       ----------------------
       aDramReady                          => aDramReady,                                --in  std_logic
-      du0DramAddrFifoAddr                 => du0DramAddrFifoAddr,                       --out std_logic_vector(29:0)
+      du0DramAddrFifoAddr                 => du0DramAddrFifoAddr,                       --out std_logic_vector(28:0)
       du0DramAddrFifoCmd                  => du0DramAddrFifoCmd,                        --out std_logic_vector(2:0)
       du0DramAddrFifoFull                 => du0DramAddrFifoFull,                       --in  std_logic
       du0DramAddrFifoWrEn                 => du0DramAddrFifoWrEn,                       --out std_logic
       du0DramPhyInitDone                  => du0DramPhyInitDone,                        --in  std_logic
       du0DramRdDataValid                  => du0DramRdDataValid,                        --in  std_logic
-      du0DramRdFifoDataOut                => du0DramRdFifoDataOut,                      --in  std_logic_vector(639:0)
-      du0DramWrFifoDataIn                 => du0DramWrFifoDataIn,                       --out std_logic_vector(639:0)
+      du0DramRdFifoDataOut                => du0DramRdFifoDataOut,                      --in  std_logic_vector(511:0)
+      du0DramWrFifoDataIn                 => du0DramWrFifoDataIn,                       --out std_logic_vector(511:0)
       du0DramWrFifoFull                   => du0DramWrFifoFull,                         --in  std_logic
-      du0DramWrFifoMaskData               => du0DramWrFifoMaskData,                     --out std_logic_vector(79:0)
+      du0DramWrFifoMaskData               => du0DramWrFifoMaskData,                     --out std_logic_vector(63:0)
       du0DramWrFifoWrEn                   => du0DramWrFifoWrEn,                         --out std_logic
-      du1DramAddrFifoAddr                 => du1DramAddrFifoAddr,                       --out std_logic_vector(29:0)
+      du1DramAddrFifoAddr                 => du1DramAddrFifoAddr,                       --out std_logic_vector(28:0)
       du1DramAddrFifoCmd                  => du1DramAddrFifoCmd,                        --out std_logic_vector(2:0)
       du1DramAddrFifoFull                 => du1DramAddrFifoFull,                       --in  std_logic
       du1DramAddrFifoWrEn                 => du1DramAddrFifoWrEn,                       --out std_logic
       du1DramPhyInitDone                  => du1DramPhyInitDone,                        --in  std_logic
       du1DramRdDataValid                  => du1DramRdDataValid,                        --in  std_logic
-      du1DramRdFifoDataOut                => du1DramRdFifoDataOut,                      --in  std_logic_vector(639:0)
-      du1DramWrFifoDataIn                 => du1DramWrFifoDataIn,                       --out std_logic_vector(639:0)
+      du1DramRdFifoDataOut                => du1DramRdFifoDataOut,                      --in  std_logic_vector(511:0)
+      du1DramWrFifoDataIn                 => du1DramWrFifoDataIn,                       --out std_logic_vector(511:0)
       du1DramWrFifoFull                   => du1DramWrFifoFull,                         --in  std_logic
-      du1DramWrFifoMaskData               => du1DramWrFifoMaskData,                     --out std_logic_vector(79:0)
+      du1DramWrFifoMaskData               => du1DramWrFifoMaskData,                     --out std_logic_vector(63:0)
       du1DramWrFifoWrEn                   => du1DramWrFifoWrEn,                         --out std_logic
       dHmbDramAddrFifoAddr                => dHmbDramAddrFifoAddr,                      --out std_logic_vector(31:0)
       dHmbDramAddrFifoCmd                 => dHmbDramAddrFifoCmd,                       --out std_logic_vector(2:0)
@@ -1679,7 +1952,7 @@ begin  -- architecture struct
       rGatedBaseClksValid                 => '1',                                       --in  std_logic:='1'
       aSafeToEnableGatedClks              => open);                                     --out std_logic
 
-  -----------------------------------
+        -----------------------------------
   -- Convert record inputs to flat
   -----------------------------------
   bRegPortInFlat <= to_StdLogicVector(bRegPortIn);
@@ -1748,29 +2021,19 @@ begin  -- architecture struct
             (i+1)*SizeOf(kNiFpgaMasterReadRequestFromMasterZero)-1 downto
             i*SizeOf(kNiFpgaMasterReadRequestFromMasterZero))));
   end generate;
-
   ---------------------------------------------------------------------------------------
   -- Unused or constant I/O
   ---------------------------------------------------------------------------------------
-  -- Power sync pins which are spared by default
-  a3v3VDPwrSync   <= 'Z';
-  a1v2PwrSync     <= 'Z';
-  a0v9PwrSync     <= 'Z';
-  a1v8fpgaPwrSync <= 'Z';
-  a3v8PwrSync     <= 'Z';
-  a3v3OptPwrSync  <= 'Z';
-  aMgtavttPwrSync <= 'Z';
+  -- Unused top-level signals
+  --vhook_nowarn aPoscEn
+  --vhook_nowarn aIoSmbAlert_n
 
-  -- DRAM power enable
-  aDdr4VttPwrEn   <= '1';
-
-  -- Always enable the baseboard I2C bus
-  aI2cBusEnable <= '1';
-
-  -- Always enable the PLL status buffer
-  aPllCtrlStatusEn_n <= '0';
-
-  -- Enable the DIO when FPGA is up
-  aFpgaReady_n <= '0';
+  -- Reserved CLIP Signals
+  --vhook_nowarn aReservedFromClip
+  aReservedToClip(0)           <= bFamOutputEnable;
+  aReservedToClip(1)           <= not aModulePresent_n;
+  aReservedToClip(2)           <= aFamPowerGood;
+  aReservedToClip(15 downto 3) <= (others => '0');
 
 end architecture struct;
+

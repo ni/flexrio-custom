@@ -111,6 +111,7 @@ entity TheLvWindowFlatWrapper is
     -----------------------------------
     -- IO Node ports
     -----------------------------------
+%if include_target_io:    
     aLvAuxDio0OutputData : out std_logic;
     aLvAuxDio0InputData : in std_logic;
     aLvAuxDio0OutputEnable : out std_logic;
@@ -175,6 +176,8 @@ entity TheLvWindowFlatWrapper is
     oDoneaLvAuxDio7 : in std_logic;
     oDirectionaLvAuxDio7 : out std_logic := '0';
     oRequestaLvAuxDio7 : out std_logic := '1';
+% endif
+
     pIntSync100 : in std_logic;
     aIntClk10 : in std_logic;
 
@@ -231,6 +234,7 @@ entity TheLvWindowFlatWrapper is
     -- CLIP Socket ports
     -----------------------------------
 
+% if include_target_io:
     --Nanopitch I/O
     DioMgtRefClk_p : in std_logic;
     DioMgtRefClk_n : in std_logic;
@@ -242,6 +246,8 @@ entity TheLvWindowFlatWrapper is
     SocketClk80 : in std_logic;
     --Synchronous to SocketClk80
     sDioMgtRefClkFromFamPresent : in std_logic;
+
+% endif
 
     -----------------------------------------------------------------------------
     --Dram Interface
@@ -461,6 +467,7 @@ begin
       Dram1ClkUser => Dram1ClkUser,
       dHmbDmaClkSocket => dHmbDmaClkSocket,
       dLlbDmaClkSocket => dLlbDmaClkSocket,
+% if include_target_io:      
       aLvAuxDio0OutputData => aLvAuxDio0OutputData,
       aLvAuxDio0InputData => aLvAuxDio0InputData,
       aLvAuxDio0OutputEnable => aLvAuxDio0OutputEnable,
@@ -525,6 +532,7 @@ begin
       oDoneaLvAuxDio7 => oDoneaLvAuxDio7,
       oDirectionaLvAuxDio7 => oDirectionaLvAuxDio7,
       oRequestaLvAuxDio7 => oRequestaLvAuxDio7,
+% endif
       pIntSync100 => pIntSync100,
       aIntClk10 => aIntClk10,
       bdIFifoRdData => bdIFifoRdData,
@@ -564,6 +572,7 @@ begin
       aPxiStarData => aPxiStarData,
       aPxieDstarB => aPxieDstarB,
       aPxieDstarC => aPxieDstarC,
+% if include_target_io:
       DioMgtRefClk_p => DioMgtRefClk_p,
       DioMgtRefClk_n => DioMgtRefClk_n,
       DioMgtRefClkFromFam => DioMgtRefClkFromFam,
@@ -573,6 +582,7 @@ begin
       DioMgtTX_p => DioMgtTX_p,
       SocketClk80 => SocketClk80,
       sDioMgtRefClkFromFamPresent => sDioMgtRefClkFromFamPresent,
+% endif
       aDramReady => aDramReady,
       du0DramAddrFifoAddr => du0DramAddrFifoAddr,
       du0DramAddrFifoCmd => du0DramAddrFifoCmd,

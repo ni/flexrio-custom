@@ -32,6 +32,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Configure Git long paths and short workspace path
+        shell: pwsh
+        run: |
+          git config --global core.longpaths true
+
+          if (Test-Path "X:\") {
+            subst X: /d
+          }
+
+          subst X: $env:GITHUB_WORKSPACE
+          "SHORT_WORKSPACE=X:\" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          Write-Host "Mapped $env:GITHUB_WORKSPACE to X:\\"
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -41,6 +54,7 @@ jobs:
       - name: Install Python dependencies
         shell: pwsh
         run: |
+          Set-Location $env:SHORT_WORKSPACE
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
@@ -48,6 +62,7 @@ jobs:
         id: discover
         shell: pwsh
         run: |
+          Set-Location $env:SHORT_WORKSPACE
           $targets = Get-ChildItem targets -Directory |
             Where-Object { Test-Path (Join-Path $_.FullName "projectsettings.ini") } |
             Sort-Object Name |
@@ -63,6 +78,7 @@ jobs:
       - name: Run install-deps once
         shell: pwsh
         run: |
+          Set-Location $env:SHORT_WORKSPACE
           $targets = "${{ steps.discover.outputs.targets }}".Split(',', [System.StringSplitOptions]::RemoveEmptyEntries)
           $firstTarget = $targets[0]
           $inputArgs = ""
@@ -89,6 +105,7 @@ jobs:
       - name: Run per-target gen-target and create-project
         shell: pwsh
         run: |
+          Set-Location $env:SHORT_WORKSPACE
           $targets = "${{ steps.discover.outputs.targets }}".Split(',', [System.StringSplitOptions]::RemoveEmptyEntries)
 
           foreach ($target in $targets) {
@@ -102,4 +119,12 @@ jobs:
               Pop-Location
               Write-Host "::endgroup::"
             }
+          }
+
+      - name: Cleanup mapped drive
+        if: always()
+        shell: pwsh
+        run: |
+          if (Test-Path "X:\") {
+            subst X: /d
           }

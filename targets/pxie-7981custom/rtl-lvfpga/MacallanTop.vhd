@@ -625,21 +625,20 @@ architecture struct of MacallanTop is
   -- in milivolts.  The ONLY valid values are:
   --                          3300 (for 3.3V), 2500 (for 2.5v), 1800 (for 1.8V), and 1100 (for 1.1V).
   --
-  -- By default, this template is set up to use the CLIP socket interface, so these constants get set to the values
-  -- defined in PkgLvFpgaConst.vhd.
-  constant kExpectedTbIdConst : std_logic_vector(31 downto 0) := kExpectedTbId;
-  constant kEnableFamClockSyncConst : std_logic := kEnableFamClockSync;
-  constant kFamClockSrcSelConst : std_logic := kFamClockSrcSel;
-  constant kAuxDioDefaultVoltageConst : natural := kAuxDioDefaultVoltage;
+  -- ***** COMMENT OUT THE FOLLOWING CONSTANTS AND SET YOUR OWN VALUES IF NOT USING THE CLIP SOCKET INTERFACE *****
+  -- constant kExpectedTbIdConst : std_logic_vector(31 downto 0) := kExpectedTbId;
+  -- constant kEnableFamClockSyncConst : std_logic := kEnableFamClockSync;
+  -- constant kFamClockSrcSelConst : std_logic := kFamClockSrcSel;
+  -- constant kAuxDioDefaultVoltageConst : natural := kAuxDioDefaultVoltage;
   --
   -- If you are not using the CLIP socket interface because you are interfacing with the board IO directly from
   -- this HDL file, you must set kExpectedTbIdConst to match which IO frontend your module is using so that the
   -- TbId check matches.  And we set the clocking constants to enable the 100 MHz clock.
   --
-  -- constant kExpectedTbIdConst : std_logic_vector(31 downto 0) := X"FFFFFFFF";  -- Set this to match your IO frontend
-  -- constant kEnableFamClockSyncConst : std_logic := '1';
-  -- constant kFamClockSrcSelConst : std_logic := '1';
-  -- constant kAuxDioDefaultVoltageConst : natural := 3300;
+  constant kExpectedTbIdConst : std_logic_vector(31 downto 0) := X"FFFFFFFF";  -- Set this to match your IO frontend
+  constant kEnableFamClockSyncConst : std_logic := '1';
+  constant kFamClockSrcSelConst : std_logic := '1';
+  constant kAuxDioDefaultVoltageConst : natural := 3300;
 
   -- Disable automatic io_buffer creation for FAM MGTs and signals that will instantiate
   -- their own.

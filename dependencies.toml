@@ -8,5 +8,5 @@ dependencies = [
     "ni/flexrio~=26.2.0.dev0",
     "ni/flexrio-deps~=26.2.0.dev0",
     "ni/flexrio-clips~=26.2.0",
-    "ni/hdl-shared~=0.1.0",    
+    "ni/hdl-shared~=0.2.0.dev0",    
 ]

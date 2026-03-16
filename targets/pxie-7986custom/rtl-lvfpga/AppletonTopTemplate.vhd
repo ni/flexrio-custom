@@ -1228,8 +1228,8 @@ begin  -- architecture struct
   --vhook_e IoRefClkSelect
   IoRefClkSelectx: entity work.IoRefClkSelect (rtl)
     generic map (
-      kEnableFamClockSync => kEnableFamClockSync,  --std_logic
-      kFamClockSrcSel     => kFamClockSrcSel)      --std_logic
+      kEnableFamClockSync => kEnableFamClockSyncConst,  --std_logic
+      kFamClockSrcSel     => kFamClockSrcSelConst)      --std_logic
     port map (
       BusClk                   => BusClk,                    --in  std_logic
       abDiagramReset           => abDiagramReset,            --in  boolean

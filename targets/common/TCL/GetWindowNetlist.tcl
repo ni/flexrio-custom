@@ -1,4 +1,3 @@
-# githubvisible=true
 
 set_property top TheLvWindowFlatWrapper [current_fileset]
 set_property -name {STEPS.SYNTH_DESIGN.ARGS.MORE OPTIONS} -value {-mode out_of_context} -objects [get_runs synth_1]
@@ -10,4 +9,4 @@ reset_run synth_1
 launch_runs synth_1 -jobs 11
 wait_on_run synth_1
 open_run synth_1 -name synth_1
-write_verilog TheLvWindowFlatWrapper.v
+write_verilog TheLvWindowFlatWrapper.v -force

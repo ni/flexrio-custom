@@ -1,7 +1,6 @@
-# githubvisible=true
 
 set ProjName {PROJ_NAME}
-create_project -force $ProjName [pwd] -part xcvu11p-flgb2104-2-e
+create_project -force $ProjName [pwd] -part FPGA_PART
 set_property target_language VHDL [current_project]
 
 ADD_FILES

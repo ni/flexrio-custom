@@ -65,8 +65,6 @@ package PkgTheLvWindowFlatWrapper is
       dOutputStreamInterfaceFromFifo : out std_logic_vector(
         Larger(kNumberOfDmaChannels,1)*SizeOf(kOutputStreamInterfaceFromFifoZero)-1 downto 0);
 
-      -- Memory Buffer DMA Stream Ports (if any)
-
       -- IRQ Ports
       bIrqToInterface : out std_logic_vector(
         Larger(kNumberOfIrqs,1)*kIrqToInterfaceSize*kIrqStatusToInterfaceSize-1 downto 0);
@@ -107,10 +105,22 @@ package PkgTheLvWindowFlatWrapper is
       dHmbDmaClkSocket :  in std_logic;
       dLlbDmaClkSocket :  in std_logic;
 
+
+      -----------------------------------
+      -- Handshaking signals for derived
+      -- clocks on external clocks
+      -----------------------------------
+
+      -----------------------------------
+      -- Clock/Sync IO Node ports
+      -----------------------------------
+      pIntSync100 : in std_logic;
+      aIntClk10 : in std_logic;
+
+  % if include_target_io:
       -----------------------------------
       -- IO Node ports
       -----------------------------------
-  % if include_clip_socket:
       aLvAuxDio0OutputData   : out std_logic;
       aLvAuxDio0InputData    : in  std_logic;
       aLvAuxDio0OutputEnable : out std_logic;
@@ -175,60 +185,7 @@ package PkgTheLvWindowFlatWrapper is
       oDoneaLvAuxDio7        : in  std_logic;
       oDirectionaLvAuxDio7   : out std_logic;
       oRequestaLvAuxDio7     : out std_logic;
-  % endif
-      pIntSync100 : in std_logic;
-      aIntClk10 : in std_logic;
 
-      -----------------------------------
-      -- Target Method and Properties ports
-      -----------------------------------
-      bdIFifoRdData : out  std_logic_vector(63 downto 0);
-      bdIFifoRdDataValid : out std_logic;
-      bdIFifoRdReadyForInput : in std_logic;
-      bdIFifoRdIsError : out std_logic;
-      bdIFifoWrData : in  std_logic_vector(63 downto 0);
-      bdIFifoWrDataValid : in std_logic;
-      bdIFifoWrReadyForOutput : out std_logic;
-      bdAxiStreamRdFromClipTData : in  std_logic_vector(31 downto 0);
-      bdAxiStreamRdFromClipTLast : in std_logic;
-      bdAxiStreamRdFromClipTValid : in std_logic;
-      bdAxiStreamRdToClipTReady : out std_logic;
-      bdAxiStreamWrToClipTData : out  std_logic_vector(31 downto 0);
-      bdAxiStreamWrToClipTLast : out std_logic;
-      bdAxiStreamWrToClipTValid : out std_logic;
-      bdAxiStreamWrFromClipTReady : in std_logic;
-
-      -----------------------------------
-      -- Pass through LabVIEW FPGA ports
-      -----------------------------------
-
-      ----------------------------------------
-      -- Trigger Routing Socketed CLIP
-      ----------------------------------------
-      PxieClk100Trigger : in std_logic;
-      pIntSync100Trigger : in std_logic;
-      dTdcAssert : out std_logic;
-      dDevClkEn : in std_logic;
-      sTdcDeassert : out std_logic;
-      aIntClk10Trigger : in std_logic;
-      bRoutingClipPresent : out std_logic;
-      bRoutingClipNiCompatible : out std_logic;
-      BusClkTrigger : in std_logic;
-      abBusResetTrigger : in std_logic;
-      bTriggerRoutingBaRegPortInAddress : in std_logic_vector(27 downto 0);
-      bTriggerRoutingBaRegPortInData : in std_logic_vector(63 downto 0);
-      bTriggerRoutingBaRegPortInWtStrobe : in std_logic_vector(7 downto 0);
-      bTriggerRoutingBaRegPortInRdStrobe : in std_logic_vector(7 downto 0);
-      bTriggerRoutingBaRegPortOutData : out std_logic_vector(63 downto 0);
-      bTriggerRoutingBaRegPortOutAck : out std_logic;
-      aPxiTrigDataIn : in  std_logic_vector(7 downto 0);
-      aPxiTrigDataOut : out std_logic_vector(7 downto 0);
-      aPxiTrigDataTri : out std_logic_vector(7 downto 0);
-      aPxiStarData : in std_logic;
-      aPxieDstarB : in std_logic;
-      aPxieDstarC : out std_logic;
-
-  % if include_clip_socket:
       -----------------------------------
       -- CLIP Socket ports
       -----------------------------------
@@ -302,7 +259,7 @@ package PkgTheLvWindowFlatWrapper is
       aTriggerIn               : in  std_logic;
       aTriggerOut              : out std_logic;
 
-        --Synchronization Signals
+      --Synchronization Signals
         DeviceClk              : in  std_logic;
         aJesd204SyncReqIn_n    : in  std_logic;
         aJesd204SyncReqOut_n   : out std_logic;
@@ -311,7 +268,7 @@ package PkgTheLvWindowFlatWrapper is
         dtTdcAssert            : in  std_logic;
         dtDevClkEn             : out std_logic;
 
-        --MGT Reference Clocks
+      --MGT Reference Clocks
         MgtRefClk_p       : in  std_logic_vector(3 downto 0);
         MgtRefClk_n       : in  std_logic_vector(3 downto 0);
         ExportedMgtRefClk : out std_logic;
@@ -320,21 +277,79 @@ package PkgTheLvWindowFlatWrapper is
         DioMgtRefClk_n         : in  std_logic;
         DioMgtRefClkFromFam    : in  std_logic;
 
-        --MGT Ports
+      --MGT Ports
         MgtPortRx_n       : in  std_logic_vector(15 downto 0);
         MgtPortRx_p       : in  std_logic_vector(15 downto 0);
         MgtPortTx_n       : out std_logic_vector(15 downto 0);
         MgtPortTx_p       : out std_logic_vector(15 downto 0);
 
-        --Nanopitch I/O
+      --Nanopitch I/O
         DioMgtRX_n               : in  std_logic_vector(3 downto 0);
         DioMgtRX_p               : in  std_logic_vector(3 downto 0);
         DioMgtTX_n               : out std_logic_vector(3 downto 0);
         DioMgtTX_p               : out std_logic_vector(3 downto 0);
         SocketClk80              : in  std_logic;
-        --Synchronous to SocketClk80
+      --Synchronous to SocketClk80
         sDioMgtRefClkFromFamPresent : in  std_logic;
   % endif
+
+      -----------------------------------
+      -- Target Method and Properties ports
+      -----------------------------------
+      bdIFifoRdData : out  std_logic_vector(63 downto 0);
+      bdIFifoRdDataValid : out std_logic;
+      bdIFifoRdReadyForInput : in std_logic;
+      bdIFifoRdIsError : out std_logic;
+      bdIFifoWrData : in  std_logic_vector(63 downto 0);
+      bdIFifoWrDataValid : in std_logic;
+      bdIFifoWrReadyForOutput : out std_logic;
+      bdAxiStreamRdFromClipTData : in  std_logic_vector(31 downto 0);
+      bdAxiStreamRdFromClipTLast : in std_logic;
+      bdAxiStreamRdFromClipTValid : in std_logic;
+      bdAxiStreamRdToClipTReady : out std_logic;
+      bdAxiStreamWrToClipTData : out  std_logic_vector(31 downto 0);
+      bdAxiStreamWrToClipTLast : out std_logic;
+      bdAxiStreamWrToClipTValid : out std_logic;
+      bdAxiStreamWrFromClipTReady : in std_logic;
+
+      -----------------------------------
+      -- Pass through LabVIEW FPGA ports
+      -----------------------------------
+
+      ----------------------------------------
+      -- Trigger Routing Socketed CLIP
+      ----------------------------------------
+      PxieClk100Trigger : in std_logic;
+      pIntSync100Trigger : in std_logic;
+      dTdcAssert : out std_logic;
+      dDevClkEn : in std_logic;
+      sTdcDeassert : out std_logic;
+      aIntClk10Trigger : in std_logic;
+      --ID Signals from Routing CLIP
+      bRoutingClipPresent : out std_logic;
+      bRoutingClipNiCompatible : out std_logic;
+
+      BusClkTrigger : in std_logic;
+      abBusResetTrigger : in std_logic;
+
+      -- From PkgBaRegPort
+      -- RegPortIn_t Size = Address 28 Data 64 WrStrobes 8 RdStrobes 8 = 108
+      -- RegPortOut_t Size = Data 64 + Ack 1 = 65
+      bTriggerRoutingBaRegPortInAddress : in std_logic_vector(27 downto 0);
+      bTriggerRoutingBaRegPortInData : in std_logic_vector(63 downto 0);
+      bTriggerRoutingBaRegPortInWtStrobe : in std_logic_vector(7 downto 0);
+      bTriggerRoutingBaRegPortInRdStrobe : in std_logic_vector(7 downto 0);
+
+      bTriggerRoutingBaRegPortOutData : out std_logic_vector(63 downto 0);
+      bTriggerRoutingBaRegPortOutAck : out std_logic;
+
+      aPxiTrigDataIn : in  std_logic_vector(7 downto 0);
+      aPxiTrigDataOut : out std_logic_vector(7 downto 0);
+      aPxiTrigDataTri : out std_logic_vector(7 downto 0);
+      aPxiStarData : in std_logic;
+      aPxieDstarB : in std_logic;
+      aPxieDstarC : out std_logic;
+
 
       -----------------------------------------------------------------------------
       --Dram Interface

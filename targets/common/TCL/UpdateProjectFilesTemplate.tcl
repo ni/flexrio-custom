@@ -1,4 +1,3 @@
-# githubvisible=true
 
 remove_files [get_files]
 

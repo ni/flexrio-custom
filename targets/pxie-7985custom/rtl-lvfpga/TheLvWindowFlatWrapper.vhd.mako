@@ -63,8 +63,6 @@ entity TheLvWindowFlatWrapper is
     dOutputStreamInterfaceFromFifo : out std_logic_vector(
       Larger(kNumberOfDmaChannels,1)*SizeOf(kOutputStreamInterfaceFromFifoZero)-1 downto 0);
 
-    -- Memory Buffer DMA Stream Ports (if any)
-
     -- IRQ Ports
     bIrqToInterface : out std_logic_vector(
       Larger(kNumberOfIrqs,1)*kIrqToInterfaceSize*kIrqStatusToInterfaceSize-1 downto 0);
@@ -105,10 +103,23 @@ entity TheLvWindowFlatWrapper is
     dHmbDmaClkSocket :  in std_logic;
     dLlbDmaClkSocket :  in std_logic;
 
+
+    -----------------------------------
+    -- Handshaking signals for derived
+    -- clocks on external clocks
+    -----------------------------------
+
+    -----------------------------------
+    -- Clock/Sync IO Node ports
+    -----------------------------------
+    pIntSync100 : in std_logic;
+    aIntClk10 : in std_logic;
+
+
+% if include_target_io:  
     -----------------------------------
     -- IO Node ports
-    -----------------------------------
-% if include_clip_socket:
+    -----------------------------------  
     aLvAuxDio0OutputData   : out std_logic;
     aLvAuxDio0InputData    : in  std_logic;
     aLvAuxDio0OutputEnable : out std_logic;
@@ -173,60 +184,7 @@ entity TheLvWindowFlatWrapper is
     oDoneaLvAuxDio7        : in  std_logic;
     oDirectionaLvAuxDio7   : out std_logic;
     oRequestaLvAuxDio7     : out std_logic;
-% endif
-    pIntSync100 : in std_logic;
-    aIntClk10 : in std_logic;
-
-    -----------------------------------
-    -- Target Method and Properties ports
-    -----------------------------------
-    bdIFifoRdData : out  std_logic_vector(63 downto 0);
-    bdIFifoRdDataValid : out std_logic;
-    bdIFifoRdReadyForInput : in std_logic;
-    bdIFifoRdIsError : out std_logic;
-    bdIFifoWrData : in  std_logic_vector(63 downto 0);
-    bdIFifoWrDataValid : in std_logic;
-    bdIFifoWrReadyForOutput : out std_logic;
-    bdAxiStreamRdFromClipTData : in  std_logic_vector(31 downto 0);
-    bdAxiStreamRdFromClipTLast : in std_logic;
-    bdAxiStreamRdFromClipTValid : in std_logic;
-    bdAxiStreamRdToClipTReady : out std_logic;
-    bdAxiStreamWrToClipTData : out  std_logic_vector(31 downto 0);
-    bdAxiStreamWrToClipTLast : out std_logic;
-    bdAxiStreamWrToClipTValid : out std_logic;
-    bdAxiStreamWrFromClipTReady : in std_logic;
-
-    -----------------------------------
-    -- Pass through LabVIEW FPGA ports
-    -----------------------------------
-
-    ----------------------------------------
-    -- Trigger Routing Socketed CLIP
-    ----------------------------------------
-    PxieClk100Trigger : in std_logic;
-    pIntSync100Trigger : in std_logic;
-    dTdcAssert : out std_logic;
-    dDevClkEn : in std_logic;
-    sTdcDeassert : out std_logic;
-    aIntClk10Trigger : in std_logic;
-    bRoutingClipPresent : out std_logic;
-    bRoutingClipNiCompatible : out std_logic;
-    BusClkTrigger : in std_logic;
-    abBusResetTrigger : in std_logic;
-    bTriggerRoutingBaRegPortInAddress : in std_logic_vector(27 downto 0);
-    bTriggerRoutingBaRegPortInData : in std_logic_vector(63 downto 0);
-    bTriggerRoutingBaRegPortInWtStrobe : in std_logic_vector(7 downto 0);
-    bTriggerRoutingBaRegPortInRdStrobe : in std_logic_vector(7 downto 0);
-    bTriggerRoutingBaRegPortOutData : out std_logic_vector(63 downto 0);
-    bTriggerRoutingBaRegPortOutAck : out std_logic;
-    aPxiTrigDataIn : in  std_logic_vector(7 downto 0);
-    aPxiTrigDataOut : out std_logic_vector(7 downto 0);
-    aPxiTrigDataTri : out std_logic_vector(7 downto 0);
-    aPxiStarData : in std_logic;
-    aPxieDstarB : in std_logic;
-    aPxieDstarC : out std_logic;
-
-% if include_clip_socket:
+    
     -----------------------------------
     -- CLIP Socket ports
     -----------------------------------
@@ -327,8 +285,68 @@ entity TheLvWindowFlatWrapper is
     DioMgtTX_n                  : out std_logic_vector(3 downto 0);
     DioMgtTX_p                  : out std_logic_vector(3 downto 0);
     SocketClk80                 : in  std_logic;
+    --Synchronous to SocketClk80
     sDioMgtRefClkFromFamPresent : in  std_logic;
 % endif
+
+
+    -----------------------------------
+    -- Target Method and Properties ports
+    -----------------------------------
+    bdIFifoRdData : out  std_logic_vector(63 downto 0);
+    bdIFifoRdDataValid : out std_logic;
+    bdIFifoRdReadyForInput : in std_logic;
+    bdIFifoRdIsError : out std_logic;
+    bdIFifoWrData : in  std_logic_vector(63 downto 0);
+    bdIFifoWrDataValid : in std_logic;
+    bdIFifoWrReadyForOutput : out std_logic;
+    bdAxiStreamRdFromClipTData : in  std_logic_vector(31 downto 0);
+    bdAxiStreamRdFromClipTLast : in std_logic;
+    bdAxiStreamRdFromClipTValid : in std_logic;
+    bdAxiStreamRdToClipTReady : out std_logic;
+    bdAxiStreamWrToClipTData : out  std_logic_vector(31 downto 0);
+    bdAxiStreamWrToClipTLast : out std_logic;
+    bdAxiStreamWrToClipTValid : out std_logic;
+    bdAxiStreamWrFromClipTReady : in std_logic;
+
+    -----------------------------------
+    -- Pass through LabVIEW FPGA ports
+    -----------------------------------
+
+    ----------------------------------------
+    -- Trigger Routing Socketed CLIP
+    ----------------------------------------
+    PxieClk100Trigger : in std_logic;
+    pIntSync100Trigger : in std_logic;
+    dTdcAssert : out std_logic;
+    dDevClkEn : in std_logic;
+    sTdcDeassert : out std_logic;
+    aIntClk10Trigger : in std_logic;
+    --ID Signals from Routing CLIP
+    bRoutingClipPresent : out std_logic;
+    bRoutingClipNiCompatible : out std_logic;
+
+    BusClkTrigger : in std_logic;
+    abBusResetTrigger : in std_logic;
+
+    -- From PkgBaRegPort
+    -- RegPortIn_t Size = Address 28 Data 64 WrStrobes 8 RdStrobes 8 = 108
+    -- RegPortOut_t Size = Data 64 + Ack 1 = 65
+    bTriggerRoutingBaRegPortInAddress : in std_logic_vector(27 downto 0);
+    bTriggerRoutingBaRegPortInData : in std_logic_vector(63 downto 0);
+    bTriggerRoutingBaRegPortInWtStrobe : in std_logic_vector(7 downto 0);
+    bTriggerRoutingBaRegPortInRdStrobe : in std_logic_vector(7 downto 0);
+
+    bTriggerRoutingBaRegPortOutData : out std_logic_vector(63 downto 0);
+    bTriggerRoutingBaRegPortOutAck : out std_logic;
+
+    aPxiTrigDataIn : in  std_logic_vector(7 downto 0);
+    aPxiTrigDataOut : out std_logic_vector(7 downto 0);
+    aPxiTrigDataTri : out std_logic_vector(7 downto 0);
+    aPxiStarData : in std_logic;
+    aPxieDstarB : in std_logic;
+    aPxieDstarC : out std_logic;
+
 
     -----------------------------------------------------------------------------
     --Dram Interface
@@ -541,20 +559,30 @@ begin
       -----------------------------------
       -- Communication interface ports
       -----------------------------------
+      -- Reset ports
       aBusReset => aBusResetBool,
+
+      -- Register Access/ PIO Ports
       bRegPortIn => bRegPortInInternal,
       bRegPortOut => bRegPortOutInternal,
       bRegPortTimeout => bRegPortTimeoutBool,
+
+      -- DMA Stream Ports
       dInputStreamInterfaceToFifo => dInputStreamInterfaceToFifoInternal,
       dInputStreamInterfaceFromFifo => dInputStreamInterfaceFromFifoInternal,
       dOutputStreamInterfaceToFifo => dOutputStreamInterfaceToFifoInternal,
       dOutputStreamInterfaceFromFifo => dOutputStreamInterfaceFromFifoInternal,
+
+      -- IRQ Ports
       bIrqToInterface => bIrqToInterfaceInternal,
+
+      -- MasterPort Ports
       dNiFpgaMasterWriteRequestFromMaster => dNiFpgaMasterWriteRequestFromMasterInternal,
       dNiFpgaMasterWriteRequestToMaster => dNiFpgaMasterWriteRequestToMasterInternal,
       dNiFpgaMasterWriteDataFromMaster => dNiFpgaMasterWriteDataFromMasterInternal,
       dNiFpgaMasterWriteDataToMaster => dNiFpgaMasterWriteDataToMasterInternal,
       dNiFpgaMasterWriteStatusToMaster => dNiFpgaMasterWriteStatusToMasterInternal,
+
       dNiFpgaMasterReadRequestFromMaster => dNiFpgaMasterReadRequestFromMasterInternal,
       dNiFpgaMasterReadRequestToMaster => dNiFpgaMasterReadRequestToMasterInternal,
       dNiFpgaMasterReadDataToMaster => dNiFpgaMasterReadDataToMasterInternal,
@@ -576,10 +604,23 @@ begin
       dHmbDmaClkSocket => dHmbDmaClkSocket,
       dLlbDmaClkSocket => dLlbDmaClkSocket,
 
+
+      -----------------------------------
+      -- Handshaking signals for derived
+      -- clocks on external clocks
+      -----------------------------------
+
+      -----------------------------------
+      -- Clock/Sync IO Node ports
+      -----------------------------------
+      pIntSync100 => pIntSync100,
+      aIntClk10 => aIntClk10,
+
+
+  % if include_target_io:  
       -----------------------------------
       -- IO Node ports
-      -----------------------------------
-% if include_clip_socket:
+      -----------------------------------  
       aLvAuxDio0OutputData => aLvAuxDio0OutputData,
       aLvAuxDio0InputData => aLvAuxDio0InputData,
       aLvAuxDio0OutputEnable => aLvAuxDio0OutputEnable,
@@ -644,9 +685,111 @@ begin
       oDoneaLvAuxDio7 => oDoneaLvAuxDio7,
       oDirectionaLvAuxDio7 => oDirectionaLvAuxDio7,
       oRequestaLvAuxDio7 => oRequestaLvAuxDio7,
-% endif
-      pIntSync100 => pIntSync100,
-      aIntClk10 => aIntClk10,
+      
+      -----------------------------------
+      -- CLIP Socket ports
+      -----------------------------------
+
+      -- AxiClk is the same as BusCLk is the same as PllClk80
+      AxiClk => AxiClk,
+
+      xDiagramAxiStreamFromClipTData => xDiagramAxiStreamFromClipTData,
+      xDiagramAxiStreamFromClipTLast => xDiagramAxiStreamFromClipTLast,
+      xDiagramAxiStreamFromClipTReady => xDiagramAxiStreamFromClipTReady,
+      xDiagramAxiStreamFromClipTValid => xDiagramAxiStreamFromClipTValid,
+      xDiagramAxiStreamToClipTData => xDiagramAxiStreamToClipTData,
+      xDiagramAxiStreamToClipTLast => xDiagramAxiStreamToClipTLast,
+      xDiagramAxiStreamToClipTReady => xDiagramAxiStreamToClipTReady,
+      xDiagramAxiStreamToClipTValid => xDiagramAxiStreamToClipTValid,
+
+      xHostAxiStreamFromClipTData => xHostAxiStreamFromClipTData,
+      xHostAxiStreamFromClipTLast => xHostAxiStreamFromClipTLast,
+      xHostAxiStreamFromClipTReady => xHostAxiStreamFromClipTReady,
+      xHostAxiStreamFromClipTValid => xHostAxiStreamFromClipTValid,
+      xHostAxiStreamToClipTData => xHostAxiStreamToClipTData,
+      xHostAxiStreamToClipTLast => xHostAxiStreamToClipTLast,
+      xHostAxiStreamToClipTReady => xHostAxiStreamToClipTReady,
+      xHostAxiStreamToClipTValid => xHostAxiStreamToClipTValid,
+
+
+      -- Axi4Lite Interface from the CLIP to FixedLogic
+      xClipAxi4LiteMasterARAddr => xClipAxi4LiteMasterARAddr,
+      xClipAxi4LiteMasterARProt => xClipAxi4LiteMasterARProt,
+      xClipAxi4LiteMasterARReady => xClipAxi4LiteMasterARReady,
+      xClipAxi4LiteMasterARValid => xClipAxi4LiteMasterARValid,
+      xClipAxi4LiteMasterAWAddr => xClipAxi4LiteMasterAWAddr,
+      xClipAxi4LiteMasterAWProt => xClipAxi4LiteMasterAWProt,
+      xClipAxi4LiteMasterAWReady => xClipAxi4LiteMasterAWReady,
+      xClipAxi4LiteMasterAWValid => xClipAxi4LiteMasterAWValid,
+      xClipAxi4LiteMasterBReady => xClipAxi4LiteMasterBReady,
+      xClipAxi4LiteMasterBResp => xClipAxi4LiteMasterBResp,
+      xClipAxi4LiteMasterBValid => xClipAxi4LiteMasterBValid,
+      xClipAxi4LiteMasterRData => xClipAxi4LiteMasterRData,
+      xClipAxi4LiteMasterRReady => xClipAxi4LiteMasterRReady,
+      xClipAxi4LiteMasterRResp => xClipAxi4LiteMasterRResp,
+      xClipAxi4LiteMasterRValid => xClipAxi4LiteMasterRValid,
+      xClipAxi4LiteMasterWData => xClipAxi4LiteMasterWData,
+      xClipAxi4LiteMasterWReady => xClipAxi4LiteMasterWReady,
+      xClipAxi4LiteMasterWStrb => xClipAxi4LiteMasterWStrb,
+      xClipAxi4LiteMasterWValid => xClipAxi4LiteMasterWValid,
+      xClipAxi4LiteInterrupt => xClipAxi4LiteInterrupt,
+
+      --Configuration Interface
+      -- Config Interface TX
+      aConfigTxClkLvds => aConfigTxClkLvds,
+      aConfigTxClkSe => aConfigTxClkSe,
+      aConfigTxDataSe => aConfigTxDataSe,
+
+      -- Config Interface RX
+      aConfigRxClkLvds => aConfigRxClkLvds,
+      aConfigRxClkSe => aConfigRxClkSe,
+      aConfigRxDataSe => aConfigRxDataSe,
+
+      -- Reserved GPIO
+      aRsrvGpio_n => aRsrvGpio_n,
+      aRsrvGpio_p => aRsrvGpio_p,
+
+      --Reserved CLIP Signals
+      aReservedToClip => aReservedToClip,
+      aReservedFromClip => aReservedFromClip,
+      stIoModuleSupportsFRAGLs => stIoModuleSupportsFRAGLs,
+
+      --General purpose Synchronization Signals
+      aGpoSync => aGpoSync,
+      aTriggerIn => aTriggerIn,
+      aTriggerOut => aTriggerOut,
+
+      --Synchronization Signals
+      DeviceClk => DeviceClk,
+      aJesd204SyncReqIn_n => aJesd204SyncReqIn_n,
+      aJesd204SyncReqOut_n => aJesd204SyncReqOut_n,
+      dvJesd204SysRef => dvJesd204SysRef,
+      dvTdcAssert => dvTdcAssert,
+      dtTdcAssert => dtTdcAssert,
+      dtDevClkEn => dtDevClkEn,
+
+      --IO MGT Ports
+      MgtPortRx_n => MgtPortRx_n,
+      MgtPortRx_p => MgtPortRx_p,
+      MgtPortTx_n => MgtPortTx_n,
+      MgtPortTx_p => MgtPortTx_p,
+      MgtRefClk_p => MgtRefClk_p,
+      MgtRefClk_n => MgtRefClk_n,
+      ExportedMgtRefClk => ExportedMgtRefClk,
+
+      --Nanopitch I/O
+      DioMgtRefClk_p => DioMgtRefClk_p,
+      DioMgtRefClk_n => DioMgtRefClk_n,
+      DioMgtRefClkFromFam => DioMgtRefClkFromFam,
+      DioMgtRX_n => DioMgtRX_n,
+      DioMgtRX_p => DioMgtRX_p,
+      DioMgtTX_n => DioMgtTX_n,
+      DioMgtTX_p => DioMgtTX_p,
+      SocketClk80 => SocketClk80,
+      --Synchronous to SocketClk80
+      sDioMgtRefClkFromFamPresent => sDioMgtRefClkFromFamPresent,
+  % endif
+
 
       -----------------------------------
       -- Target Method and Properties ports
@@ -680,16 +823,24 @@ begin
       dDevClkEn => dDevClkEn,
       sTdcDeassert => sTdcDeassert,
       aIntClk10Trigger => aIntClk10Trigger,
+      --ID Signals from Routing CLIP
       bRoutingClipPresent => bRoutingClipPresent,
       bRoutingClipNiCompatible => bRoutingClipNiCompatible,
+
       BusClkTrigger => BusClkTrigger,
       abBusResetTrigger => abBusResetTrigger,
+
+      -- From PkgBaRegPort
+      -- RegPortIn_t Size = Address 28 Data 64 WrStrobes 8 RdStrobes 8 = 108
+      -- RegPortOut_t Size = Data 64 + Ack 1 = 65
       bTriggerRoutingBaRegPortInAddress => bTriggerRoutingBaRegPortInAddress,
       bTriggerRoutingBaRegPortInData => bTriggerRoutingBaRegPortInData,
       bTriggerRoutingBaRegPortInWtStrobe => bTriggerRoutingBaRegPortInWtStrobe,
       bTriggerRoutingBaRegPortInRdStrobe => bTriggerRoutingBaRegPortInRdStrobe,
+
       bTriggerRoutingBaRegPortOutData => bTriggerRoutingBaRegPortOutData,
       bTriggerRoutingBaRegPortOutAck => bTriggerRoutingBaRegPortOutAck,
+
       aPxiTrigDataIn => aPxiTrigDataIn,
       aPxiTrigDataOut => aPxiTrigDataOut,
       aPxiTrigDataTri => aPxiTrigDataTri,
@@ -697,85 +848,6 @@ begin
       aPxieDstarB => aPxieDstarB,
       aPxieDstarC => aPxieDstarC,
 
-% if include_clip_socket:
-      -----------------------------------
-      -- CLIP Socket ports
-      -----------------------------------
-      AxiClk => AxiClk,
-      xDiagramAxiStreamFromClipTData => xDiagramAxiStreamFromClipTData,
-      xDiagramAxiStreamFromClipTLast => xDiagramAxiStreamFromClipTLast,
-      xDiagramAxiStreamFromClipTReady => xDiagramAxiStreamFromClipTReady,
-      xDiagramAxiStreamFromClipTValid => xDiagramAxiStreamFromClipTValid,
-      xDiagramAxiStreamToClipTData => xDiagramAxiStreamToClipTData,
-      xDiagramAxiStreamToClipTLast => xDiagramAxiStreamToClipTLast,
-      xDiagramAxiStreamToClipTReady => xDiagramAxiStreamToClipTReady,
-      xDiagramAxiStreamToClipTValid => xDiagramAxiStreamToClipTValid,
-      xHostAxiStreamFromClipTData => xHostAxiStreamFromClipTData,
-      xHostAxiStreamFromClipTLast => xHostAxiStreamFromClipTLast,
-      xHostAxiStreamFromClipTReady => xHostAxiStreamFromClipTReady,
-      xHostAxiStreamFromClipTValid => xHostAxiStreamFromClipTValid,
-      xHostAxiStreamToClipTData => xHostAxiStreamToClipTData,
-      xHostAxiStreamToClipTLast => xHostAxiStreamToClipTLast,
-      xHostAxiStreamToClipTReady => xHostAxiStreamToClipTReady,
-      xHostAxiStreamToClipTValid => xHostAxiStreamToClipTValid,
-      xClipAxi4LiteMasterARAddr => xClipAxi4LiteMasterARAddr,
-      xClipAxi4LiteMasterARProt => xClipAxi4LiteMasterARProt,
-      xClipAxi4LiteMasterARReady => xClipAxi4LiteMasterARReady,
-      xClipAxi4LiteMasterARValid => xClipAxi4LiteMasterARValid,
-      xClipAxi4LiteMasterAWAddr => xClipAxi4LiteMasterAWAddr,
-      xClipAxi4LiteMasterAWProt => xClipAxi4LiteMasterAWProt,
-      xClipAxi4LiteMasterAWReady => xClipAxi4LiteMasterAWReady,
-      xClipAxi4LiteMasterAWValid => xClipAxi4LiteMasterAWValid,
-      xClipAxi4LiteMasterBReady => xClipAxi4LiteMasterBReady,
-      xClipAxi4LiteMasterBResp => xClipAxi4LiteMasterBResp,
-      xClipAxi4LiteMasterBValid => xClipAxi4LiteMasterBValid,
-      xClipAxi4LiteMasterRData => xClipAxi4LiteMasterRData,
-      xClipAxi4LiteMasterRReady => xClipAxi4LiteMasterRReady,
-      xClipAxi4LiteMasterRResp => xClipAxi4LiteMasterRResp,
-      xClipAxi4LiteMasterRValid => xClipAxi4LiteMasterRValid,
-      xClipAxi4LiteMasterWData => xClipAxi4LiteMasterWData,
-      xClipAxi4LiteMasterWReady => xClipAxi4LiteMasterWReady,
-      xClipAxi4LiteMasterWStrb => xClipAxi4LiteMasterWStrb,
-      xClipAxi4LiteMasterWValid => xClipAxi4LiteMasterWValid,
-      xClipAxi4LiteInterrupt => xClipAxi4LiteInterrupt,
-      aConfigTxClkLvds => aConfigTxClkLvds,
-      aConfigTxClkSe => aConfigTxClkSe,
-      aConfigTxDataSe => aConfigTxDataSe,
-      aConfigRxClkLvds => aConfigRxClkLvds,
-      aConfigRxClkSe => aConfigRxClkSe,
-      aConfigRxDataSe => aConfigRxDataSe,
-      aRsrvGpio_n => aRsrvGpio_n,
-      aRsrvGpio_p => aRsrvGpio_p,
-      aReservedToClip => aReservedToClip,
-      aReservedFromClip => aReservedFromClip,
-      stIoModuleSupportsFRAGLs => stIoModuleSupportsFRAGLs,
-      aGpoSync => aGpoSync,
-      aTriggerIn => aTriggerIn,
-      aTriggerOut => aTriggerOut,
-      DeviceClk => DeviceClk,
-      aJesd204SyncReqIn_n => aJesd204SyncReqIn_n,
-      aJesd204SyncReqOut_n => aJesd204SyncReqOut_n,
-      dvJesd204SysRef => dvJesd204SysRef,
-      dvTdcAssert => dvTdcAssert,
-      dtTdcAssert => dtTdcAssert,
-      dtDevClkEn => dtDevClkEn,
-      MgtPortRx_n => MgtPortRx_n,
-      MgtPortRx_p => MgtPortRx_p,
-      MgtPortTx_n => MgtPortTx_n,
-      MgtPortTx_p => MgtPortTx_p,
-      MgtRefClk_p => MgtRefClk_p,
-      MgtRefClk_n => MgtRefClk_n,
-      ExportedMgtRefClk => ExportedMgtRefClk,
-      DioMgtRefClk_p => DioMgtRefClk_p,
-      DioMgtRefClk_n => DioMgtRefClk_n,
-      DioMgtRefClkFromFam => DioMgtRefClkFromFam,
-      DioMgtRX_n => DioMgtRX_n,
-      DioMgtRX_p => DioMgtRX_p,
-      DioMgtTX_n => DioMgtTX_n,
-      DioMgtTX_p => DioMgtTX_p,
-      SocketClk80 => SocketClk80,
-      sDioMgtRefClkFromFamPresent => sDioMgtRefClkFromFamPresent,
-% endif
 
       -----------------------------------------------------------------------------
       --Dram Interface

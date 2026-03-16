@@ -1,4 +1,4 @@
-#githubvisible=true
+
 set_property BITSTREAM.GENERAL.COMPRESS "True" [current_design]
 set_property BITSTREAM.GENERAL.CRC "Enable" [current_design]
 set_property BITSTREAM.CONFIG.CCLKPIN "Pullup" [current_design]

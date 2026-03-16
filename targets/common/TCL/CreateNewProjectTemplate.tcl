@@ -1,4 +1,3 @@
-# githubvisible=true
 
 set ProjName {PROJ_NAME}
 create_project -force $ProjName [pwd] -part FPGA_PART

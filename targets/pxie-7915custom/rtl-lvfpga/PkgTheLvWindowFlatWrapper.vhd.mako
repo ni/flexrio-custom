@@ -65,8 +65,6 @@ package PkgTheLvWindowFlatWrapper is
       dOutputStreamInterfaceFromFifo : out std_logic_vector(
         Larger(kNumberOfDmaChannels,1)*SizeOf(kOutputStreamInterfaceFromFifoZero)-1 downto 0);
 
-      -- Memory Buffer DMA Stream Ports (if any)
-
       -- IRQ Ports
       bIrqToInterface : out std_logic_vector(
         Larger(kNumberOfIrqs,1)*kIrqToInterfaceSize*kIrqStatusToInterfaceSize-1 downto 0);
@@ -107,10 +105,22 @@ package PkgTheLvWindowFlatWrapper is
       dHmbDmaClkSocket :  in std_logic;
       dLlbDmaClkSocket :  in std_logic;
 
+
+      -----------------------------------
+      -- Handshaking signals for derived
+      -- clocks on external clocks
+      -----------------------------------
+
+      -----------------------------------
+      -- Clock/Sync IO Node ports
+      -----------------------------------
+      pIntSync100 : in std_logic;
+      aIntClk10 : in std_logic;
+
+  % if include_target_io:
       -----------------------------------
       -- IO Node ports
       -----------------------------------
-  % if include_clip_socket:
       aLvAuxDio0OutputData   : out std_logic;
       aLvAuxDio0InputData    : in  std_logic;
       aLvAuxDio0OutputEnable : out std_logic;
@@ -175,9 +185,23 @@ package PkgTheLvWindowFlatWrapper is
       oDoneaLvAuxDio7        : in  std_logic;
       oDirectionaLvAuxDio7   : out std_logic;
       oRequestaLvAuxDio7     : out std_logic;
+
+      -----------------------------------
+      -- MGT CLIP Socket ports
+      -----------------------------------  
+      --Nanopitch I/O
+      DioMgtRefClk_p              : in  std_logic;
+      DioMgtRefClk_n              : in  std_logic;
+      DioMgtRefClkFromFam         : in  std_logic;
+      DioMgtRX_n                  : in  std_logic_vector(3 downto 0);
+      DioMgtRX_p                  : in  std_logic_vector(3 downto 0);
+      DioMgtTX_n                  : out std_logic_vector(3 downto 0);
+      DioMgtTX_p                  : out std_logic_vector(3 downto 0);
+      SocketClk80                 : in  std_logic;
+      --Synchronous to SocketClk80
+      sDioMgtRefClkFromFamPresent : in  std_logic;
+
   % endif
-      pIntSync100 : in std_logic;
-      aIntClk10 : in std_logic;
 
       -----------------------------------
       -- Target Method and Properties ports
@@ -211,16 +235,24 @@ package PkgTheLvWindowFlatWrapper is
       dDevClkEn : in std_logic;
       sTdcDeassert : out std_logic;
       aIntClk10Trigger : in std_logic;
+      --ID Signals from Routing CLIP
       bRoutingClipPresent : out std_logic;
       bRoutingClipNiCompatible : out std_logic;
+
       BusClkTrigger : in std_logic;
       abBusResetTrigger : in std_logic;
+
+      -- From PkgBaRegPort
+      -- RegPortIn_t Size = Address 28 Data 64 WrStrobes 8 RdStrobes 8 = 108
+      -- RegPortOut_t Size = Data 64 + Ack 1 = 65
       bTriggerRoutingBaRegPortInAddress : in std_logic_vector(27 downto 0);
       bTriggerRoutingBaRegPortInData : in std_logic_vector(63 downto 0);
       bTriggerRoutingBaRegPortInWtStrobe : in std_logic_vector(7 downto 0);
       bTriggerRoutingBaRegPortInRdStrobe : in std_logic_vector(7 downto 0);
+
       bTriggerRoutingBaRegPortOutData : out std_logic_vector(63 downto 0);
       bTriggerRoutingBaRegPortOutAck : out std_logic;
+
       aPxiTrigDataIn : in  std_logic_vector(7 downto 0);
       aPxiTrigDataOut : out std_logic_vector(7 downto 0);
       aPxiTrigDataTri : out std_logic_vector(7 downto 0);
@@ -228,22 +260,6 @@ package PkgTheLvWindowFlatWrapper is
       aPxieDstarB : in std_logic;
       aPxieDstarC : out std_logic;
 
-  % if include_clip_socket:
-      -----------------------------------
-      -- CLIP Socket ports
-      -----------------------------------
-
-      --Nanopitch I/O
-      DioMgtRefClk_p              : in  std_logic;
-      DioMgtRefClk_n              : in  std_logic;
-      DioMgtRefClkFromFam         : in  std_logic;
-      DioMgtRX_n                  : in  std_logic_vector(3 downto 0);
-      DioMgtRX_p                  : in  std_logic_vector(3 downto 0);
-      DioMgtTX_n                  : out std_logic_vector(3 downto 0);
-      DioMgtTX_p                  : out std_logic_vector(3 downto 0);
-      SocketClk80                 : in  std_logic;
-      sDioMgtRefClkFromFamPresent : in  std_logic;
-  % endif
 
       -----------------------------------------------------------------------------
       --Dram Interface

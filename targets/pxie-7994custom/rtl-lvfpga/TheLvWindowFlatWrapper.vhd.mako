@@ -63,8 +63,6 @@ entity TheLvWindowFlatWrapper is
     dOutputStreamInterfaceFromFifo : out std_logic_vector(
       Larger(kNumberOfDmaChannels,1)*SizeOf(kOutputStreamInterfaceFromFifoZero)-1 downto 0);
 
-    -- Memory Buffer DMA Stream Ports (if any)
-
     -- IRQ Ports
     bIrqToInterface : out std_logic_vector(
       Larger(kNumberOfIrqs,1)*kIrqToInterfaceSize*kIrqStatusToInterfaceSize-1 downto 0);
@@ -105,8 +103,15 @@ entity TheLvWindowFlatWrapper is
     dHmbDmaClkSocket :  in std_logic;
     dLlbDmaClkSocket :  in std_logic;
 
+
     -----------------------------------
-    -- IO Node ports
+    -- Handshaking signals for derived
+    -- clocks on external clocks
+    -----------------------------------
+
+
+    -----------------------------------
+    -- Clock/Sync IO Node ports
     -----------------------------------
     pIntSync100 : in std_logic;
     aIntClk10 : in std_logic;
@@ -143,16 +148,24 @@ entity TheLvWindowFlatWrapper is
     dDevClkEn : in std_logic;
     sTdcDeassert : out std_logic;
     aIntClk10Trigger : in std_logic;
+    --ID Signals from Routing CLIP
     bRoutingClipPresent : out std_logic;
     bRoutingClipNiCompatible : out std_logic;
+
     BusClkTrigger : in std_logic;
     abBusResetTrigger : in std_logic;
+
+    -- From PkgBaRegPort
+    -- RegPortIn_t Size = Address 28 Data 64 WrStrobes 8 RdStrobes 8 = 108
+    -- RegPortOut_t Size = Data 64 + Ack 1 = 65
     bTriggerRoutingBaRegPortInAddress : in std_logic_vector(27 downto 0);
     bTriggerRoutingBaRegPortInData : in std_logic_vector(63 downto 0);
     bTriggerRoutingBaRegPortInWtStrobe : in std_logic_vector(7 downto 0);
     bTriggerRoutingBaRegPortInRdStrobe : in std_logic_vector(7 downto 0);
+
     bTriggerRoutingBaRegPortOutData : out std_logic_vector(63 downto 0);
     bTriggerRoutingBaRegPortOutAck : out std_logic;
+
     aPxiTrigDataIn : in  std_logic_vector(7 downto 0);
     aPxiTrigDataOut : out std_logic_vector(7 downto 0);
     aPxiTrigDataTri : out std_logic_vector(7 downto 0);
@@ -160,14 +173,14 @@ entity TheLvWindowFlatWrapper is
     aPxieDstarB : in std_logic;
     aPxieDstarC : out std_logic;
 
-% if include_clip_socket:
-  -----------------------------------
-  -- CLIP Socket ports
-  -----------------------------------
+% if include_target_io:
+    -----------------------------------
+    -- CLIP Socket ports
+    -----------------------------------
 
-  -- AxiClk is the same as BusCLk is the same as PllClk80
+    -- AxiClk is the same as BusCLk is the same as PllClk80
   AxiClk                          : in  std_logic;
-  -- Diagram AxiStream
+    -- Diagram AxiStream
   xDiagramAxiStreamFromClipTData  : out std_logic_vector(31 downto 0);
   xDiagramAxiStreamFromClipTLast  : out std_logic;
   xDiagramAxiStreamFromClipTReady : out std_logic;
@@ -176,7 +189,7 @@ entity TheLvWindowFlatWrapper is
   xDiagramAxiStreamToClipTLast    : in  std_logic;
   xDiagramAxiStreamToClipTReady   : in  std_logic;
   xDiagramAxiStreamToClipTValid   : in  std_logic;
-  -- Diagram Host AxiStream
+    -- Diagram Host AxiStream
   xHostAxiStreamFromClipTData     : out std_logic_vector(31 downto 0);
   xHostAxiStreamFromClipTLast     : out std_logic;
   xHostAxiStreamFromClipTReady    : out std_logic;
@@ -185,7 +198,7 @@ entity TheLvWindowFlatWrapper is
   xHostAxiStreamToClipTLast       : in  std_logic;
   xHostAxiStreamToClipTReady      : in  std_logic;
   xHostAxiStreamToClipTValid      : in  std_logic;
-  -- Axi4Lite Interface from the CLIP to FixedLogic
+    -- Axi4Lite Interface from the CLIP to FixedLogic
   xClipAxi4LiteMasterARAddr       : out std_logic_vector(31 downto 0);
   xClipAxi4LiteMasterARProt       : out std_logic_vector(2 downto 0);
   xClipAxi4LiteMasterARReady      : in  std_logic;
@@ -206,24 +219,24 @@ entity TheLvWindowFlatWrapper is
   xClipAxi4LiteMasterWStrb        : out std_logic_vector(3 downto 0);
   xClipAxi4LiteMasterWValid       : out std_logic;
   xClipAxi4LiteInterrupt          : in  std_logic;
-  -- Reserved CLIP Signals
+    -- Reserved CLIP Signals
   aReservedToClip                 : in  std_logic_vector(15 downto 0);
   aReservedFromClip               : out std_logic_vector(15 downto 0);
-  -- CLIP Status/Configuration
+    -- CLIP Status/Configuration
   stIoModuleSupportsFRAGLs        : out std_logic;
   xIoPresent                      : in  std_logic;
   xIoReady                        : in  std_logic;
   xIoOutputEnable                 : in  std_logic;
-  -- Synchronization
+    -- Synchronization
   dvTdcAssert                     : out std_logic;
   dtTdcAssert                     : in  std_logic;
   dtDevClkEn                      : out std_logic;
 
-  -------------------------------------------------------------------------------------
-  -- Base IO
-  -------------------------------------------------------------------------------------
+    -------------------------------------------------------------------------------------
+    -- Base IO
+    -------------------------------------------------------------------------------------
 
-  -- Base board I2C
+    -- Base board I2C
   aBaseI2cSclIn                   : in    std_logic;
   aBaseI2cSclOut                  : out   std_logic;
   aBaseI2cSclTri                  : out   std_logic;
@@ -233,13 +246,13 @@ entity TheLvWindowFlatWrapper is
 
   aBaseConfigReset                : out   std_logic;
 
-  -- Base board DIO
+    -- Base board DIO
   aBaseDioIn                      : in    std_logic_vector(31 downto 0);
   aBaseDioOut                     : out   std_logic_vector(31 downto 0);
   aBaseDioOutEn                   : out   std_logic_vector(31 downto 0);
   aBaseExClk                      : in    std_logic;
 
-  -- MGTs for QSFP ports
+    -- MGTs for QSFP ports
   Qsfp0MgtRx_p                    : in    std_logic_vector(3 downto 0);
   Qsfp0MgtRx_n                    : in    std_logic_vector(3 downto 0);
   Qsfp0MgtTx_p                    : out   std_logic_vector(3 downto 0);
@@ -257,17 +270,17 @@ entity TheLvWindowFlatWrapper is
   Qsfp0SocketClk80                : in    std_logic;
   Qsfp1SocketClk80                : in    std_logic;
 
-  -------------------------------------------------------------------------------------
-  -- IoModule Socketed CLIP - IoModule physical interface
-  -------------------------------------------------------------------------------------
-  -- Configuration / Single-Ended
+    -------------------------------------------------------------------------------------
+    -- IoModule Socketed CLIP - IoModule physical interface
+    -------------------------------------------------------------------------------------
+    -- Configuration / Single-Ended
   aSeGpio                         : inout std_logic_vector(29 downto 0);
-  -------------------------------------------------------------------------------------
-  -- GPIO
+    -------------------------------------------------------------------------------------
+    -- GPIO
   aDiffGpio_p                     : inout std_logic_vector(69 downto 0);
   aDiffGpio_n                     : inout std_logic_vector(69 downto 0);
-  -------------------------------------------------------------------------------------
-  -- Clocking
+    -------------------------------------------------------------------------------------
+    -- Clocking
   SampleClk                       : in    std_logic;
   DeviceClk                       : in    std_logic;
 % endif
@@ -483,20 +496,30 @@ begin
       -----------------------------------
       -- Communication interface ports
       -----------------------------------
+      -- Reset ports
       aBusReset => aBusResetBool,
+
+      -- Register Access/ PIO Ports
       bRegPortIn => bRegPortInInternal,
       bRegPortOut => bRegPortOutInternal,
       bRegPortTimeout => bRegPortTimeoutBool,
+
+      -- DMA Stream Ports
       dInputStreamInterfaceToFifo => dInputStreamInterfaceToFifoInternal,
       dInputStreamInterfaceFromFifo => dInputStreamInterfaceFromFifoInternal,
       dOutputStreamInterfaceToFifo => dOutputStreamInterfaceToFifoInternal,
       dOutputStreamInterfaceFromFifo => dOutputStreamInterfaceFromFifoInternal,
+
+      -- IRQ Ports
       bIrqToInterface => bIrqToInterfaceInternal,
+
+      -- MasterPort Ports
       dNiFpgaMasterWriteRequestFromMaster => dNiFpgaMasterWriteRequestFromMasterInternal,
       dNiFpgaMasterWriteRequestToMaster => dNiFpgaMasterWriteRequestToMasterInternal,
       dNiFpgaMasterWriteDataFromMaster => dNiFpgaMasterWriteDataFromMasterInternal,
       dNiFpgaMasterWriteDataToMaster => dNiFpgaMasterWriteDataToMasterInternal,
       dNiFpgaMasterWriteStatusToMaster => dNiFpgaMasterWriteStatusToMasterInternal,
+
       dNiFpgaMasterReadRequestFromMaster => dNiFpgaMasterReadRequestFromMasterInternal,
       dNiFpgaMasterReadRequestToMaster => dNiFpgaMasterReadRequestToMasterInternal,
       dNiFpgaMasterReadDataToMaster => dNiFpgaMasterReadDataToMasterInternal,
@@ -518,8 +541,15 @@ begin
       dHmbDmaClkSocket => dHmbDmaClkSocket,
       dLlbDmaClkSocket => dLlbDmaClkSocket,
 
+
       -----------------------------------
-      -- IO Node ports
+      -- Handshaking signals for derived
+      -- clocks on external clocks
+      -----------------------------------
+
+
+      -----------------------------------
+      -- Clock/Sync IO Node ports
       -----------------------------------
       pIntSync100 => pIntSync100,
       aIntClk10 => aIntClk10,
@@ -556,16 +586,24 @@ begin
       dDevClkEn => dDevClkEn,
       sTdcDeassert => sTdcDeassert,
       aIntClk10Trigger => aIntClk10Trigger,
+      --ID Signals from Routing CLIP
       bRoutingClipPresent => bRoutingClipPresent,
       bRoutingClipNiCompatible => bRoutingClipNiCompatible,
+
       BusClkTrigger => BusClkTrigger,
       abBusResetTrigger => abBusResetTrigger,
+
+      -- From PkgBaRegPort
+      -- RegPortIn_t Size = Address 28 Data 64 WrStrobes 8 RdStrobes 8 = 108
+      -- RegPortOut_t Size = Data 64 + Ack 1 = 65
       bTriggerRoutingBaRegPortInAddress => bTriggerRoutingBaRegPortInAddress,
       bTriggerRoutingBaRegPortInData => bTriggerRoutingBaRegPortInData,
       bTriggerRoutingBaRegPortInWtStrobe => bTriggerRoutingBaRegPortInWtStrobe,
       bTriggerRoutingBaRegPortInRdStrobe => bTriggerRoutingBaRegPortInRdStrobe,
+
       bTriggerRoutingBaRegPortOutData => bTriggerRoutingBaRegPortOutData,
       bTriggerRoutingBaRegPortOutAck => bTriggerRoutingBaRegPortOutAck,
+
       aPxiTrigDataIn => aPxiTrigDataIn,
       aPxiTrigDataOut => aPxiTrigDataOut,
       aPxiTrigDataTri => aPxiTrigDataTri,
@@ -573,11 +611,14 @@ begin
       aPxieDstarB => aPxieDstarB,
       aPxieDstarC => aPxieDstarC,
 
-% if include_clip_socket:
-  -----------------------------------
-  -- CLIP Socket ports
-  -----------------------------------
+  % if include_target_io:
+      -----------------------------------
+      -- CLIP Socket ports
+      -----------------------------------
+
+      -- AxiClk is the same as BusCLk is the same as PllClk80
   AxiClk => AxiClk,
+      -- Diagram AxiStream
   xDiagramAxiStreamFromClipTData => xDiagramAxiStreamFromClipTData,
   xDiagramAxiStreamFromClipTLast => xDiagramAxiStreamFromClipTLast,
   xDiagramAxiStreamFromClipTReady => xDiagramAxiStreamFromClipTReady,
@@ -586,6 +627,7 @@ begin
   xDiagramAxiStreamToClipTLast => xDiagramAxiStreamToClipTLast,
   xDiagramAxiStreamToClipTReady => xDiagramAxiStreamToClipTReady,
   xDiagramAxiStreamToClipTValid => xDiagramAxiStreamToClipTValid,
+      -- Diagram Host AxiStream
   xHostAxiStreamFromClipTData => xHostAxiStreamFromClipTData,
   xHostAxiStreamFromClipTLast => xHostAxiStreamFromClipTLast,
   xHostAxiStreamFromClipTReady => xHostAxiStreamFromClipTReady,
@@ -594,6 +636,7 @@ begin
   xHostAxiStreamToClipTLast => xHostAxiStreamToClipTLast,
   xHostAxiStreamToClipTReady => xHostAxiStreamToClipTReady,
   xHostAxiStreamToClipTValid => xHostAxiStreamToClipTValid,
+      -- Axi4Lite Interface from the CLIP to FixedLogic
   xClipAxi4LiteMasterARAddr => xClipAxi4LiteMasterARAddr,
   xClipAxi4LiteMasterARProt => xClipAxi4LiteMasterARProt,
   xClipAxi4LiteMasterARReady => xClipAxi4LiteMasterARReady,
@@ -614,46 +657,71 @@ begin
   xClipAxi4LiteMasterWStrb => xClipAxi4LiteMasterWStrb,
   xClipAxi4LiteMasterWValid => xClipAxi4LiteMasterWValid,
   xClipAxi4LiteInterrupt => xClipAxi4LiteInterrupt,
+      -- Reserved CLIP Signals
   aReservedToClip => aReservedToClip,
   aReservedFromClip => aReservedFromClip,
+      -- CLIP Status/Configuration
   stIoModuleSupportsFRAGLs => stIoModuleSupportsFRAGLs,
   xIoPresent => xIoPresent,
   xIoReady => xIoReady,
   xIoOutputEnable => xIoOutputEnable,
+      -- Synchronization
   dvTdcAssert => dvTdcAssert,
   dtTdcAssert => dtTdcAssert,
   dtDevClkEn => dtDevClkEn,
+
+      -------------------------------------------------------------------------------------
+      -- Base IO
+      -------------------------------------------------------------------------------------
+
+      -- Base board I2C
   aBaseI2cSclIn => aBaseI2cSclIn,
   aBaseI2cSclOut => aBaseI2cSclOut,
   aBaseI2cSclTri => aBaseI2cSclTri,
   aBaseI2cSdaIn => aBaseI2cSdaIn,
   aBaseI2cSdaOut => aBaseI2cSdaOut,
   aBaseI2cSdaTri => aBaseI2cSdaTri,
+
   aBaseConfigReset => aBaseConfigReset,
+
+      -- Base board DIO
   aBaseDioIn => aBaseDioIn,
   aBaseDioOut => aBaseDioOut,
   aBaseDioOutEn => aBaseDioOutEn,
   aBaseExClk => aBaseExClk,
+
+      -- MGTs for QSFP ports
   Qsfp0MgtRx_p => Qsfp0MgtRx_p,
   Qsfp0MgtRx_n => Qsfp0MgtRx_n,
   Qsfp0MgtTx_p => Qsfp0MgtTx_p,
   Qsfp0MgtTx_n => Qsfp0MgtTx_n,
   Qsfp0MgtRefClk_p => Qsfp0MgtRefClk_p,
   Qsfp0MgtRefClk_n => Qsfp0MgtRefClk_n,
+
   Qsfp1MgtRx_p => Qsfp1MgtRx_p,
   Qsfp1MgtRx_n => Qsfp1MgtRx_n,
   Qsfp1MgtTx_p => Qsfp1MgtTx_p,
   Qsfp1MgtTx_n => Qsfp1MgtTx_n,
   Qsfp1MgtRefClk_p => Qsfp1MgtRefClk_p,
   Qsfp1MgtRefClk_n => Qsfp1MgtRefClk_n,
+
   Qsfp0SocketClk80 => Qsfp0SocketClk80,
   Qsfp1SocketClk80 => Qsfp1SocketClk80,
+
+      -------------------------------------------------------------------------------------
+      -- IoModule Socketed CLIP - IoModule physical interface
+      -------------------------------------------------------------------------------------
+      -- Configuration / Single-Ended
   aSeGpio => aSeGpio,
+      -------------------------------------------------------------------------------------
+      -- GPIO
   aDiffGpio_p => aDiffGpio_p,
   aDiffGpio_n => aDiffGpio_n,
+      -------------------------------------------------------------------------------------
+      -- Clocking
   SampleClk => SampleClk,
   DeviceClk => DeviceClk,
-% endif
+  % endif
 
       -----------------------------------------------------------------------------
       --Dram Interface

@@ -98,8 +98,9 @@ entity TheLvWindowFlatWrapper is
     dHmbDmaClkSocket : in std_logic;
     dLlbDmaClkSocket : in std_logic;
 
+
     -----------------------------------
-    -- IO Node ports
+    -- Clock/Sync IO Node ports
     -----------------------------------
     pIntSync100 : in std_logic;
     aIntClk10 : in std_logic;
@@ -123,6 +124,10 @@ entity TheLvWindowFlatWrapper is
     bdAxiStreamWrToClipTValid : out std_logic;
     bdAxiStreamWrFromClipTReady : in std_logic;
 
+    -----------------------------------
+    -- Pass through LabVIEW FPGA ports
+    -----------------------------------
+
     ----------------------------------------
     -- Trigger Routing Socketed CLIP
     ----------------------------------------
@@ -132,16 +137,24 @@ entity TheLvWindowFlatWrapper is
     dDevClkEn : in std_logic;
     sTdcDeassert : out std_logic;
     aIntClk10Trigger : in std_logic;
+    --ID Signals from Routing CLIP
     bRoutingClipPresent : out std_logic;
     bRoutingClipNiCompatible : out std_logic;
+
     BusClkTrigger : in std_logic;
     abBusResetTrigger : in std_logic;
+
+    -- From PkgBaRegPort
+    -- RegPortIn_t Size = Address 28 Data 64 WrStrobes 8 RdStrobes 8 = 108
+    -- RegPortOut_t Size = Data 64 + Ack 1 = 65
     bTriggerRoutingBaRegPortInAddress : in std_logic_vector(27 downto 0);
     bTriggerRoutingBaRegPortInData : in std_logic_vector(63 downto 0);
     bTriggerRoutingBaRegPortInWtStrobe : in std_logic_vector(7 downto 0);
     bTriggerRoutingBaRegPortInRdStrobe : in std_logic_vector(7 downto 0);
+
     bTriggerRoutingBaRegPortOutData : out std_logic_vector(63 downto 0);
     bTriggerRoutingBaRegPortOutAck : out std_logic;
+
     aPxiTrigDataIn : in std_logic_vector(7 downto 0);
     aPxiTrigDataOut : out std_logic_vector(7 downto 0);
     aPxiTrigDataTri : out std_logic_vector(7 downto 0);
@@ -310,23 +323,40 @@ begin
       ${signal['name']} => ${signal['name']},
 % endfor
 % endif
+      -----------------------------------
+      -- Communication interface ports
+      -----------------------------------
+      -- Reset ports
       aBusReset => aBusResetBool,
+
+      -- Register Access/ PIO Ports
       bRegPortIn => bRegPortInInternal,
       bRegPortOut => bRegPortOutInternal,
       bRegPortTimeout => bRegPortTimeoutBool,
+
+      -- DMA Stream Ports
       dInputStreamInterfaceToFifo => dInputStreamInterfaceToFifoInternal,
       dInputStreamInterfaceFromFifo => dInputStreamInterfaceFromFifoInternal,
       dOutputStreamInterfaceToFifo => dOutputStreamInterfaceToFifoInternal,
       dOutputStreamInterfaceFromFifo => dOutputStreamInterfaceFromFifoInternal,
+
+      -- IRQ Ports
       bIrqToInterface => bIrqToInterfaceInternal,
+
+      -- MasterPort Ports
       dNiFpgaMasterWriteRequestFromMaster => dNiFpgaMasterWriteRequestFromMasterInternal,
       dNiFpgaMasterWriteRequestToMaster => dNiFpgaMasterWriteRequestToMasterInternal,
       dNiFpgaMasterWriteDataFromMaster => dNiFpgaMasterWriteDataFromMasterInternal,
       dNiFpgaMasterWriteDataToMaster => dNiFpgaMasterWriteDataToMasterInternal,
       dNiFpgaMasterWriteStatusToMaster => dNiFpgaMasterWriteStatusToMasterInternal,
+
       dNiFpgaMasterReadRequestFromMaster => dNiFpgaMasterReadRequestFromMasterInternal,
       dNiFpgaMasterReadRequestToMaster => dNiFpgaMasterReadRequestToMasterInternal,
       dNiFpgaMasterReadDataToMaster => dNiFpgaMasterReadDataToMasterInternal,
+
+      -----------------------------------
+      -- Clocks from TopLevel
+      -----------------------------------
       DmaClk => DmaClk,
       BusClk => BusClk,
       ReliableClkIn => ReliableClkIn,
@@ -335,8 +365,17 @@ begin
       PxieClk100 => PxieClk100,
       dHmbDmaClkSocket => dHmbDmaClkSocket,
       dLlbDmaClkSocket => dLlbDmaClkSocket,
+
+
+      -----------------------------------
+      -- Clock/Sync IO Node ports
+      -----------------------------------
       pIntSync100 => pIntSync100,
       aIntClk10 => aIntClk10,
+
+      -----------------------------------
+      -- Target Method and Properties ports
+      -----------------------------------
       bdIFifoRdData => bdIFifoRdData,
       bdIFifoRdDataValid => bdIFifoRdDataValid,
       bdIFifoRdReadyForInput => bdIFifoRdReadyForInput,
@@ -352,28 +391,48 @@ begin
       bdAxiStreamWrToClipTLast => bdAxiStreamWrToClipTLast,
       bdAxiStreamWrToClipTValid => bdAxiStreamWrToClipTValid,
       bdAxiStreamWrFromClipTReady => bdAxiStreamWrFromClipTReady,
+
+      -----------------------------------
+      -- Pass through LabVIEW FPGA ports
+      -----------------------------------
+
+      ----------------------------------------
+      -- Trigger Routing Socketed CLIP
+      ----------------------------------------
       PxieClk100Trigger => PxieClk100Trigger,
       pIntSync100Trigger => pIntSync100Trigger,
       dTdcAssert => dTdcAssert,
       dDevClkEn => dDevClkEn,
       sTdcDeassert => sTdcDeassert,
       aIntClk10Trigger => aIntClk10Trigger,
+      --ID Signals from Routing CLIP
       bRoutingClipPresent => bRoutingClipPresent,
       bRoutingClipNiCompatible => bRoutingClipNiCompatible,
+
       BusClkTrigger => BusClkTrigger,
       abBusResetTrigger => abBusResetTrigger,
+
+      -- From PkgBaRegPort
+      -- RegPortIn_t Size = Address 28 Data 64 WrStrobes 8 RdStrobes 8 = 108
+      -- RegPortOut_t Size = Data 64 + Ack 1 = 65
       bTriggerRoutingBaRegPortInAddress => bTriggerRoutingBaRegPortInAddress,
       bTriggerRoutingBaRegPortInData => bTriggerRoutingBaRegPortInData,
       bTriggerRoutingBaRegPortInWtStrobe => bTriggerRoutingBaRegPortInWtStrobe,
       bTriggerRoutingBaRegPortInRdStrobe => bTriggerRoutingBaRegPortInRdStrobe,
+
       bTriggerRoutingBaRegPortOutData => bTriggerRoutingBaRegPortOutData,
       bTriggerRoutingBaRegPortOutAck => bTriggerRoutingBaRegPortOutAck,
+
       aPxiTrigDataIn => aPxiTrigDataIn,
       aPxiTrigDataOut => aPxiTrigDataOut,
       aPxiTrigDataTri => aPxiTrigDataTri,
       aPxiStarData => aPxiStarData,
       aPxieDstarB => aPxieDstarB,
       aPxieDstarC => aPxieDstarC,
+
+      -----------------------------------------------------------------------------
+      --HMB Interface
+      -----------------------------------------------------------------------------
       dHmbDramAddrFifoAddr => dHmbDramAddrFifoAddr,
       dHmbDramAddrFifoCmd => dHmbDramAddrFifoCmd,
       dHmbDramAddrFifoFull => dHmbDramAddrFifoFull,
@@ -396,8 +455,16 @@ begin
       dLlbDramWrFifoMaskData => dLlbDramWrFifoMaskData,
       dLlbDramWrFifoWrEn => dLlbDramWrFifoWrEn,
       dLlbPhyInitDoneForLvfpga => dLlbPhyInitDoneForLvfpga,
+
+      -----------------------------------
+      -- Clocks from TheWindow
+      -----------------------------------
       TopLevelClkOut => TopLevelClkOut,
       ReliableClkOut => ReliableClkOut,
+
+      -----------------------------------
+      -- Diagram/Reset/Clock status
+      -----------------------------------
       rBaseClksValid => rBaseClksValid,
       tDiagramActive => tDiagramActive,
       rDiagramReset => rDiagramReset,

@@ -1,4 +1,3 @@
-# githubvisible=true
 
 set_property top TheLvWindowFlatWrapper [current_fileset]
 set_property -name {STEPS.SYNTH_DESIGN.ARGS.MORE OPTIONS} -value {-mode out_of_context} -objects [get_runs synth_1]

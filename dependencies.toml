@@ -7,7 +7,6 @@
 dependencies = [
     "ni/flexrio~=26.2.0.dev0",
     "ni/flexrio-deps~=26.2.0.dev0",
-    "ni/flexrio-aurora-clip~=26.1.0",
-    "ni/flexrio-100gbe-clip~=26.1.0",
+    "ni/flexrio-clips~=26.2.0",
     "ni/hdl-shared~=0.1.0",    
 ]

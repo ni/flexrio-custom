@@ -721,9 +721,14 @@ architecture struct of MacallanTop is
   --
   -- If you are not using the CLIP socket interface because you are interfacing with the board IO directly from
   -- this HDL file, you must set kExpectedTbIdConst to match which IO frontend your module is using so that the
-  -- TbId check matches.  And we set the clocking constants to enable the 100 MHz clock.
+  -- TbId check matches.  
+  -- 
+  -- View the README for a table of IO Modules and their corresponding TbIds (IO Module ID):  
+  --    https://github.com/ni/flexrio-custom/blob/main/README.md
+  --  
+  -- We set the clocking constants to enable the 100 MHz clock.
   --
-  constant kExpectedTbIdConst : std_logic_vector(31 downto 0) := X"FFFFFFFF";  -- Set this to match your IO frontend
+  constant kExpectedTbIdConst : std_logic_vector(31 downto 0) := X"109379F9";  -- Set this to match your IO frontend
   constant kEnableFamClockSyncConst : std_logic := '1';
   constant kFamClockSrcSelConst : std_logic := '1';
   constant kAuxDioDefaultVoltageConst : natural := 3300;

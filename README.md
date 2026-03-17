@@ -26,31 +26,32 @@ Pre-release custom FlexRIO code for use with LabVIEW FPGA HDL Tools
 
 ## FlexRIO Co-Processor Modules
 
-| Device | IO Module ID |
-| --- | --- |
-| PXIe-7903 | 0x10937AEC |
-| PXIe-7903-DDR1280 | 0x10937AEC |
-| PXIe-7911 | none |
-| PXIe-7912 | none |
-| PXIe-7915 | none |
+| Device |
+| --- |
+| PXIe-7903 |
+| PXIe-7903-DDR1280 |
+| PXIe-7911 |
+| PXIe-7912 |
+| PXIe-7915 |
 
 ## FlexRIO High-Speed Serial Modules
 
-| Device | Baseboard | IO Module ID |
-| --- | --- | --- |
-| PXIe-6593 KU35 | PXIe-7981 | 0x109379F9 |
-| PXIe-6593 KU40 | PXIe-7982 | 0x109379F9 |
-| PXIe-6593 KU60 | PXIe-7985 | 0x109379F9 |
-| PXIe-6594 | PXIe-7986 | 0x109379FC |
+| Device | Baseboard |
+| --- | --- |
+| PXIe-6593 KU35 | PXIe-7981 |
+| PXIe-6593 KU40 | PXIe-7982 |
+| PXIe-6593 KU60 | PXIe-7985 |
+| PXIe-6594 | PXIe-7986 |
 
 ## FlexRIO Multifunction IO Modules
 
-| Device | Baseboard | IO Module ID |
-| --- | --- | --- |
-| PXIe-7890 | PXIe-7994 | 0x10937AA7 |
-| PXIe-7891 | PXIe-7994 | 0x10937AA8 |
+| Device | Baseboard |
+| --- | --- |
+| PXIe-7890 | PXIe-7994 |
+| PXIe-7891 | PXIe-7994 |
 
 For the High-Speed Serial and Multifunction IO Modules, start with the Custom folder for the baseboard module.
+
 
 # System Setup
 Follow these steps to setup your machine to use the LabVIEW FPGA HDL Tools with this flexrio-custom GitHub repository
@@ -172,7 +173,26 @@ Use the following register map for the common registers:
 The PXIe-7903Aurora example has the socketed CLIP node instantiated in the FPGA top-level entity to make a custom LabVIEW FPGA target with it.  Read the CLIP Migration Hands-On Guide that walks you through how this was done.
 > C:\dev\github\flexrio-custom\targets\pxie-7903aurora\docs\CLIP Migration Hands-On Guide.pdf
 
-<br><br><br>
+
+# Customizing IO Module Devices
+
+Modules with integrated IO use an IO Module ID (also called Terminal Block ID or TbId in the VHDL) to ensure that the LabVIEW FPGA CLIP node is compatible with the device.  When customizing the device in VHDL, use this IO Module ID to ensure that the integrated IO is enabled.
+
+## IO Module IDs
+
+| Device | IO Module ID |
+| --- | --- |
+| PXIe-7903 | 0x10937AEC |
+| PXIe-7903-DDR1280 | 0x10937AEC |
+| PXIe-7911 | none |
+| PXIe-7912 | none |
+| PXIe-7915 | none |
+| PXIe-6593 KU35 | 0x109379F9 |
+| PXIe-6593 KU40 | 0x109379F9 |
+| PXIe-6593 KU60 | 0x109379F9 |
+| PXIe-6594 | 0x109379FC |
+| PXIe-7890 | 0x10937AA7 |
+| PXIe-7891 | 0x10937AA8 |
 
 # Repo Folder Hierarchy
 

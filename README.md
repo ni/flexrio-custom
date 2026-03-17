@@ -18,10 +18,39 @@ Pre-release custom FlexRIO code for use with LabVIEW FPGA HDL Tools
 * You can communicate between the NI-RIO driver on a host PC and custom HDL directly using
     * Registers
     * DMA FIFOs (future - not yet supported)
-* The PXIe-7903 is currently the only FlexRIO FPGA target supported by these workflows
 * All of this is pre-release and not supported by NI
     * Use the [Issues](https://github.com/ni/flexrio-custom/issues) and [Discussions](https://github.com/ni/flexrio-custom/discussions) sections in this repository to collaborate with the developers and other lead users
 <br><br><br>
+
+# Supported Devices
+
+## FlexRIO Co-Processor Modules
+
+| Device | IO Module ID |
+| --- | --- |
+| PXIe-7903 | 0x10937AEC |
+| PXIe-7903-DDR1280 | 0x10937AEC |
+| PXIe-7911 | none |
+| PXIe-7912 | none |
+| PXIe-7915 | none |
+
+## FlexRIO High-Speed Serial Modules
+
+| Device | Baseboard | IO Module ID |
+| --- | --- | --- |
+| PXIe-6593 KU35 | PXIe-7981 | 0x109379F9 |
+| PXIe-6593 KU40 | PXIe-7982 | 0x109379F9 |
+| PXIe-6593 KU60 | PXIe-7985 | 0x109379F9 |
+| PXIe-6594 | PXIe-7986 | 0x109379FC |
+
+## FlexRIO Multifunction IO Modules
+
+| Device | Baseboard | IO Module ID |
+| --- | --- | --- |
+| PXIe-7890 | PXIe-7994 | 0x10937AA7 |
+| PXIe-7891 | PXIe-7994 | 0x10937AA8 |
+
+For the High-Speed Serial and Multifunction IO Modules, start with the Custom folder for the baseboard module.
 
 # System Setup
 Follow these steps to setup your machine to use the LabVIEW FPGA HDL Tools with this flexrio-custom GitHub repository

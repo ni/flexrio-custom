@@ -8,8 +8,7 @@ Pre-release custom FlexRIO code for use with LabVIEW FPGA HDL Tools
 * These examples depends on a number of other repositorires that contain FlexRIO and shared HDL source code.  These dependencies are installed (cloned) by the LabVIEW FPGA HDL Tools.
     * https://github.com/ni/flexrio
     * https://github.com/ni/flexrio-deps
-    * https://github.com/ni/flexrio-aurora-clip
-    * https://github.com/ni/flexrio-100gbe-clip
+    * https://github.com/ni/flexrio-clips
     * https://github.com/ni/hdl-shared
 * You can perform workflows for customizing LabVIEW FPGA targets with HDL
     * Use HDL-only and Vivado to build a bitfile and communicate with it from the NI-RIO driver on a host PC

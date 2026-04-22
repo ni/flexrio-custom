@@ -2,6 +2,13 @@ objects/GeneratedHDL/TheWindow.vhd
 objects/GeneratedHDL/TheLvWindowFlatWrapper.vhd
 objects/GeneratedHDL/PkgTheLvWindowFlatWrapper.vhd
 rtl-lvfpga/MacallanTop.vhd
-../../deps/hdl-shared/host_interfaces/register/HDL/HdlSharedHostRegister.vhd
-../../deps/hdl-shared/host_interfaces/register/HDL/HdlSharedCommonHostRegs.vhd
-../../deps/hdl-shared/host_interfaces/register/HDL/HdlSharedHostRegisterArray.vhd
+rtl-lvfpga/UserHdl.vhd
+rtl-lvfpga/PkgUserHdl.vhd
+rtl-lvfpga/PkgCommIntConfiguration.vhd
+C:/dev/github8/hdl-shared/host_interfaces/register/HDL/NiHostRegister.vhd
+C:/dev/github8/hdl-shared/host_interfaces/register/HDL/NiCommonHostRegs.vhd
+C:/dev/github8/hdl-shared/host_interfaces/register/HDL/NiHostRegisterArray.vhd
+C:/dev/github8/hdl-shared/host_interfaces/fifo/HDL/NiFifoWriterCore.vhd
+C:/dev/github8/hdl-shared/host_interfaces/fifo/HDL/NiFifoWriter.vhd
+C:/dev/github8/hdl-shared/host_interfaces/fifo/HDL/NiFifoReaderCore.vhd
+C:/dev/github8/hdl-shared/host_interfaces/fifo/HDL/NiFifoReader.vhd

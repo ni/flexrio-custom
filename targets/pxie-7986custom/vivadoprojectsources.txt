@@ -2,6 +2,6 @@ objects/GeneratedHDL/TheWindow.vhd
 objects/GeneratedHDL/TheLvWindowFlatWrapper.vhd
 objects/GeneratedHDL/PkgTheLvWindowFlatWrapper.vhd
 rtl-lvfpga/AppletonTopTemplate.vhd
-../../deps/hdl-shared/host_interfaces/register/HDL/HdlSharedHostRegister.vhd
-../../deps/hdl-shared/host_interfaces/register/HDL/HdlSharedCommonHostRegs.vhd
-../../deps/hdl-shared/host_interfaces/register/HDL/HdlSharedHostRegisterArray.vhd
+../../deps/hdl-shared/host_interfaces/register/HDL/NiHostRegister.vhd
+../../deps/hdl-shared/host_interfaces/register/HDL/NiCommonHostRegs.vhd
+../../deps/hdl-shared/host_interfaces/register/HDL/NiHostRegisterArray.vhd

@@ -1515,7 +1515,7 @@ begin  -- architecture struct
   -- Keeping this layout consistent across designs simplifies host-driver
   -- compatibility checks and basic bring-up/debug workflows.
 
-  HdlSharedCommonHostRegs_inst : entity work.HdlSharedCommonHostRegs
+  NiCommonHostRegs_inst : entity work.NiCommonHostRegs
     generic map(
       kSignature               => x"7986BEEF",
       kVersion                 => x"00000001",
@@ -1528,7 +1528,7 @@ begin  -- architecture struct
       bRegPortOut => bRegPortOutCommonRegs
     );
 
-  HdlSharedHostRegisterArray_inst : entity work.HdlSharedHostRegisterArray
+  NiHostRegisterArray_inst : entity work.NiHostRegisterArray
     generic map(
       kNumRegisters => 4,
       kBaseAddress  => 16#10#,
@@ -1548,7 +1548,7 @@ begin  -- architecture struct
       bFpgaDataOut   => bSharedHostRegFpgaDataOut
     );
 
-  -- Demonstration loopback logic for HdlSharedHostRegisterArray usage.
+  -- Demonstration loopback logic for NiHostRegisterArray usage.
   --
   -- This process is meant only as an example of how FPGA-side logic can interact with
   -- host-visible registers.

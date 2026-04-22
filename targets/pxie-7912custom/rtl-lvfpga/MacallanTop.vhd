@@ -38,6 +38,8 @@ use work.PkgNiDmaConfig.all;
 use work.PkgDmaPortCommunicationInterface.all;
 use work.PkgCommIntConfiguration.all;
 use work.PkgDmaPortDmaFifos.all;
+-- User HDL
+use work.PkgUserHdl.all;
 use work.PkgDmaPortDmaFifosFlatTypes.all;
 use work.PkgDmaPortCommIfcMasterPort.all;
 use work.PkgDmaPortCommIfcMasterPortFlatTypes.all;
@@ -504,14 +506,15 @@ architecture struct of MacallanTop is
   signal bdDoneaLvAuxDio       : std_logic_vector(kNumAuxIoData-1 downto 0);
 
   signal bAddressesDram2DP : boolean;
-  signal bRegPortOutCommonRegs: RegPortOut_t;
-  signal bRegPortOutSharedRegs: RegPortOut_t;
+  signal bRegPortOutUserHdl: RegPortOut_t;
 
-  signal bSharedHostRegFpgaHostWrite : BooleanVector(0 to 3);
-  signal bSharedHostRegFpgaAck : BooleanVector(0 to 3) := (others => false);
-  signal bSharedHostRegFpgaWrite : BooleanVector(0 to 3) := (others => false);
-  signal bSharedHostRegFpgaDataIn : Slv32Ary_t(0 to 3) := (others => (others => '0'));
-  signal bSharedHostRegFpgaDataOut : Slv32Ary_t(0 to 3);
+  -- Window-side stream interface signals (for UserHdl FIFO interception)
+  signal dWinInputStreamInterfaceToFifo   : InputStreamInterfaceToFifoArray_t(Larger(kNumberOfDmaChannels,1)-1 downto 0);
+  signal dWinInputStreamInterfaceFromFifo : InputStreamInterfaceFromFifoArray_t(Larger(kNumberOfDmaChannels,1)-1 downto 0);
+  signal dWinOutputStreamInterfaceToFifo  : OutputStreamInterfaceToFifoArray_t(Larger(kNumberOfDmaChannels,1)-1 downto 0);
+  signal dWinOutputStreamInterfaceFromFifo: OutputStreamInterfaceFromFifoArray_t(Larger(kNumberOfDmaChannels,1)-1 downto 0);
+
+
 
   signal bRegPortOutDram2DP : RegPortOut_t;
   signal bRegPortInDram2DP : RegPortIn_t;
@@ -722,7 +725,19 @@ begin  -- architecture struct
   --vhook_a bLvWindowRegPortOut bRegPortOut
   --vhook_g kHmbInUse true
   HostInterfacex: entity work.G3UsHostInterfaceIsoPort (struct)
-    generic map (kHmbInUse => true)  --boolean:=false
+    generic map (
+      kHmbInUse               => true,
+      kNumberOfDmaChannels    => kNumberOfDmaChannels,
+      kNumberOfIrqs           => kNumberOfIrqs,
+      kNumberOfMasterPorts    => kNumberOfMasterPorts,
+      kNiFpgaFixedInputPorts  => kNiFpgaFixedInputPorts,
+      kNiFpgaFixedOutputPorts => kNiFpgaFixedOutputPorts,
+      kDmaFifoConfArray       => kDmaFifoConfArray,
+      kMasterPortConfArray    => kMasterPortConfArray,
+      kFifoWriteWindow        => kFifoWriteWindow,
+      kInputMaxTransfer       => kInputMaxTransfer,
+      kOutputMaxTransfer      => kOutputMaxTransfer,
+      kFifoReadLatency        => kFifoReadLatency)
     port map (
       PcieRefClk_p                             => PcieRefClk_p,                              --in  std_logic
       PcieRefClk_n                             => PcieRefClk_n,                              --in  std_logic
@@ -1134,108 +1149,66 @@ begin  -- architecture struct
 
   bRegPortOut.Data <= bLvWindowRegPortOut.Data or
                       bRegPortOutDram2DP.Data or
-                      bRegPortOutCommonRegs.Data or
-                      bRegPortOutSharedRegs.Data;
+                      bRegPortOutUserHdl.Data;
 
   bRegPortOut.DataValid <= bLvWindowRegPortOut.DataValid or
                            bRegPortOutDram2DP.DataValid or
-                           bRegPortOutCommonRegs.DataValid or
-                           bRegPortOutSharedRegs.DataValid;
+                           bRegPortOutUserHdl.DataValid;
 
   bRegPortOut.Ready <= bLvWindowRegPortOut.Ready and
                        bRegPortOutDram2DP.Ready and
-                       bRegPortOutCommonRegs.Ready and
-                       bRegPortOutSharedRegs.Ready;
+                       bRegPortOutUserHdl.Ready;
 
   bAddressesDram2DP  <= (bRegportIn.Address >= kDram2DPBaseAddress) and
                         (bRegportIn.Address <= (kDram2DPBaseAddress + kDram2DPAddressMask));
 
-  -- Common host registers are recommended for every design so software has a
-  -- standard identification/version interface across targets.
-  --
-  -- They always start at byte offset 0 and use this fixed map:
-  --   offset 0   : signature
-  --   offset 4   : version
-  --   offset 8   : oldest compatible version
-  --   offset 12  : scratch register
-  --
-  -- Keeping this layout consistent across designs simplifies host-driver
-  -- compatibility checks and basic bring-up/debug workflows.
-
-  HdlSharedCommonHostRegs_inst : entity work.HdlSharedCommonHostRegs
-    generic map(
-      kSignature               => x"7912BEEF",
-      kVersion                 => x"00000001",
-      kOldestCompatibleVersion => x"00000001"
-    )
-    port map(
-      BusClk      => BusClk,
-      aReset      => aBusReset,
-      bRegPortIn  => bRegPortIn,
-      bRegPortOut => bRegPortOutCommonRegs
-    );
-
-  HdlSharedHostRegisterArray_inst : entity work.HdlSharedHostRegisterArray
-    generic map(
-      kNumRegisters => 4,
-      kBaseAddress  => 16#10#,
-      kDefault      => (x"00000000", x"00000000", x"00000000", x"00000000"),
-      kReadOnly     => (false, false, true, true),
-      kUseFpgaAck   => (false, false, false, false)
-    )
+  ---------------------------------------------------------------------------
+  -- User HDL block (registers + FIFOs)
+  ---------------------------------------------------------------------------
+  UserHdl_inst : entity work.UserHdl
     port map(
       BusClk         => BusClk,
-      aReset         => aBusReset,
+      DmaClk         => DmaClk,
+      aBusReset      => aBusReset,
+      abDiagramReset => abDiagramReset,
       bRegPortIn     => bRegPortIn,
-      bRegPortOut    => bRegPortOutSharedRegs,
-      bFpgaHostWrite => bSharedHostRegFpgaHostWrite,
-      bFpgaAck       => bSharedHostRegFpgaAck,
-      bFpgaWrite     => bSharedHostRegFpgaWrite,
-      bFpgaDataIn    => bSharedHostRegFpgaDataIn,
-      bFpgaDataOut   => bSharedHostRegFpgaDataOut
+      bRegPortOut    => bRegPortOutUserHdl,
+      dWriterStreamInterfaceToFifo   => dInputStreamInterfaceToFifo(kUserDmaWriterIdx),
+      dWriterStreamInterfaceFromFifo => dInputStreamInterfaceFromFifo(kUserDmaWriterIdx),
+      dReaderStreamInterfaceToFifo   => dOutputStreamInterfaceToFifo(kUserDmaReaderIdx),
+      dReaderStreamInterfaceFromFifo => dOutputStreamInterfaceFromFifo(kUserDmaReaderIdx)
     );
 
-  -- Demonstration loopback logic for HdlSharedHostRegisterArray usage.
-  --
-  -- This process is meant only as an example of how FPGA-side logic can interact with
-  -- host-visible registers.
-  --
-  -- Register behavior used here:
-  --   - Register 0: host read/write input register
-  --   - Register 1: host read/write input register
-  --   - Register 2: host read-only output register (derived from register 0)
-  --   - Register 3: host read-only output register (derived from register 1)
-  --
-  -- Practical effect for software users:
-  --   - Write a value to register 0, then read register 2 to observe value+1.
-  --   - Write a value to register 1, then read register 3 to observe value+1.
-  --
-  -- This demonstrates host-to-FPGA eventing (bFpgaHostWrite), FPGA-side processing, and
-  -- FPGA-to-host updates (bFpgaWrite/bFpgaDataIn) using the shared register interface.
+  ---------------------------------------------------------------------------
+  -- Stream Interface Routing - intercept UserHdl FIFO channels
+  ---------------------------------------------------------------------------
+  -- All channels except kUserDmaWriterIdx (writer) and kUserDmaReaderIdx (reader)
+  -- pass through to/from TheWindow.
+  -- The UserHdl Writer/Reader FIFO instances provide the FromFifo data
+  -- for their respective channels.
 
-  SharedHostRegisterLoopbackx: process(BusClk, aBusReset)
-  begin
-    if aBusReset then
-      bSharedHostRegFpgaWrite <= (others => false);
-      bSharedHostRegFpgaDataIn <= (others => (others => '0'));
-    elsif rising_edge(BusClk) then
-      -- Default behavior: loop back all register values.
-      bSharedHostRegFpgaDataIn <= bSharedHostRegFpgaDataOut;
-      bSharedHostRegFpgaWrite <= (others => false);
+  StreamRouting : for i in dInputStreamInterfaceToFifo'range generate
 
-      -- Host writes to lower registers (0 an 1) update upper read-only registers (2 and 3)
-      -- with incremented values.
-      if bSharedHostRegFpgaHostWrite(0) then
-        bSharedHostRegFpgaDataIn(2) <= std_logic_vector(unsigned(bSharedHostRegFpgaDataOut(0)) + 1);
-        bSharedHostRegFpgaWrite(2) <= true;
-      end if;
+    InputPassThru : if i /= kUserDmaWriterIdx generate
+      dWinInputStreamInterfaceToFifo(i)   <= dInputStreamInterfaceToFifo(i);
+      dInputStreamInterfaceFromFifo(i)    <= dWinInputStreamInterfaceFromFifo(i);
+    end generate InputPassThru;
 
-      if bSharedHostRegFpgaHostWrite(1) then
-        bSharedHostRegFpgaDataIn(3) <= std_logic_vector(unsigned(bSharedHostRegFpgaDataOut(1)) + 1);
-        bSharedHostRegFpgaWrite(3) <= true;
-      end if;
-    end if;
-  end process SharedHostRegisterLoopbackx;
+    WriterIntercepted : if i = kUserDmaWriterIdx generate
+      dWinInputStreamInterfaceToFifo(i) <= dInputStreamInterfaceToFifo(i);
+    end generate WriterIntercepted;
+
+    OutputPassThru : if i /= kUserDmaReaderIdx generate
+      dWinOutputStreamInterfaceToFifo(i)  <= dOutputStreamInterfaceToFifo(i);
+      dOutputStreamInterfaceFromFifo(i)   <= dWinOutputStreamInterfaceFromFifo(i);
+    end generate OutputPassThru;
+
+    ReaderIntercepted : if i = kUserDmaReaderIdx generate
+      dWinOutputStreamInterfaceToFifo(i) <= dOutputStreamInterfaceToFifo(i);
+    end generate ReaderIntercepted;
+
+  end generate StreamRouting;
+
   MergeRegPortInDram2DP: process(bRegportIn, bAddressesDram2DP)
   begin
     bRegPortInDram2DP <= bRegportIn;
@@ -1554,8 +1527,8 @@ begin  -- architecture struct
   -----------------------------------
   bRegPortInFlat <= to_StdLogicVector(bRegPortIn);
 
-  dInputStreamInterfaceToFifoFlat <= FlattenStreamInterface(dInputStreamInterfaceToFifo);
-  dOutputStreamInterfaceToFifoFlat <= FlattenStreamInterface(dOutputStreamInterfaceToFifo);
+  dInputStreamInterfaceToFifoFlat <= FlattenStreamInterface(dWinInputStreamInterfaceToFifo);
+  dOutputStreamInterfaceToFifoFlat <= FlattenStreamInterface(dWinOutputStreamInterfaceToFifo);
 
   -- Convert Master Port record inputs to flat
   gen_master_inputs_flat: for i in 0 to Larger(kNumberOfMasterPorts,1)-1 generate
@@ -1590,8 +1563,8 @@ begin  -- architecture struct
   -----------------------------------
   bLvWindowRegPortOut <= BuildRegPortOut(bRegPortOutFlat);
 
-  dInputStreamInterfaceFromFifo <= UnflattenStreamInterface(dInputStreamInterfaceFromFifoFlat);
-  dOutputStreamInterfaceFromFifo <= UnflattenStreamInterface(dOutputStreamInterfaceFromFifoFlat);
+  dWinInputStreamInterfaceFromFifo <= UnflattenStreamInterface(dInputStreamInterfaceFromFifoFlat);
+  dWinOutputStreamInterfaceFromFifo <= UnflattenStreamInterface(dOutputStreamInterfaceFromFifoFlat);
 
   bIrqToInterface <= BuildIrqToInterfaceArray(bIrqToInterfaceFlat);
 

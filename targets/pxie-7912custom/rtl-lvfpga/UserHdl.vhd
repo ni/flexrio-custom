@@ -14,8 +14,8 @@
 --   Instantiates:
 --     - Common host registers (signature, version, oldest compatible, scratch)
 --     - A four-element shared register array with loopback logic
---     - Writer FIFO (channel 2, FPGA-to-Host) with host push registers
---     - Reader FIFO (channel 3, Host-to-FPGA) with host pop registers
+--     - Writer FIFO (channel kUserDmaWriterIdx, FPGA-to-Host) with host push registers
+--     - Reader FIFO (channel kUserDmaReaderIdx, Host-to-FPGA) with host pop registers
 --     - FIFO start/stop, count, and state registers
 --
 --   The combined RegPortOut is presented as a single output so that the
@@ -45,13 +45,21 @@ entity UserHdl is
     bRegPortIn  : in  RegPortIn_t;
     bRegPortOut : out RegPortOut_t;
 
-    -- DMA stream interface for Writer FIFO (channel 2, FPGA-to-Host)
-    dWriterStreamInterfaceToFifo   : in  InputStreamInterfaceToFifo_t;
-    dWriterStreamInterfaceFromFifo : out InputStreamInterfaceFromFifo_t;
+    -- DMA stream interface for Writer FIFO (channel kUserDmaWriterIdx, FPGA-to-Host)
+    -- Input direction: connected to NiFifoWriter
+    dWriterInputStreamInterfaceToFifo    : in  InputStreamInterfaceToFifo_t;
+    dWriterInputStreamInterfaceFromFifo   : out InputStreamInterfaceFromFifo_t;
+    -- Output direction: unused for TargetToHost, driven to zero
+    dWriterOutputStreamInterfaceToFifo   : in  OutputStreamInterfaceToFifo_t;
+    dWriterOutputStreamInterfaceFromFifo  : out OutputStreamInterfaceFromFifo_t;
 
-    -- DMA stream interface for Reader FIFO (channel 3, Host-to-FPGA)
-    dReaderStreamInterfaceToFifo   : in  OutputStreamInterfaceToFifo_t;
-    dReaderStreamInterfaceFromFifo : out OutputStreamInterfaceFromFifo_t
+    -- DMA stream interface for Reader FIFO (channel kUserDmaReaderIdx, Host-to-FPGA)
+    -- Input direction: unused for HostToTarget, driven to zero
+    dReaderInputStreamInterfaceToFifo    : in  InputStreamInterfaceToFifo_t;
+    dReaderInputStreamInterfaceFromFifo   : out InputStreamInterfaceFromFifo_t;
+    -- Output direction: connected to NiFifoReader
+    dReaderOutputStreamInterfaceToFifo   : in  OutputStreamInterfaceToFifo_t;
+    dReaderOutputStreamInterfaceFromFifo  : out OutputStreamInterfaceFromFifo_t
   );
 end entity UserHdl;
 
@@ -250,8 +258,8 @@ begin
       aDiagramReset                 => abDiagramReset,
       aBusReset                     => aBusReset,
       BusClk                        => DmaClk,
-      bInputStreamInterfaceToFifo   => dWriterStreamInterfaceToFifo,
-      bInputStreamInterfaceFromFifo => dWriterStreamInterfaceFromFifo,
+      bInputStreamInterfaceToFifo   => dWriterInputStreamInterfaceToFifo,
+      bInputStreamInterfaceFromFifo => dWriterInputStreamInterfaceFromFifo,
       ViClk                         => BusClk,
       vDataIn                       => bWriterFifoDataIn,
       vFull                         => bWriterFifoFull,
@@ -283,8 +291,8 @@ begin
       aDiagramReset                  => abDiagramReset,
       aBusReset                      => aBusReset,
       BusClk                         => DmaClk,
-      bOutputStreamInterfaceToFifo   => dReaderStreamInterfaceToFifo,
-      bOutputStreamInterfaceFromFifo => dReaderStreamInterfaceFromFifo,
+      bOutputStreamInterfaceToFifo   => dReaderOutputStreamInterfaceToFifo,
+      bOutputStreamInterfaceFromFifo => dReaderOutputStreamInterfaceFromFifo,
       ViClk                          => BusClk,
       vDataOut                       => bReaderFifoDataOut,
       vEmpty                         => bReaderFifoEmpty,
@@ -398,5 +406,13 @@ begin
   bRegPortOut.Ready     <= bRegPortOutCommonRegs.Ready and
                            bRegPortOutDemoRegs.Ready and
                            bRegPortOutFifoRegs.Ready;
+
+  ---------------------------------------------------------------------------
+  -- Drive unused-direction FromFifo signals to zero
+  -- (same pattern as DmaPortCommIfcFifos: Input channels zero the Output
+  --  FromFifo, Output channels zero the Input FromFifo)
+  ---------------------------------------------------------------------------
+  dWriterOutputStreamInterfaceFromFifo <= kOutputStreamInterfaceFromFifoZero;
+  dReaderInputStreamInterfaceFromFifo  <= kInputStreamInterfaceFromFifoZero;
 
 end rtl;

@@ -1173,39 +1173,45 @@ begin  -- architecture struct
       abDiagramReset => abDiagramReset,
       bRegPortIn     => bRegPortIn,
       bRegPortOut    => bRegPortOutUserHdl,
-      dWriterStreamInterfaceToFifo   => dInputStreamInterfaceToFifo(kUserDmaWriterIdx),
-      dWriterStreamInterfaceFromFifo => dInputStreamInterfaceFromFifo(kUserDmaWriterIdx),
-      dReaderStreamInterfaceToFifo   => dOutputStreamInterfaceToFifo(kUserDmaReaderIdx),
-      dReaderStreamInterfaceFromFifo => dOutputStreamInterfaceFromFifo(kUserDmaReaderIdx)
+      -- Writer channel (kUserDmaWriterIdx): all 4 stream signals
+      dWriterInputStreamInterfaceToFifo    => dInputStreamInterfaceToFifo(kUserDmaWriterIdx),
+      dWriterInputStreamInterfaceFromFifo  => dInputStreamInterfaceFromFifo(kUserDmaWriterIdx),
+      dWriterOutputStreamInterfaceToFifo   => dOutputStreamInterfaceToFifo(kUserDmaWriterIdx),
+      dWriterOutputStreamInterfaceFromFifo => dOutputStreamInterfaceFromFifo(kUserDmaWriterIdx),
+      -- Reader channel (kUserDmaReaderIdx): all 4 stream signals
+      dReaderInputStreamInterfaceToFifo    => dInputStreamInterfaceToFifo(kUserDmaReaderIdx),
+      dReaderInputStreamInterfaceFromFifo  => dInputStreamInterfaceFromFifo(kUserDmaReaderIdx),
+      dReaderOutputStreamInterfaceToFifo   => dOutputStreamInterfaceToFifo(kUserDmaReaderIdx),
+      dReaderOutputStreamInterfaceFromFifo => dOutputStreamInterfaceFromFifo(kUserDmaReaderIdx)
     );
 
   ---------------------------------------------------------------------------
-  -- Stream Interface Routing - intercept UserHdl FIFO channels
+  -- Stream Interface Routing
   ---------------------------------------------------------------------------
-  -- All channels except kUserDmaWriterIdx (writer) and kUserDmaReaderIdx (reader)
-  -- pass through to/from TheWindow.
-  -- The UserHdl Writer/Reader FIFO instances provide the FromFifo data
-  -- for their respective channels.
+  -- For each of the 64 DMA channels, four stream arrays connect the DMA
+  -- engine (HostInterface) to TheWindow.
+  --
+  -- Normal channels: pass all four signals through to/from TheWindow.
+  -- UserHdl channels (kUserDmaWriterIdx, kUserDmaReaderIdx): all four
+  --   signals are owned by UserHdl (connected in port map above).
+  --   Window-side ToFifo inputs are driven to zero defaults.
 
   StreamRouting : for i in dInputStreamInterfaceToFifo'range generate
 
-    InputPassThru : if i /= kUserDmaWriterIdx generate
-      dWinInputStreamInterfaceToFifo(i)   <= dInputStreamInterfaceToFifo(i);
-      dInputStreamInterfaceFromFifo(i)    <= dWinInputStreamInterfaceFromFifo(i);
-    end generate InputPassThru;
-
-    WriterIntercepted : if i = kUserDmaWriterIdx generate
-      dWinInputStreamInterfaceToFifo(i) <= dInputStreamInterfaceToFifo(i);
-    end generate WriterIntercepted;
-
-    OutputPassThru : if i /= kUserDmaReaderIdx generate
-      dWinOutputStreamInterfaceToFifo(i)  <= dOutputStreamInterfaceToFifo(i);
-      dOutputStreamInterfaceFromFifo(i)   <= dWinOutputStreamInterfaceFromFifo(i);
-    end generate OutputPassThru;
-
-    ReaderIntercepted : if i = kUserDmaReaderIdx generate
+    -- Normal channels: bidirectional pass-through to TheWindow
+    NormalChannel : if i /= kUserDmaWriterIdx and i /= kUserDmaReaderIdx generate
+      dWinInputStreamInterfaceToFifo(i)  <= dInputStreamInterfaceToFifo(i);
+      dInputStreamInterfaceFromFifo(i)   <= dWinInputStreamInterfaceFromFifo(i);
       dWinOutputStreamInterfaceToFifo(i) <= dOutputStreamInterfaceToFifo(i);
-    end generate ReaderIntercepted;
+      dOutputStreamInterfaceFromFifo(i)  <= dWinOutputStreamInterfaceFromFifo(i);
+    end generate NormalChannel;
+
+    -- UserHdl channels: all 4 signals connected to UserHdl via port map.
+    -- Disconnect Window side by driving ToFifo inputs to zero.
+    UserHdlChannel : if i = kUserDmaWriterIdx or i = kUserDmaReaderIdx generate
+      dWinInputStreamInterfaceToFifo(i)  <= kInputStreamInterfaceToFifoZero;
+      dWinOutputStreamInterfaceToFifo(i) <= kOutputStreamInterfaceToFifoZero;
+    end generate UserHdlChannel;
 
   end generate StreamRouting;
 

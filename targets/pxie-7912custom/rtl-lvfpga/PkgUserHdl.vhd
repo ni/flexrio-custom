@@ -25,8 +25,6 @@ library work;
   use work.PkgCommIntConfiguration.DmaChannelConfArray_t;
   use work.PkgCommIntConfiguration.DmaChannelConfiguration_t;
   use work.PkgCommIntConfiguration.DmaChannelMode_t;
-  use work.PkgCommIntConfiguration.kNumberOfDmaChannels;
-  use work.PkgCommIntConfiguration.kDmaFifoConfArray;
 
 package PkgUserHdl is
 
@@ -46,11 +44,6 @@ package PkgUserHdl is
   -- Each channel occupies 0x40 bytes, starting from 0x3FFC0 at index 0.
   function DmaChannelBaseAddress(ChannelIndex : natural) return natural;
 
-
-  -- Build a merged DMA FIFO configuration array:
-  -- All entries from PkgCommIntConfiguration, with UserHdl FIFO entries overlaid
-  -- at kUserDmaWriterIdx and kUserDmaReaderIdx.
-  function MergedDmaFifoConfArray return DmaChannelConfArray_t;
 
   -- DMA FIFO configurations for the UserHdl channels
   constant kUserHdlDmaFifoConfArray : DmaChannelConfArray_t(0 to kNumUserHdlDmaChannels - 1) := (
@@ -118,14 +111,6 @@ package body PkgUserHdl is
   function DmaChannelBaseAddress(ChannelIndex : natural) return natural is
   begin
     return 16#3FFC0# - ChannelIndex * 16#40#;
-  end function;
-
-  function MergedDmaFifoConfArray return DmaChannelConfArray_t is
-    variable result : DmaChannelConfArray_t(0 to kNumberOfDmaChannels - 1) := kDmaFifoConfArray;
-  begin
-    result(kUserDmaWriterIdx) := kUserHdlDmaFifoConfArray(0);
-    result(kUserDmaReaderIdx) := kUserHdlDmaFifoConfArray(1);
-    return result;
   end function;
 
 end PkgUserHdl;

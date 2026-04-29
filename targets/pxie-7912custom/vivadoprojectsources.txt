@@ -4,7 +4,6 @@ objects/GeneratedHDL/PkgTheLvWindowFlatWrapper.vhd
 rtl-lvfpga/MacallanTop.vhd
 rtl-lvfpga/UserHdl.vhd
 rtl-lvfpga/PkgUserHdl.vhd
-rtl-lvfpga/PkgCommIntConfiguration.vhd
 C:/dev/github8/hdl-shared/host_interfaces/register/HDL/NiHostRegister.vhd
 C:/dev/github8/hdl-shared/host_interfaces/register/HDL/NiCommonHostRegs.vhd
 C:/dev/github8/hdl-shared/host_interfaces/register/HDL/NiHostRegisterArray.vhd

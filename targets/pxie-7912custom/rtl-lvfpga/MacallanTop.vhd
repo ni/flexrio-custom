@@ -724,20 +724,12 @@ begin  -- architecture struct
   --vhook_a bLvWindowRegPortIn  bRegPortIn
   --vhook_a bLvWindowRegPortOut bRegPortOut
   --vhook_g kHmbInUse true
+  --vhook_g kDmaFifoConfArrayGeneric MergeDmaFifoConf(kDmaFifoConfArray, kUserHdlDmaFifoConf, kUserHdlDmaStartIndex)
   HostInterfacex: entity work.G3UsHostInterfaceIsoPort (struct)
     generic map (
-      kHmbInUse               => true,
-      kNumberOfDmaChannels    => kNumberOfDmaChannels,
-      kNumberOfIrqs           => kNumberOfIrqs,
-      kNumberOfMasterPorts    => kNumberOfMasterPorts,
-      kNiFpgaFixedInputPorts  => kNiFpgaFixedInputPorts,
-      kNiFpgaFixedOutputPorts => kNiFpgaFixedOutputPorts,
-      kDmaFifoConfArray       => kDmaFifoConfArray,
-      kMasterPortConfArray    => kMasterPortConfArray,
-      kFifoWriteWindow        => kFifoWriteWindow,
-      kInputMaxTransfer       => kInputMaxTransfer,
-      kOutputMaxTransfer      => kOutputMaxTransfer,
-      kFifoReadLatency        => kFifoReadLatency)
+      kHmbInUse                => true,                                                      --boolean:=false
+      kDmaFifoConfArrayGeneric => MergeDmaFifoConf(kDmaFifoConfArray, kUserHdlDmaFifoConf,
+                                                   kUserHdlDmaStartIndex))                   --DmaChannelConfArray_t
     port map (
       PcieRefClk_p                             => PcieRefClk_p,                              --in  std_logic
       PcieRefClk_n                             => PcieRefClk_n,                              --in  std_logic
@@ -1173,16 +1165,16 @@ begin  -- architecture struct
       abDiagramReset => abDiagramReset,
       bRegPortIn     => bRegPortIn,
       bRegPortOut    => bRegPortOutUserHdl,
-      -- Writer channel (kUserDmaWriterIdx): all 4 stream signals
-      dWriterInputStreamInterfaceToFifo    => dInputStreamInterfaceToFifo(kUserDmaWriterIdx),
-      dWriterInputStreamInterfaceFromFifo  => dInputStreamInterfaceFromFifo(kUserDmaWriterIdx),
-      dWriterOutputStreamInterfaceToFifo   => dOutputStreamInterfaceToFifo(kUserDmaWriterIdx),
-      dWriterOutputStreamInterfaceFromFifo => dOutputStreamInterfaceFromFifo(kUserDmaWriterIdx),
-      -- Reader channel (kUserDmaReaderIdx): all 4 stream signals
-      dReaderInputStreamInterfaceToFifo    => dInputStreamInterfaceToFifo(kUserDmaReaderIdx),
-      dReaderInputStreamInterfaceFromFifo  => dInputStreamInterfaceFromFifo(kUserDmaReaderIdx),
-      dReaderOutputStreamInterfaceToFifo   => dOutputStreamInterfaceToFifo(kUserDmaReaderIdx),
-      dReaderOutputStreamInterfaceFromFifo => dOutputStreamInterfaceFromFifo(kUserDmaReaderIdx)
+      -- Writer channel: conf(1) = TargetToHost at DMA index kUserHdlDmaStartIndex - 1
+      dWriterInputStreamInterfaceToFifo    => dInputStreamInterfaceToFifo(kUserHdlDmaStartIndex - 1),
+      dWriterInputStreamInterfaceFromFifo  => dInputStreamInterfaceFromFifo(kUserHdlDmaStartIndex - 1),
+      dWriterOutputStreamInterfaceToFifo   => dOutputStreamInterfaceToFifo(kUserHdlDmaStartIndex - 1),
+      dWriterOutputStreamInterfaceFromFifo => dOutputStreamInterfaceFromFifo(kUserHdlDmaStartIndex - 1),
+      -- Reader channel: conf(0) = HostToTarget at DMA index kUserHdlDmaStartIndex
+      dReaderInputStreamInterfaceToFifo    => dInputStreamInterfaceToFifo(kUserHdlDmaStartIndex),
+      dReaderInputStreamInterfaceFromFifo  => dInputStreamInterfaceFromFifo(kUserHdlDmaStartIndex),
+      dReaderOutputStreamInterfaceToFifo   => dOutputStreamInterfaceToFifo(kUserHdlDmaStartIndex),
+      dReaderOutputStreamInterfaceFromFifo => dOutputStreamInterfaceFromFifo(kUserHdlDmaStartIndex)
     );
 
   ---------------------------------------------------------------------------
@@ -1191,15 +1183,19 @@ begin  -- architecture struct
   -- For each of the 64 DMA channels, four stream arrays connect the DMA
   -- engine (HostInterface) to TheWindow.
   --
-  -- Normal channels: pass all four signals through to/from TheWindow.
-  -- UserHdl channels (kUserDmaWriterIdx, kUserDmaReaderIdx): all four
-  --   signals are owned by UserHdl (connected in port map above).
-  --   Window-side ToFifo inputs are driven to zero defaults.
+  -- LV DMA channels start at index 0 and grow upward.
+  -- UserHdl channels start at kUserHdlDmaStartIndex and grow downward:
+  --   conf(0) -> index kUserHdlDmaStartIndex
+  --   conf(1) -> index kUserHdlDmaStartIndex - 1
+  --   ...
+  --   conf(N-1) -> index kUserHdlDmaStartIndex - (N-1)
+  -- All UserHdl channel signals are owned by UserHdl (connected in port
+  -- map above). Window-side ToFifo inputs are driven to zero defaults.
 
   StreamRouting : for i in dInputStreamInterfaceToFifo'range generate
 
     -- Normal channels: bidirectional pass-through to TheWindow
-    NormalChannel : if i /= kUserDmaWriterIdx and i /= kUserDmaReaderIdx generate
+    NormalChannel : if i > kUserHdlDmaStartIndex or i < kUserHdlDmaStartIndex - kNumUserHdlDmaChannels + 1 generate
       dWinInputStreamInterfaceToFifo(i)  <= dInputStreamInterfaceToFifo(i);
       dInputStreamInterfaceFromFifo(i)   <= dWinInputStreamInterfaceFromFifo(i);
       dWinOutputStreamInterfaceToFifo(i) <= dOutputStreamInterfaceToFifo(i);
@@ -1208,7 +1204,7 @@ begin  -- architecture struct
 
     -- UserHdl channels: all 4 signals connected to UserHdl via port map.
     -- Disconnect Window side by driving ToFifo inputs to zero.
-    UserHdlChannel : if i = kUserDmaWriterIdx or i = kUserDmaReaderIdx generate
+    UserHdlChannel : if i <= kUserHdlDmaStartIndex and i >= kUserHdlDmaStartIndex - kNumUserHdlDmaChannels + 1 generate
       dWinInputStreamInterfaceToFifo(i)  <= kInputStreamInterfaceToFifoZero;
       dWinOutputStreamInterfaceToFifo(i) <= kOutputStreamInterfaceToFifoZero;
     end generate UserHdlChannel;

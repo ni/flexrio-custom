@@ -33,6 +33,6 @@
 ../../deps/flexrio-deps/encrypted/fpgaDigitalDesigns.25.1.0f405/source/rvi/Vivado/HDL/CommonFiles/NiCores/DFlop/DFlopGray.vhd
 ../../deps/flexrio-deps/encrypted/fpgaDigitalDesigns.25.1.0f405/source/rvi/Vivado/HDL/CommonFiles/NiCores/DFlop/DFlopSlvResetVal.vhd
 ../../deps/flexrio-deps/encrypted/fpgaDigitalDesigns.25.1.0f405/source/rvi/Vivado/HDL/CommonFiles/NiCores/DFlopBase/Xilinx/DFlopFallingEdge.vhd
-../../deps/flexrio-deps/encrypted/nicores_CommonCores.1.0.0a26/CommonFiles/Packages/PkgByteArray.vhd
-../../deps/flexrio-deps/encrypted/nicores_CommonCores.1.0.0a26/CommonFiles/Packages/PkgGray.vhd
-../../deps/flexrio-deps/encrypted/nicores_CommonCores.1.0.0a26/CommonFiles/Packages/PkgOneHot.vhd
+../../deps/flexrio-deps_bak/encrypted/nicores_CommonCores.1.0.0a26/CommonFiles/Packages/PkgByteArray.vhd
+../../deps/flexrio-deps_bak/encrypted/nicores_CommonCores.1.0.0a26/CommonFiles/Packages/PkgGray.vhd
+../../deps/flexrio-deps_bak/encrypted/nicores_CommonCores.1.0.0a26/CommonFiles/Packages/PkgOneHot.vhd

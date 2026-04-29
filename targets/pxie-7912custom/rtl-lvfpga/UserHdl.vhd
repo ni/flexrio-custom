@@ -246,13 +246,13 @@ begin
   ---------------------------------------------------------------------------
   WriterFifo_inst : entity work.NiFifoWriter
     generic map(
-      kFifoDepth            => kUserHdlDmaFifoConfArray(0).FifoDepth,
-      kSampleWidth          => kUserHdlDmaFifoConfArray(0).FifoWidth,
-      kNumOfSamplesPerWrite => kUserHdlDmaFifoConfArray(0).ElementsPerClockCycle,
-      kSignExtend           => kUserHdlDmaFifoConfArray(0).SignedData,
-      kFxpType              => kUserHdlDmaFifoConfArray(0).FxpType,
+      kFifoDepth            => kUserHdlDmaFifoConf(1).FifoDepth,
+      kSampleWidth          => kUserHdlDmaFifoConf(1).FifoWidth,
+      kNumOfSamplesPerWrite => kUserHdlDmaFifoConf(1).ElementsPerClockCycle,
+      kSignExtend           => kUserHdlDmaFifoConf(1).SignedData,
+      kFxpType              => kUserHdlDmaFifoConf(1).FxpType,
       kPeerToPeer           => false,
-      kDisableOnFifoTimeout => kUserHdlDmaFifoConfArray(0).DisableOnFifoTimeout
+      kDisableOnFifoTimeout => false
     )
     port map(
       aDiagramReset                 => abDiagramReset,
@@ -280,12 +280,12 @@ begin
   ---------------------------------------------------------------------------
   ReaderFifo_inst : entity work.NiFifoReader
     generic map(
-      kFifoDepth            => kUserHdlDmaFifoConfArray(1).FifoDepth,
-      kSampleWidth          => kUserHdlDmaFifoConfArray(1).FifoWidth,
-      kNumOfSamplesPerRead  => kUserHdlDmaFifoConfArray(1).ElementsPerClockCycle,
-      kFxpType              => kUserHdlDmaFifoConfArray(1).FxpType,
+      kFifoDepth            => kUserHdlDmaFifoConf(0).FifoDepth,
+      kSampleWidth          => kUserHdlDmaFifoConf(0).FifoWidth,
+      kNumOfSamplesPerRead  => kUserHdlDmaFifoConf(0).ElementsPerClockCycle,
+      kFxpType              => kUserHdlDmaFifoConf(0).FxpType,
       kPeerToPeer           => false,
-      kDisableOnFifoTimeout => kUserHdlDmaFifoConfArray(1).DisableOnFifoTimeout
+      kDisableOnFifoTimeout => false
     )
     port map(
       aDiagramReset                  => abDiagramReset,

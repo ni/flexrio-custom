@@ -33,6 +33,7 @@ use work.PkgCommunicationInterface.all;
 use work.PkgDmaPortCommunicationInterface.all;
 use work.PkgDmaPortDmaFifos.all;
 use work.PkgDmaPortCommIfcStreamStates.all;
+use work.PkgUserHdlFifos.all;
 use work.PkgUserHdl.all;
 
 entity UserHdl is

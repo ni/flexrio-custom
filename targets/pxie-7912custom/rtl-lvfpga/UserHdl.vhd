@@ -33,7 +33,7 @@ use work.PkgCommunicationInterface.all;
 use work.PkgDmaPortCommunicationInterface.all;
 use work.PkgDmaPortDmaFifos.all;
 use work.PkgDmaPortCommIfcStreamStates.all;
-use work.PkgUserHdlFifos.all;
+use work.PkgNiFifo.all;
 use work.PkgUserHdl.all;
 
 entity UserHdl is
@@ -138,7 +138,7 @@ begin
   NiDemoRegisterArray_inst : entity work.NiHostRegisterArray
     generic map(
       kNumRegisters => kNumDemoRegs,
-      kBaseAddress  => 16#10#,
+      kBaseAddress  => kDemoRegsBaseAddress,
       kDefault      => (0 to kNumDemoRegs-1 => x"00000000"),
       kReadOnly     => (kLoopbackInAIdx  => false,
                         kLoopbackInBIdx  => false,
@@ -191,7 +191,7 @@ begin
   NiFifoRegisterArray_inst : entity work.NiHostRegisterArray
     generic map(
       kNumRegisters => kNumFifoRegs,
-      kBaseAddress  => 60,
+      kBaseAddress  => kFifoRegsBaseAddress,
       kDefault      => (0 to kNumFifoRegs-1 => x"00000000"),
       kReadOnly     => (kWriterStartStopIdx => false,
                         kReaderStartStopIdx => false,

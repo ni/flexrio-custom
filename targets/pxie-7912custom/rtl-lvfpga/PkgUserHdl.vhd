@@ -13,7 +13,6 @@
 --   DMA FIFO channel definitions, demo register layout, and FIFO register
 --   layout.
 --
---   Types and utility functions live in PkgUserHdlFifos (do not edit).
 --
 ------------------------------------------------------------------------------------------
 
@@ -24,17 +23,31 @@ library ieee;
 library work;
   use work.PkgNiUtilities.all;
   use work.PkgCommIntConfiguration.all;
-  use work.PkgUserHdlFifos.all;
+  use work.PkgNiFifo.all;
 
 package PkgUserHdl is
 
   ---------------------------------------------------------------------------
   -- DMA FIFO channel configuration
   ---------------------------------------------------------------------------
-
-  -- Number of DMA channels used by UserHdl
   constant kNumUserHdlDmaChannels : natural := 2;
 
+  -- FifoWidth             : 1..64 (host types: Boolean, U/I[8,16,32,64], FXP, SGL-64)
+  -- ElementsPerClockCycle : 1, 2, 4, 8, 16, 32, or 64
+  -- Mode                  : NiFpgaHostToTarget or NiFpgaTargetToHost
+  -- SignedData            : true if host data type is signed
+  -- FxpType               : true if host data type is fixed point
+  --
+  -- FifoDepth (TargetToHost / PeerToPeer Writer):
+  --   2^N - 1, minimum 63, maximum 1048575 (2^20 -1)
+  -- FifoDepth (HostToTarget / PeerToPeer Reader):
+  --   2^N + 6*(ElementsPerClockCycle - 1)
+
+  -- for boolean data types, the max fifo width is 2097151 (2^21 - 1)
+  -- for 16-bit data types, the max fifo width is 1048575 (2^20 - 1)
+  -- for 32-bit data types, the max fifo width is 524287 (2^19 - 1)
+  -- for 64-bit data types, the max fifo width is 262143 (2^18 - 1)
+  -- for fixed-point data types, round up to the nearest 16/32/64-bit width and use the corresponding max fifo width above.
 
   constant kUserHdlDmaFifoConf : UserDmaFifoConfArray_t(0 to kNumUserHdlDmaChannels - 1) := (
     0 => (FifoDepth => 1029, FifoWidth => 32, ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget, SignedData => true, FxpType => false),
@@ -42,8 +55,17 @@ package PkgUserHdl is
   );
 
   ---------------------------------------------------------------------------
+  -- Common host registers (4 registers starting at byte offset 0x00)
+  ---------------------------------------------------------------------------
+  -- 0x00: Signature              (host RO)
+  -- 0x04: Version                (host RO)
+  -- 0x08: OldestCompatibleVersion (host RO)
+  -- 0x0C: Scratch                (host R/W)
+
+  ---------------------------------------------------------------------------
   -- Demo register array (4 registers starting at byte offset 0x10)
   ---------------------------------------------------------------------------
+  constant kDemoRegsBaseAddress : natural := 16#10#;
   constant kNumDemoRegs : natural := 4;
 
   constant kLoopbackInAIdx  : natural := 0;  -- offset 0x10: host R/W input A
@@ -54,6 +76,7 @@ package PkgUserHdl is
   ---------------------------------------------------------------------------
   -- FIFO register array (9 registers starting at byte offset 60)
   ---------------------------------------------------------------------------
+  constant kFifoRegsBaseAddress : natural := 16#3C#;
   constant kNumFifoRegs : natural := 9;
 
   constant kWriterStartStopIdx : natural := 0;  -- offset 60

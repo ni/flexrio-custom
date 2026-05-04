@@ -40,8 +40,11 @@ package PkgUserHdl is
   --
   -- FifoDepth (TargetToHost / PeerToPeer Writer):
   --   2^N - 1, minimum 63, maximum 1048575 (2^20 -1)
+  --
   -- FifoDepth (HostToTarget / PeerToPeer Reader):
-  --   2^N + 6*(ElementsPerClockCycle - 1)
+  -- *** NOTE: For HostToTarget FIFOs, add 6*ElementsPerClockCycle to the desired size of the FIFO to account for
+  -- *** the additional buffering required for the NI DMA engine to achieve maximum throughput.
+  --   (2^N + 6*(ElementsPerClockCycle)) -1
 
   -- for boolean data types, the max fifo width is 2097151 (2^21 - 1)
   -- for 16-bit data types, the max fifo width is 1048575 (2^20 - 1)

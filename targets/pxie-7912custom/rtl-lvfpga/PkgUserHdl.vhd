@@ -23,7 +23,7 @@ library ieee;
 library work;
   use work.PkgNiUtilities.all;
   use work.PkgCommIntConfiguration.all;
-  use work.PkgNiFifo.all;
+  use work.PkgNiSharedFifo.all;
 
 package PkgUserHdl is
 

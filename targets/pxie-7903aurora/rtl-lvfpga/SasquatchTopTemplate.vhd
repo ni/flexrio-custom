@@ -1736,8 +1736,11 @@ begin  -- architecture struct
   --vhook_a gGt*                  (others => '0') mode=in
   --vhook_a gGt*                  open            mode=out
   --vhook_a aIbertEyescanResetIn  (others => '0')
+  --vhook_g kDmaFifoConfArrayGeneric kDmaFifoConfArray
   HostInterfacex: entity work.G3UspGtyHostInterface (struct)
-    generic map (kHmbInUse => true)  --boolean:=false
+    generic map (
+      kHmbInUse                => true,               --boolean:=false
+      kDmaFifoConfArrayGeneric => kDmaFifoConfArray)  --DmaChannelConfArray_t
     port map (
       PcieRefClk_p                             => PcieRefClk_p,                              --in  std_logic
       PcieRefClk_n                             => PcieRefClk_n,                              --in  std_logic

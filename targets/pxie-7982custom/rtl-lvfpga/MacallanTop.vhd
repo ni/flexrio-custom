@@ -870,8 +870,11 @@ begin  -- architecture struct
   --vhook_a bLvWindowRegPortIn  bRegPortIn
   --vhook_a bLvWindowRegPortOut bRegPortOut
   --vhook_g kHmbInUse true
+  --vhook_g kDmaFifoConfArrayGeneric kDmaFifoConfArray
   HostInterfacex: entity work.G3UsHostInterfaceIsoPort (struct)
-    generic map (kHmbInUse => true)  --boolean:=false
+    generic map (
+      kHmbInUse                => true,               --boolean:=false
+      kDmaFifoConfArrayGeneric => kDmaFifoConfArray)  --DmaChannelConfArray_t
     port map (
       PcieRefClk_p                             => PcieRefClk_p,                              --in  std_logic
       PcieRefClk_n                             => PcieRefClk_n,                              --in  std_logic
@@ -1348,7 +1351,7 @@ begin  -- architecture struct
   -- Keeping this layout consistent across designs simplifies host-driver
   -- compatibility checks and basic bring-up/debug workflows.
 
-  NiCommonHostRegs_inst : entity work.NiCommonHostRegs
+  NiSharedCommonHostRegs_inst : entity work.NiSharedCommonHostRegs
     generic map(
       kSignature               => x"7982BEEF",
       kVersion                 => x"00000001",
@@ -1361,7 +1364,7 @@ begin  -- architecture struct
       bRegPortOut => bRegPortOutCommonRegs
     );
 
-  NiHostRegisterArray_inst : entity work.NiHostRegisterArray
+  NiSharedHostRegisterArray_inst : entity work.NiSharedHostRegisterArray
     generic map(
       kNumRegisters => 4,
       kBaseAddress  => 16#10#,
@@ -1381,7 +1384,7 @@ begin  -- architecture struct
       bFpgaDataOut   => bSharedHostRegFpgaDataOut
     );
 
-  -- Demonstration loopback logic for NiHostRegisterArray usage.
+  -- Demonstration loopback logic for NiSharedHostRegisterArray usage.
   --
   -- This process is meant only as an example of how FPGA-side logic can interact with
   -- host-visible registers.

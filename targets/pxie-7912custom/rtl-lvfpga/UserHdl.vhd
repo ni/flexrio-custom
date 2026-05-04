@@ -33,7 +33,7 @@ use work.PkgCommunicationInterface.all;
 use work.PkgDmaPortCommunicationInterface.all;
 use work.PkgDmaPortDmaFifos.all;
 use work.PkgDmaPortCommIfcStreamStates.all;
-use work.PkgNiFifo.all;
+use work.PkgNiSharedFifo.all;
 use work.PkgUserHdl.all;
 
 entity UserHdl is
@@ -47,7 +47,7 @@ entity UserHdl is
     bRegPortOut : out RegPortOut_t;
 
     -- DMA stream interface for Writer FIFO (channel kUserDmaWriterIdx, FPGA-to-Host)
-    -- Input direction: connected to NiFifoWriter
+    -- Input direction: connected to NiSharedFifoWriter
     dWriterInputStreamInterfaceToFifo    : in  InputStreamInterfaceToFifo_t;
     dWriterInputStreamInterfaceFromFifo   : out InputStreamInterfaceFromFifo_t;
     -- Output direction: unused for TargetToHost, driven to zero
@@ -58,7 +58,7 @@ entity UserHdl is
     -- Input direction: unused for HostToTarget, driven to zero
     dReaderInputStreamInterfaceToFifo    : in  InputStreamInterfaceToFifo_t;
     dReaderInputStreamInterfaceFromFifo   : out InputStreamInterfaceFromFifo_t;
-    -- Output direction: connected to NiFifoReader
+    -- Output direction: connected to NiSharedFifoReader
     dReaderOutputStreamInterfaceToFifo   : in  OutputStreamInterfaceToFifo_t;
     dReaderOutputStreamInterfaceFromFifo  : out OutputStreamInterfaceFromFifo_t
   );
@@ -119,7 +119,7 @@ begin
   ---------------------------------------------------------------------------
   -- Common host registers (signature / version / oldest compatible / scratch)
   ---------------------------------------------------------------------------
-  NiCommonHostRegs_inst : entity work.NiCommonHostRegs
+  NiSharedCommonHostRegs_inst : entity work.NiSharedCommonHostRegs
     generic map(
       kSignature               => x"7912BEEF",
       kVersion                 => x"00000001",
@@ -135,7 +135,7 @@ begin
   ---------------------------------------------------------------------------
   -- Demonstration register array (4 registers starting at byte offset 0x10)
   ---------------------------------------------------------------------------
-  NiDemoRegisterArray_inst : entity work.NiHostRegisterArray
+  NiDemoRegisterArray_inst : entity work.NiSharedHostRegisterArray
     generic map(
       kNumRegisters => kNumDemoRegs,
       kBaseAddress  => kDemoRegsBaseAddress,
@@ -159,7 +159,7 @@ begin
     );
 
   ---------------------------------------------------------------------------
-  -- Demonstration loopback logic for NiHostRegisterArray usage.
+  -- Demonstration loopback logic for NiSharedHostRegisterArray usage.
   --
   -- Write a value to LoopbackInA, read LoopbackOutA to see value+1.
   -- Write a value to LoopbackInB, read LoopbackOutB to see value+1.
@@ -188,7 +188,7 @@ begin
   ---------------------------------------------------------------------------
   -- FIFO registers (9 registers starting at byte offset 60)
   ---------------------------------------------------------------------------
-  NiFifoRegisterArray_inst : entity work.NiHostRegisterArray
+  NiFifoRegisterArray_inst : entity work.NiSharedHostRegisterArray
     generic map(
       kNumRegisters => kNumFifoRegs,
       kBaseAddress  => kFifoRegsBaseAddress,
@@ -245,7 +245,7 @@ begin
   ---------------------------------------------------------------------------
   -- Writer FIFO (Channel 2, FPGA-to-Host)
   ---------------------------------------------------------------------------
-  WriterFifo_inst : entity work.NiFifoWriter
+  WriterFifo_inst : entity work.NiSharedFifoWriter
     generic map(
       kFifoDepth            => kUserHdlDmaFifoConf(1).FifoDepth,
       kSampleWidth          => kUserHdlDmaFifoConf(1).FifoWidth,
@@ -279,7 +279,7 @@ begin
   ---------------------------------------------------------------------------
   -- Reader FIFO (Channel 3, Host-to-FPGA)
   ---------------------------------------------------------------------------
-  ReaderFifo_inst : entity work.NiFifoReader
+  ReaderFifo_inst : entity work.NiSharedFifoReader
     generic map(
       kFifoDepth            => kUserHdlDmaFifoConf(0).FifoDepth,
       kSampleWidth          => kUserHdlDmaFifoConf(0).FifoWidth,

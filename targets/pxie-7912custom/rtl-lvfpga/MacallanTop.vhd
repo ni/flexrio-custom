@@ -39,7 +39,7 @@ use work.PkgDmaPortCommunicationInterface.all;
 use work.PkgCommIntConfiguration.all;
 use work.PkgDmaPortDmaFifos.all;
 -- User HDL
-use work.PkgUserHdlFifos.all;
+use work.PkgNiSharedFifo.all;
 use work.PkgUserHdl.all;
 use work.PkgDmaPortDmaFifosFlatTypes.all;
 use work.PkgDmaPortCommIfcMasterPort.all;

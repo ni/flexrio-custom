@@ -5,8 +5,8 @@
 #  - owner/repo~=1.2.3       Compatible release (>= 1.2.3, < 1.3.0)
 
 dependencies = [
-    "ni/flexrio~=26.3.0",
-    "ni/flexrio-deps~=26.3.0",
+    "ni/flexrio~=26.3.0.dev0",
+    "ni/flexrio-deps~=26.3.0.dev0",
     "ni/flexrio-clips~=26.2.2",
-    "ni/hdl-shared~=0.3.0",    
+    "ni/hdl-shared~=0.3.0.dev0",    
 ]

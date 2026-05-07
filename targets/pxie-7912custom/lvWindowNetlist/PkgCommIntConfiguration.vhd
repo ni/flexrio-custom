@@ -1,3 +1,4 @@
+-- © 2012 National Instruments Corporation.
 -------------------------------------------------------------------------------
 --
 -- File: PkgComIntConfiguration.vhd
@@ -27,7 +28,6 @@ package PkgCommIntConfiguration is
   -- Constants that configure the communication interface
     constant kAddressWidth          : positive := 19;
   constant kNumberOfDmaChannels   : natural  := 64;
-  constant kNumberOfMemoryBufferDmaChannels   : natural  := 0;
   constant kNumberOfIrqs          : natural  := 1;
   constant kNumberOfMasterPorts   : natural  := 64;
   constant kNiFpgaFixedInputPorts : natural := 3;
@@ -157,15 +157,13 @@ package PkgCommIntConfiguration is
 
 
   type DmaChannelMode_t is (
-    Disabled,                 -- channel is disabled (no hardware generated).
-    NiFpgaTargetToHost,       -- input mode using modified mite read interface
-    NiFpgaHostToTarget,       -- output mode using modified mite write interface
-    NiCoreTargetToHost,       -- input mode using standard nicore mite read interface
-    NiCoreHostToTarget,       -- output mode using standard nicore mite write interface
-    NiFpgaPeerToPeerWriter,   -- peer to peer input channel
-    NiFpgaPeerToPeerReader,   -- peer to peer output channel
-    NiFpgaMemoryBufferWriter, -- memory buffer peer to peer input channel
-    NiFpgaMemoryBufferReader  -- memory buffer peer to peer output channel
+    Disabled,               -- channel is disabled (no hardware generated).
+    NiFpgaTargetToHost,     -- input mode using modified mite read interface
+    NiFpgaHostToTarget,     -- output mode using modified mite write interface
+    NiCoreTargetToHost,     -- input mode using standard nicore mite read interface
+    NiCoreHostToTarget,     -- output mode using standard nicore mite write interface
+    NiFpgaPeerToPeerWriter, -- peer to peer input channel
+    NiFpgaPeerToPeerReader  -- peer to peer output channel
     );
   
   type DmaChannelConfiguration_t is record
@@ -202,58 +200,58 @@ package PkgCommIntConfiguration is
      DmaClkIsDefaultClk     => false,
      InterfaceIsHandshaking => false);
 
-    constant kDmaFifoConfArray : DmaChannelConfArray_t(0 to kNumberOfDmaChannels -1) :=
-(    (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
+    constant kDmaFifoConfArray : DmaChannelConfArray_t(0 to kNumberOfDmaChannels-1) :=
+(    (FifoDepth => 1023, 
+    FifoWidth => 32,
+    SignedData => true, 
+    BaseAddress =>16#3FFC0#,
     SCL => false,
     CountSCL => false,
     FxpType => false,
     DisableOnFifoTimeout => false,
     WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
+    DmaClkIsDefaultClk => true,
+    Mode => niFpgaTargetToHost,
+    ElementsPerClockCycle => 1,
     InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
+,     (FifoDepth => 1029, 
+    FifoWidth => 32,
+    SignedData => true, 
+    BaseAddress =>16#3FF80#,
     SCL => false,
     CountSCL => false,
     FxpType => false,
     DisableOnFifoTimeout => false,
     WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
+    DmaClkIsDefaultClk => true,
+    Mode => niFpgaHostToTarget,
+    ElementsPerClockCycle => 1,
     InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
+,     (FifoDepth => 1023, 
+    FifoWidth => 32,
+    SignedData => true, 
+    BaseAddress =>16#3FF40#,
     SCL => false,
     CountSCL => false,
     FxpType => false,
     DisableOnFifoTimeout => false,
     WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
+    DmaClkIsDefaultClk => true,
+    Mode => niFpgaTargetToHost,
+    ElementsPerClockCycle => 1,
     InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
+,     (FifoDepth => 1029, 
+    FifoWidth => 32,
+    SignedData => true, 
+    BaseAddress =>16#3FF00#,
     SCL => false,
     CountSCL => false,
     FxpType => false,
     DisableOnFifoTimeout => false,
     WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
+    DmaClkIsDefaultClk => true,
+    Mode => niFpgaHostToTarget,
+    ElementsPerClockCycle => 1,
     InterfaceIsHandshaking => false)
 ,     (FifoDepth => 0, 
     FifoWidth => 0,
@@ -1038,57 +1036,14 @@ package PkgCommIntConfiguration is
 );
 
 
-    -- Printing this array even when no DMA channels are supported because
-  -- not printing it causes synthesis problems for other files.  This is
-  -- sized to 2 because Xilinx was complaining when the array was sized
-  -- to 1.
-  constant kMemoryBufferFifoConfArray : DmaChannelConfArray_t(0 to 1) := (
-   (
-    Mode => Disabled,
-    FifoDepth => 0,
-    FifoWidth => 0,
-    SignedData => False,
-    BaseAddress => 16#0#,
-    SCL => False,
-    CountSCL => False,
-    FxpType => False,
-    DisableOnFifoTimeout => False,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => False,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => False
-   ),
-   (
-    Mode => Disabled,
-    FifoDepth => 0,
-    FifoWidth => 0,
-    SignedData => False,
-    BaseAddress => 16#0#,
-    SCL => False,
-    CountSCL => False,
-    FxpType => False,
-    DisableOnFifoTimeout => False,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => False,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => False
-   )
-  );
-
-
-
   -- FUNCTIONS ----------------------------------------------------------------
 
   -- Function to return the depths of the DMA FIFOs in samples.
   function GetFifoDepthsInSamples(ChannelConfig: DmaChannelConfArray_t)
     return DmaChannelConfArray_t;
   
-  function DmaMaxWidth(DmaChannelConfArray : DmaChannelConfArray_t) return natural;
   function DmaMaxWidth(unused : boolean) return natural;
-  function MemoryBufferDmaMaxWidth(unused : boolean) return natural;
-  function DmaMaxDepth(DmaChannelConfArray : DmaChannelConfArray_t) return positive;
   function DmaMaxDepth(unused : boolean) return positive;
-  function MemoryBufferDmaMaxDepth(unused : boolean) return positive;
  
   -- Functions to return the number of DMA input, output and sink channels.  
   function NumOfInStrms(Arg : DmaChannelConfArray_t) return natural;
@@ -1126,50 +1081,30 @@ package body PkgCommIntConfiguration is
         ReturnVal(i).FifoDepth := ChannelConfig(i).FifoDepth;
       else
         ReturnVal(i).FifoDepth := ChannelConfig(i).FifoDepth -
-                                  ChannelConfig(i).ElementsPerClockCycle * 6;
+					              ChannelConfig(i).ElementsPerClockCycle * 6;
       end if;
     end loop;
     return ReturnVal;
   end GetFifoDepthsInSamples;
 
-  function DmaMaxWidth(DmaChannelConfArray : DmaChannelConfArray_t) return natural is
+  function DmaMaxWidth(unused : boolean) return natural is
     variable maxWidth : natural := 1;
   begin
-    for i in DmaChannelConfArray'range loop
+    for i in 0 to kNumberOfDmaChannels-1 loop
       maxWidth := Larger(maxWidth,
-                    DmaChannelConfArray(i).FifoWidth*DmaChannelConfArray(i).ElementsPerClockCycle);
+                    kDmaFifoConfArray(i).FifoWidth*kDmaFifoConfArray(i).ElementsPerClockCycle);
     end loop;
     return maxWidth;
-  end DmaMaxWidth;  
-
-  function DmaMaxWidth(unused : boolean) return natural is
-  begin
-    return DmaMaxWidth(kDmaFifoConfArray);
   end DmaMaxWidth;
 
-  function MemoryBufferDmaMaxWidth(unused : boolean) return natural is
-  begin
-    return DmaMaxWidth(kMemoryBufferFifoConfArray);
-  end MemoryBufferDmaMaxWidth;
-
-  function DmaMaxDepth(DmaChannelConfArray : DmaChannelConfArray_t) return positive is
+  function DmaMaxDepth(unused : boolean) return positive is
     variable maxDepth : positive := 1;
   begin
-    for i in DmaChannelConfArray'range loop
-      maxDepth := Larger(maxDepth, DmaChannelConfArray(i).FifoDepth);
+    for i in 0 to kNumberOfDmaChannels-1 loop
+      maxDepth := Larger(maxDepth, kDmaFifoConfArray(i).FifoDepth);
     end loop;
     return maxDepth;
   end DmaMaxDepth;
-
-  function DmaMaxDepth(unused : boolean) return positive is
-  begin
-    return DmaMaxDepth(kDmaFifoConfArray);
-  end DmaMaxDepth;
-
-  function MemoryBufferDmaMaxDepth(unused : boolean) return positive is
-  begin
-    return DmaMaxDepth(kMemoryBufferFifoConfArray);
-  end MemoryBufferDmaMaxDepth;
 
   -- This function returns the number of used DMA input channels.  
   function NumOfInStrms(Arg : DmaChannelConfArray_t) 
@@ -1178,7 +1113,7 @@ package body PkgCommIntConfiguration is
   begin
     ReturnVal := 0;
     for i in arg'range loop
-      if Arg(i).Mode = NiFpgaTargetToHost or Arg(i).Mode = NiFpgaPeerToPeerWriter or Arg(i).Mode = NiFpgaMemoryBufferWriter then
+      if Arg(i).Mode = NiFpgaTargetToHost or Arg(i).Mode = NiFpgaPeerToPeerWriter then
         ReturnVal := ReturnVal + 1;
       end if;
     end loop;
@@ -1193,7 +1128,7 @@ package body PkgCommIntConfiguration is
   begin
     ReturnVal := 0;
     for i in arg'range loop
-      if Arg(i).Mode = NiFpgaHostToTarget or Arg(i).Mode = NiFpgaMemoryBufferReader then
+      if Arg(i).Mode = NiFpgaHostToTarget then
         ReturnVal := ReturnVal + 1;
       end if;
     end loop;
@@ -1207,7 +1142,7 @@ package body PkgCommIntConfiguration is
   begin
     ReturnVal := 0;
     for i in arg'range loop
-      if Arg(i).Mode = NiFpgaPeerToPeerReader or Arg(i).Mode = NiFpgaMemoryBufferReader then
+      if Arg(i).Mode = NiFpgaPeerToPeerReader then
         ReturnVal := ReturnVal + 1;
       end if;
     end loop;

@@ -1,3 +1,4 @@
+-- © 2012 National Instruments Corporation.
 -------------------------------------------------------------------------------
 --
 -- File: PkgDmaPortCommIfcRegs.vhd

@@ -6,7 +6,6 @@ def pre_all(context):
     config = context.config
 
     # --- Tools ---
-    config.set_lv_path("C:/Program Files/National Instruments/LabVIEW 2024")
     config.set_vivado_tools_path("C:/NIFPGA/programs/Vivado2021_1")
     config.set_vivado_tcl_scripts_folder("../common/TCL")
     # config.set_modelsim_tools_path("")

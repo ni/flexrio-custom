@@ -51,12 +51,12 @@ jobs:
         run: |
           Set-Location $env:GITHUB_WORKSPACE
           $targets = Get-ChildItem targets -Directory |
-            Where-Object { Test-Path (Join-Path $_.FullName "projectsettings.ini") } |
+            Where-Object { Test-Path (Join-Path $_.FullName "nihdlsettings.py") } |
             Sort-Object Name |
             Select-Object -ExpandProperty Name
 
           if (-not $targets) {
-            throw "No targets with projectsettings.ini were found under targets/."
+            throw "No targets with nihdlsettings.py were found under targets/."
           }
 
           "targets=$($targets -join ',')" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
@@ -68,6 +68,7 @@ jobs:
           Set-Location $env:GITHUB_WORKSPACE
           $targets = "${{ steps.discover.outputs.targets }}".Split(',', [System.StringSplitOptions]::RemoveEmptyEntries)
           $firstTarget = $targets[0]
+          $configPath = Join-Path $env:GITHUB_WORKSPACE "tests" "pipeline" "nihdlsettings.py"
           $inputArgs = ""
 
           if ("${{ github.event_name }}" -eq "workflow_dispatch") {
@@ -83,7 +84,7 @@ jobs:
           Write-Host "Running install-deps from targets/$firstTarget"
           Push-Location (Join-Path "targets" $firstTarget)
           try {
-            & nihdl install-deps @extraArgs
+            & nihdl install-deps --config=$configPath @extraArgs
           }
           finally {
             Pop-Location
@@ -93,14 +94,15 @@ jobs:
         shell: pwsh
         run: |
           Set-Location $env:GITHUB_WORKSPACE
+          $configPath = Join-Path $env:GITHUB_WORKSPACE "tests" "pipeline" "nihdlsettings.py"
           $targets = "${{ steps.discover.outputs.targets }}".Split(',', [System.StringSplitOptions]::RemoveEmptyEntries)
 
           foreach ($target in $targets) {
             Write-Host "::group::$target"
             Push-Location (Join-Path "targets" $target)
             try {
-              nihdl gen-target
-              nihdl create-project --test
+              nihdl gen-target --config=$configPath
+              nihdl create-project --config=$configPath
             }
             finally {
               Pop-Location

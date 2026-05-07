@@ -182,9 +182,9 @@
       <ControlAndIndicatorNamesAndTypes></ControlAndIndicatorNamesAndTypes>
       <RunWhenLoaded>false</RunWhenLoaded>
       <signatures>
-         <fpgaSignature>TZMtuD+crVzV0SlAjuiMrQ==</fpgaSignature>
-         <guidSignature>3TGTxQ3XfkVdGKjV/5I5nA==</guidSignature>
-         <namesSignature>hdhHhGNwgv/TbklAvWrS8w==</namesSignature>
+         <fpgaSignature>ldGbHV2xrGlx9Nx+eSK8eQ==</fpgaSignature>
+         <guidSignature>GXaUre/MgskpmuNXzN6oCA==</guidSignature>
+         <namesSignature>JUeDRqlvwB6QQp3GbGQ7/Q==</namesSignature>
       </signatures>
       <version>1</version>
       <VivadoProjectExport>true</VivadoProjectExport>
@@ -203,14 +203,14 @@
 		<BuildSpecVersion />
 		<BuildSpecDescription />
 	</Documentation>
-	<SignatureRegister>4D932DB83F9CAD5CD5D129408EE88CAD</SignatureRegister>
-	<SignatureGuids>DD3193C50DD77E455D18A8D5FF92399C</SignatureGuids>
-	<SignatureNames>85D84784637082FFD36E4940BD6AD2F3</SignatureNames>
+	<SignatureRegister>95D19B1D5DB1AC6971F4DC7E7922BC79</SignatureRegister>
+	<SignatureGuids>197694ADEFCC82C9299AE357CCDEA808</SignatureGuids>
+	<SignatureNames>25478346A96FC01E90429DC66C643BFD</SignatureNames>
 	<TimeStamp></TimeStamp>
 	<CompilationStatus></CompilationStatus>
 	<BitstreamVersion>2</BitstreamVersion>
 	<VI>
-		<Name>Running2.vi</Name>
+		<Name>CustomBlankRunning.vi</Name>
 		<RegisterList>
 			<Register>
 				<Name>ViControl</Name>
@@ -372,7 +372,7 @@
 		<Icon>
 			<ImageType>0</ImageType>
 			<ImageDepth>8</ImageDepth>
-			<Image>////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAA/////////////////////////wAAAAAAAAAAAP//AAD/+fn5+fn5+fn5+fn59/ks+SzgAAAAAAAAAAAA//8AAP/5///////////////3+Sz5LP8AAAAAAAAAAAD//wAA//n/6OTo////6OTo//f8K/ws/wAAAAAAAAAAAP//AAD/+f/k/+T////k/+T/9ywsLCzgAAAAAAAAAAAA//8AAP/56OT/5Oj/6OT/5Oj3K/wrLP8AAAAAAAAAAAD//wAA//nk6P/o5P/k6P/o5Pf8CPws/wAAAAAAAAAAAP//AAD/+eT////k/+T////k9/wI/Cz/AAAAAAAAAAAA//8AAP/5/////+jk6P/////3K/wrLP8AAAAAAAAAAAD//wAA//n///////////////csLCws/wAAAAAAAAAAAP//AAD/9/f39/f39/f39/f39ywsg4P/AAAAAAAAAAAA//8AAP8sLCwsLCwsLCwsLCwsLCyDBYODAAAAAAAAAAD//wAA/yz8LCwsLCz8LCwsLCMjI4MFBQWDgwAAAAAAAP//AAD//PD8LCws/CP8LCMjLCwsgwUF/wUFg4MAAAAA//8AAP8s7ywsLCwjLCwjLCwsLCyDBf///wUFBYMjIwD//wAA///w////I///I////////4MFBf8FBYODAAAAAP//AAAAAO8AAAAjAAAjAADw7+/wgwUFBYODAAAAAAAA//8AAAAAAPAAAAAjIwAA7wAAAACDBYODAAAAAAAAAAD//wAAAAAAAO/vAAAAAPAAAAAAAIODAAAAAAAAAAAAAP//AAAAAAAAAADw7/DvAAAAAAAAAAAAAAAA//8AAAAA//8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AAP8AAAD//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAAP//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AAAAA//8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAAAAD//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAAAAAAP//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/////AAAA//8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP///////////////////////////////////////////w==</Image>
+			<Image>////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAA/////////////////////////wAAAAAAAAAAAP//AAD/+fn5+fn5+fn5+fn59/ks+SzgAAAAAAAAAAAA//8AAP/5///////////////3+Sz5LP8AAAAAAAAAAAD//wAA//n/6OTo////6OTo//f8K/ws/wAAAAAAAAAAAP//AAD/+f/k/+T////k/+T/9ywsLCzgAAAAAAAAAAAA//8AAP/56OT/5Oj/6OT/5Oj3K/wrLP8AAAAAAAAAAAD//wAA//nk6P/o5P/k6P/o5Pf8CPws/wAAAAAAAAAAAP//AAD/+eT////k/+T////k9/wI/Cz/AAAAAAAAAAAA//8AAP/5/////+jk6P/////3K/wrLP8AAAAAAAAAAAD//wAA//n///////////////csLCws/wAAAAAAAAAAAP//AAD/9/f39/f39/f39/f39ywsg4P/AAAAAAAAAAAA//8AAP8sLCwsLCwsLCwsLCwsLCyDBYODAAAAAAAAAAD//wAA/yz8LCwsLCz8LCwsLCMjI4MFBQWDgwAAAAAAAP//AAD//PD8LCws/CP8LCMjLCwsgwUF/wUFg4MAAAAA//8AAP8s7ywsLCwjLCwjLCwsLCyDBf///wUFBYMjIwD//wAA///w////I///I////////4MFBf8FBYODAAAAAP//AAAAAO8AAAAjAAAjAADw7+/wgwUFBYODAAAAAAAA//8AAAAAAPAAAAAjIwAA7wAAAACDBYODAAAAAAAAAAD//wAAAAAAAO/vAAAAAPAAAAAAAIODAAAAAAAAAAAAAP//AAAAAAAAAADw7/DvAAAAAAAAAAAAAAAAAP8AAAAA//8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAAAAD//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAAAP//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AAAAA//8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAAAD//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAAAP//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AAAAA//8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP///////////////////////////////////////////w==</Image>
 			<Mask>//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////8=</Mask>
 			<Colors>AP///wD//8wA//+ZAP//ZgD//zMA//8AAP/M/wD/zMwA/8yZAP/MZgD/zDMA/8wAAP+Z/wD/mcwA/5mZAP+ZZgD/mTMA/5kAAP9m/wD/ZswA/2aZAP9mZgD/ZjMA/2YAAP8z/wD/M8wA/zOZAP8zZgD/MzMA/zMAAP8A/wD/AMwA/wCZAP8AZgD/ADMA/wAAAMz//wDM/8wAzP+ZAMz/ZgDM/zMAzP8AAMzM/wDMzMwAzMyZAMzMZgDMzDMAzMwAAMyZ/wDMmcwAzJmZAMyZZgDMmTMAzJkAAMxm/wDMZswAzGaZAMxmZgDMZjMAzGYAAMwz/wDMM8wAzDOZAMwzZgDMMzMAzDMAAMwA/wDMAMwAzACZAMwAZgDMADMAzAAAAJn//wCZ/8wAmf+ZAJn/ZgCZ/zMAmf8AAJnM/wCZzMwAmcyZAJnMZgCZzDMAmcwAAJmZ/wCZmcwAmZmZAJmZZgCZmTMAmZkAAJlm/wCZZswAmWaZAJlmZgCZZjMAmWYAAJkz/wCZM8wAmTOZAJkzZgCZMzMAmTMAAJkA/wCZAMwAmQCZAJkAZgCZADMAmQAAAGb//wBm/8wAZv+ZAGb/ZgBm/zMAZv8AAGbM/wBmzMwAZsyZAGbMZgBmzDMAZswAAGaZ/wBmmcwAZpmZAGaZZgBmmTMAZpkAAGZm/wBmZswAZmaZAGZmZgBmZjMAZmYAAGYz/wBmM8wAZjOZAGYzZgBmMzMAZjMAAGYA/wBmAMwAZgCZAGYAZgBmADMAZgAAADP//wAz/8wAM/+ZADP/ZgAz/zMAM/8AADPM/wAzzMwAM8yZADPMZgAzzDMAM8wAADOZ/wAzmcwAM5mZADOZZgAzmTMAM5kAADNm/wAzZswAM2aZADNmZgAzZjMAM2YAADMz/wAzM8wAMzOZADMzZgAzMzMAMzMAADMA/wAzAMwAMwCZADMAZgAzADMAMwAAAAD//wAA/8wAAP+ZAAD/ZgAA/zMAAP8AAADM/wAAzMwAAMyZAADMZgAAzDMAAMwAAACZ/wAAmcwAAJmZAACZZgAAmTMAAJkAAABm/wAAZswAAGaZAABmZgAAZjMAAGYAAAAz/wAAM8wAADOZAAAzZgAAMzMAADMAAAAA/wAAAMwAAACZAAAAZgAAADMA7gAAAN0AAAC7AAAAqgAAAIgAAAB3AAAAVQAAAEQAAAAiAAAAEQAAAADuAAAA3QAAALsAAACqAAAAiAAAAHcAAABVAAAARAAAACIAAAARAAAAAO4AAADdAAAAuwAAAKoAAACIAAAAdwAAAFUAAABEAAAAIgAAABEA7u7uAN3d3QC7u7sAqqqqAIiIiAB3d3cAVVVVAERERAAiIiIAERERAAAAAA==</Colors>
 			<Rectangle>
@@ -390,15 +390,102 @@
 <CompilationResults>
    <NiFpga>
       <BaseAddressOnDevice>0</BaseAddressOnDevice>
-      <DmaChannelAllocationList></DmaChannelAllocationList>
+      <DmaChannelAllocationList>
+         <Channel name="Target2Host">
+            <BaseAddressTag>NiLvFpgaTarget2Host</BaseAddressTag>
+            <ControlSet>0</ControlSet>
+            <DataType>
+               <Delta>1.000000000000000000000000000000000000000000000000000000</Delta>
+               <IntegerWordLength>32</IntegerWordLength>
+               <Maximum>2147483647.000000000000000000000000000000000000000000000</Maximum>
+               <Minimum>-2147483648.000000000000000000000000000000000000000000000</Minimum>
+               <Signed>true</Signed>
+               <SubType>I32</SubType>
+               <WordLength>32</WordLength>
+            </DataType>
+            <Direction>TargetToHost</Direction>
+            <Implementation>niFpgaTargetToHost</Implementation>
+            <Number>0</Number>
+            <NumberOfElements>1023</NumberOfElements>
+            <UserVisible>true</UserVisible>
+         </Channel>
+         <Channel name="Host2Target">
+            <BaseAddressTag>NiLvFpgaHost2Target</BaseAddressTag>
+            <ControlSet>1</ControlSet>
+            <DataType>
+               <Delta>1.000000000000000000000000000000000000000000000000000000</Delta>
+               <IntegerWordLength>32</IntegerWordLength>
+               <Maximum>2147483647.000000000000000000000000000000000000000000000</Maximum>
+               <Minimum>-2147483648.000000000000000000000000000000000000000000000</Minimum>
+               <Signed>true</Signed>
+               <SubType>I32</SubType>
+               <WordLength>32</WordLength>
+            </DataType>
+            <Direction>HostToTarget</Direction>
+            <Implementation>niFpgaHostToTarget</Implementation>
+            <Number>1</Number>
+            <NumberOfElements>1029</NumberOfElements>
+            <UserVisible>true</UserVisible>
+         </Channel>
+         <Channel name="HdlTarget2Host">
+            <BaseAddressTag>NiLvFpgaHdlTarget2Host</BaseAddressTag>
+            <ControlSet>2</ControlSet>
+            <DataType>
+               <Delta>1.000000000000000000000000000000000000000000000000000000</Delta>
+               <IntegerWordLength>32</IntegerWordLength>
+               <Maximum>2147483647.000000000000000000000000000000000000000000000</Maximum>
+               <Minimum>-2147483648.000000000000000000000000000000000000000000000</Minimum>
+               <Signed>true</Signed>
+               <SubType>I32</SubType>
+               <WordLength>32</WordLength>
+            </DataType>
+            <Direction>TargetToHost</Direction>
+            <Implementation>niFpgaTargetToHost</Implementation>
+            <Number>2</Number>
+            <NumberOfElements>1023</NumberOfElements>
+            <UserVisible>true</UserVisible>
+         </Channel>
+         <Channel name="HdlHost2Target">
+            <BaseAddressTag>NiLvFpgaHdlHost2Target</BaseAddressTag>
+            <ControlSet>3</ControlSet>
+            <DataType>
+               <Delta>1.000000000000000000000000000000000000000000000000000000</Delta>
+               <IntegerWordLength>32</IntegerWordLength>
+               <Maximum>2147483647.000000000000000000000000000000000000000000000</Maximum>
+               <Minimum>-2147483648.000000000000000000000000000000000000000000000</Minimum>
+               <Signed>true</Signed>
+               <SubType>I32</SubType>
+               <WordLength>32</WordLength>
+            </DataType>
+            <Direction>HostToTarget</Direction>
+            <Implementation>niFpgaHostToTarget</Implementation>
+            <Number>3</Number>
+            <NumberOfElements>1029</NumberOfElements>
+            <UserVisible>true</UserVisible>
+         </Channel>         
+      </DmaChannelAllocationList>
+      <RegisterBlockList>
+         <RegisterBlock name="NiLvFpgaTarget2Host">
+            <Offset>0x3FFC0</Offset>
+         </RegisterBlock>
+         <RegisterBlock name="NiLvFpgaHost2Target">
+            <Offset>0x3FF80</Offset>
+         </RegisterBlock>
+         <RegisterBlock name="NiLvFpgaHdlTarget2Host">
+            <Offset>0x3FF40</Offset>
+         </RegisterBlock>
+         <RegisterBlock name="NiLvFpgaHdlHost2Target">
+            <Offset>0x3FF00</Offset>
+         </RegisterBlock>         
+      </RegisterBlockList>
       <UsedBaseClockList>
          <BaseClock name="PXIe_Clk100">
          </BaseClock>
          <BaseClock name="DmaClk">
          </BaseClock>
-         <BaseClock name="BusClk">
-         </BaseClock>
          <BaseClock name="ReliableClkIn">
+         </BaseClock>
+         <BaseClock name="BusClk">
          </BaseClock>
          <BaseClock name="80 MHz Clock">
          </BaseClock>

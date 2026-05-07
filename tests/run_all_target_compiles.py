@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Run nihdl project creation and compile/syntax-check for every target folder.
 
-This script iterates targets under ../targets that contain a projectsettings.ini file,
+This script iterates targets under ../targets that contain a nihdlsettings.py file,
 runs the following commands in each target directory, and keeps going on failures:
 
 1. nihdl create-project --overwrite
@@ -204,13 +204,13 @@ class TargetResult:
 
 
 def _discover_targets(targets_dir: Path) -> list[Path]:
-    """Return target directories that contain projectsettings.ini."""
+    """Return target directories that contain nihdlsettings.py."""
     if not targets_dir.exists() or not targets_dir.is_dir():
         raise FileNotFoundError(f"Targets folder not found: {targets_dir}")
 
     target_dirs = []
     for child in sorted(targets_dir.iterdir(), key=lambda p: p.name.lower()):
-        if child.is_dir() and (child / "projectsettings.ini").is_file():
+        if child.is_dir() and (child / "nihdlsettings.py").is_file():
             target_dirs.append(child)
     return target_dirs
 
@@ -339,7 +339,7 @@ def main() -> int:
         return 1
 
     if not targets:
-        print(f"No targets with projectsettings.ini found in: {args.targets_dir}")
+        print(f"No targets with nihdlsettings.py found in: {args.targets_dir}")
         return 1
 
     print(f"Found {len(targets)} targets in: {args.targets_dir}")

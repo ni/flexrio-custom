@@ -33,11 +33,7 @@ def pre_all(context):
     )
     config.add_vivado_project_constraints_file("objects/xdc/constraints.xdc")
 
-    config.set_use_gen_lv_window_files(True)
     config.set_the_window_folder_input("lvWindowNetlist")
-    config.set_code_generation_results_stub(
-        "../../deps/flexrio/targets/pxie-7903-ddr1280/lvFpgaTarget/CodeGenerationResultsStub.lvtxt"
-    )
 
     # --- LVFPGA Target Settings ---
     config.set_custom_signals_csv("lvFpgaTarget/LVTargetBoardIO.csv")
@@ -72,10 +68,10 @@ def pre_all(context):
     )
     config.add_window_vhdl_template("rtl-lvfpga/TheLvWindowFlatWrapper.vhd.mako")
     config.add_window_vhdl_template("rtl-lvfpga/PkgTheLvWindowFlatWrapper.vhd.mako")
-    config.add_target_xml_template(
+    config.add_lv_target_xml_template(
         "../../deps/flexrio/targets/pxie-7903-ddr1280/lvFpgaTarget/Resource.xml.mako"
     )
-    config.add_target_xml_template(
+    config.add_lv_target_xml_template(
         "../../deps/flexrio/targets/pxie-7903-ddr1280/lvFpgaTarget/Sasquatch7903DDR1280.xml.mako"
     )
 

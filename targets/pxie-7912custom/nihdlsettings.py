@@ -108,6 +108,10 @@ def pre_all(context):
     )
     config.set_the_window_folder_output("objects/TheWindowRunningFifos_NoHdlFIFOs_3_Hack_2")
 
+    # --- Window Hierarchy Settings ---
+    config.set_entity_path_to_window("TheLvWindowWrapper/TheLvWindow")
+    config.set_entity_path_to_window_wrapper("TheLvWindowWrapper")
+
     # --- ModelSim Settings ---
     # config.set_modelsim_project_path("")
 

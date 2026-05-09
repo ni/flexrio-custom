@@ -5,6 +5,7 @@ def pre_all(context):
     """Configure all settings for pxie-7912custom."""
     config = context.config
 
+    # --- Settings Variables ---
     base_deps = "../../deps/flexrio/targets/pxie-7912"
     plugin_name = "PXIe-7912Custom"
 
@@ -52,10 +53,9 @@ def pre_all(context):
     config.add_lv_target_constraints(f"{base_deps}/xdc/constraints_place.xdc")
 
     # --- LabVIEW FPGA Target IO ---
-    config.set_custom_signals_csv("lvFpgaTarget/LVTargetBoardIO.csv")
-    config.set_include_target_io_ports(False)
-    config.set_include_custom_io(False)
-    config.set_board_io_signal_assignments_example("objects/GeneratedHDL/BoardIOSignalAssignmentsExample.vhd")   
+    config.set_custom_io_csv("lvFpgaTarget/LVTargetBoardIO.csv")
+    config.set_include_board_io_on_lv_window(False)
+    config.set_include_custom_io_on_lv_window(False)
 
     # --- LabVIEW FPGA Target Generated VHDL  ---
     config.add_window_vhdl_template(f"{base_deps}/rtl-lvfpga/lvgen/TheWindow.vhd.mako")

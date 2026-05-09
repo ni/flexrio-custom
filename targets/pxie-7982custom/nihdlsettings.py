@@ -5,94 +5,85 @@ def pre_all(context):
     """Configure all settings for pxie-7982custom."""
     config = context.config
 
+    # --- Settings Variables ---
+    base_deps = "../../deps/flexrio/targets/pxie-7982"
+    plugin_name = "PXIe-7982Custom"
+
     # --- Tools ---
     config.set_vivado_tools_folder("C:/NIFPGA/programs/Vivado2021_1")
     config.set_vivado_tcl_scripts_folder("../common/TCL")
-    # config.set_modelsim_tools_folder("")
-    # config.set_xilinx_sim_lib_folder("")
+    config.set_modelsim_tools_folder("")
+    config.set_xilinx_sim_lib_folder("")
 
     # --- General Settings ---
     config.set_target_family("FlexRIO")
     config.set_base_target("PXIe-7982")
+
+     # --- Dependencies ---   
     config.set_dependencies("../../dependencies.toml")
+
+    # --- HDL Source Code ---
+    config.add_hdl_file_list(f"{base_deps}/vivadoprojectdeps.txt")
+    config.add_hdl_file_list("vivadoprojectsources.txt")
+
+    # --- LabVIEW Window Netlist for Synthesis ---
+    config.set_lv_window_netlist_folder("lvWindowNetlist")
 
     # --- Vivado Project Settings ---
     config.set_top_level_entity("MacallanTop")
     config.set_fpga_part("xcku040-ffva1156-2-e")
-    config.set_vivado_project_folder("VivadoProject/My7982Proj.xpr")
+    config.set_vivado_project_folder("VivadoProject")
 
-    config.add_hdl_file_list("../../deps/flexrio/targets/pxie-7982/vivadoprojectdeps.txt")
-    config.add_hdl_file_list("vivadoprojectsources.txt")
-
-    config.add_constraints_template("../../deps/flexrio/targets/pxie-7982/xdc/constraints.xdc")
+    # --- Vivado Constraints ---
+    config.add_constraints_template(f"{base_deps}/xdc/constraints.xdc")
     config.set_custom_constraints("xdc/custom_constraints.xdc")
-    config.add_vivado_project_constraints(
-        "../../deps/flexrio/targets/pxie-7982/xdc/constraints_place.xdc"
-    )
+    config.add_vivado_project_constraints(f"{base_deps}/xdc/constraints_place.xdc")
     config.add_vivado_project_constraints("objects/xdc/constraints.xdc")
 
-    config.set_lv_window_netlist_folder("lvWindowNetlist")
+    # --- LabVIEW FPGA Target Settings ---
+    config.set_lv_target_name("PXIe-7982Custom")
+    config.set_lv_target_guid("15f66d95-cd0d-49a0-92d2-c9f7d690cdb4")
+    config.set_lv_target_install_folder("C:/Program Files/NI/LVAddons/flexrioii/1/Targets/NI/FPGA/RIO/79XXR")
+    config.set_lv_target_menus_folder("../../deps/flexrio/targets/common/lvFpgaTarget/targetpluginmenus")
+    config.set_lv_target_info_ini(f"{base_deps}/lvFpgaTarget/TargetInfo.ini")
+    config.set_lv_target_exclude_files(f"{base_deps}/lvtargetexcludefiles.txt")
+    config.set_lv_target_plugin_output_folder(f"objects/LVTargetPlugin/{plugin_name}")
 
-    # --- LVFPGA Target Settings ---
+    # --- LabVIEW FPGA Target Constraints ---
+    config.add_lv_target_constraints(f"{base_deps}/xdc/constraints.xdc")
+    config.add_lv_target_constraints(f"{base_deps}/xdc/constraints_place.xdc")
+
+    # --- LabVIEW FPGA Target IO ---
     config.set_custom_io_csv("lvFpgaTarget/LVTargetBoardIO.csv")
     config.set_include_board_io_on_lv_window(False)
     config.set_include_custom_io_on_lv_window(False)
-    config.set_lv_target_name("PXIe-7982Custom")
-    config.set_lv_target_guid("15f66d95-cd0d-49a0-92d2-c9f7d690cdb4")
-    config.set_lv_target_install_folder(
-        "C:/Program Files/NI/LVAddons/flexrioii/1/Targets/NI/FPGA/RIO/79XXR"
-    )
 
-    config.add_lv_target_constraints(
-        "../../deps/flexrio/targets/pxie-7982/xdc/constraints.xdc"
-    )
-    config.add_lv_target_constraints(
-        "../../deps/flexrio/targets/pxie-7982/xdc/constraints_place.xdc"
-    )
-    config.set_lv_target_menus_folder(
-        "../../deps/flexrio/targets/common/lvFpgaTarget/targetpluginmenus"
-    )
-    config.set_lv_target_info_ini(
-        "../../deps/flexrio/targets/pxie-7982/lvFpgaTarget/TargetInfo.ini"
-    )
-    config.set_lv_target_exclude_files(
-        "../../deps/flexrio/targets/pxie-7982/lvtargetexcludefiles.txt"
-    )
-    config.set_max_hdl_reg_offset(16)
-
-    # Templates
-    config.add_window_vhdl_template(
-        "../../deps/flexrio/targets/pxie-7982/rtl-lvfpga/lvgen/TheWindow.vhd.mako"
-    )
+    # --- LabVIEW FPGA Target Generated VHDL ---
+    config.add_window_vhdl_template(f"{base_deps}/rtl-lvfpga/lvgen/TheWindow.vhd.mako")
     config.add_window_vhdl_template("rtl-lvfpga/TheLvWindowFlatWrapper.vhd.mako")
     config.add_window_vhdl_template("rtl-lvfpga/PkgTheLvWindowFlatWrapper.vhd.mako")
-    config.add_lv_target_xml_template(
-        "../../deps/flexrio/targets/pxie-7982/lvFpgaTarget/Resource.xml.mako"
-    )
-    config.add_lv_target_xml_template(
-        "../../deps/flexrio/targets/pxie-7982/lvFpgaTarget/Macallan7982.xml.mako"
-    )
-
-    # Outputs
     config.set_window_vhdl_output_folder("objects/GeneratedHDL")
-    config.set_lv_target_plugin_output_folder("objects/LVTargetPlugin/PXIe-7982Custom")
-    config.set_boardio_output("objects/LVTargetPlugin/PXIe-7982Custom/boardio.xml")
-    config.set_clock_output("objects/LVTargetPlugin/PXIe-7982Custom/CustomClocks.xml")
+
+    # --- LabVIEW FPGA Target Generated Resource XML ---
+    config.add_lv_target_xml_template(f"{base_deps}/lvFpgaTarget/Resource.xml.mako")
+    config.add_lv_target_xml_template(f"{base_deps}/lvFpgaTarget/Macallan7982.xml.mako")
+    config.set_boardio_output(f"objects/LVTargetPlugin/{plugin_name}/boardio.xml")
+    config.set_clock_output(f"objects/LVTargetPlugin/{plugin_name}/CustomClocks.xml")
+
+    # --- HDL-to-Host Interfaces ---
+    config.set_max_hdl_reg_offset(16)
 
     # --- CLIP Migration Settings ---
-    # config.set_input_xml_path("")
-    # config.set_clip_top_hdl("")
-    # config.add_clip_constraints("")
-    # config.set_clip_entity_path("")
-
+    config.set_clip_input_xml("")
+    config.set_clip_top_hdl("")
+    config.add_clip_constraints("")
+    config.set_clip_entity_path("")
     config.set_clip_output_csv("lvFpgaTarget/LVTargetBoardIO.csv")
     config.set_clip_inst_example("objects/CLIPMigration/CLIPInstantiationExample.vhd")
-    config.set_clip_to_window_signal_definitions(
-        "objects/CLIPMigration/CLIPtoWindowSignalDefinitions.vhd"
-    )
+    config.set_clip_to_window_signal_definitions("objects/CLIPMigration/CLIPtoWindowSignalDefinitions.vhd")
     config.set_clip_output_xdc_folder("objects/CLIPMigration/xdc")
 
-    # --- LV Window Netlist Settings ---
+    # --- Generate LV Window Netlist Settings ---
     config.set_lv_window_vivado_project_export_xpr("C:/temp/customwindow/7982_VPE/VivadoProject/Running7.xpr")
     config.set_lv_window_netlist_output_folder("objects/TheWindow")
 
@@ -100,8 +91,8 @@ def pre_all(context):
     config.set_entity_path_to_window("TheLvWindowWrapper/TheLvWindow")
     config.set_entity_path_to_window_wrapper("TheLvWindowWrapper")
 
-    # --- ModelSim Settings ---
-    config.set_modelsim_project_folder("ModelSimProject/My7982Proj.mpf")
+    # --- ModelSim Project Settings ---
+    config.set_modelsim_project_folder("ModelSimProject")
 
 
 def post_all(context):

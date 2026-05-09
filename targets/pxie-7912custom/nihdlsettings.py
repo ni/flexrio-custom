@@ -18,6 +18,8 @@ def pre_all(context):
     # --- General Settings ---
     config.set_target_family("FlexRIO")
     config.set_base_target("PXIe-7912")
+
+     # --- Dependencies ---   
     config.set_dependencies("../../dependencies.toml")
 
     # --- HDL Source Code ---

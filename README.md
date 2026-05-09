@@ -83,10 +83,12 @@ Checkout the repo at a specific tag/version:
 
 All command line operations are performed from within a target folder
 
-## 3) Install the LabVIEW FPGA HDL Tools
-> pip install -r requirements.txt
+## 3) Set up the Python environment
+> nisetup
 
-This will install the correct version of the tools that the checked out version of the repository is using
+This creates a virtual environment, installs the correct version of the LabVIEW FPGA HDL Tools, and activates the environment.
+
+**Important:** You must run `nisetup` every time you open a new command prompt.  The virtual environment is only active for the current terminal session.  You will see `(flexrio-custom)` in your command prompt when the environment is active.
 
 ## 4) Run nihdl --help to see the list of available commands
 > nihdl --help
@@ -202,7 +204,7 @@ Modules with integrated IO use an IO Module ID (also called Terminal Block ID or
     * `targets` - FPGA target projects
         * `pxie-7903custom` - example custom PXIe-7903 device (consider this to be the "Hello World" example)
             * `projectsettings.ini` - tool configuration
-            * `requirements.txt` - target-specific Python dependency entrypoint
+            * `nisetup.bat` - runs the repo-root setup script to activate the Python environment
             * `lvFpgaTarget` - LabVIEW FPGA target plugin source files
             * `lvWindowNetlist` - extracted/generated LabVIEW window netlist content
             * `rtl-lvfpga` - target HDL sources
@@ -211,7 +213,8 @@ Modules with integrated IO use an IO Module ID (also called Terminal Block ID or
             * `objects` - generated outputs from HDL tools
             * `vivadoprojectsources.txt` - source list used for Vivado project generation
         * `pxie-7903aurora` - example of migrating the Aurora CLIP to make a custom Aurora PXIe-7903 device
-    * `dependencies.toml` - dependency version specification for `nihdl install-deps`
-    * `requirements.txt` - top-level Python dependencies (defines version dependency of LabVIEW FPGA HDL Tools)
+    * `dependencies.toml` - dependency version specification for `nihdl install-deps` and Python tool versions
+    * `nisetup.bat` - sets up a Python virtual environment and installs dependencies
+    * `nisetup.py` - Python script that creates the venv and installs packages from `dependencies.toml`
 
 

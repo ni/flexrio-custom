@@ -12,7 +12,6 @@ on:
     paths:
       - "targets/**"
       - "dependencies.toml"
-      - "requirements.txt"
       - ".github/workflows/target-smoke-tests.yml"
   push:
     branches:
@@ -20,7 +19,6 @@ on:
     paths:
       - "targets/**"
       - "dependencies.toml"
-      - "requirements.txt"
       - ".github/workflows/target-smoke-tests.yml"
 
 jobs:
@@ -36,14 +34,12 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-          cache: "pip"
 
       - name: Install Python dependencies
         shell: pwsh
         run: |
           Set-Location $env:GITHUB_WORKSPACE
-          python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt
+          python nisetup.py --no-venv
 
       - name: Discover target folders
         id: discover

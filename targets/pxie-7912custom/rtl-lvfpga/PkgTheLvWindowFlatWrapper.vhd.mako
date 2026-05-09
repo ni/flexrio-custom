@@ -118,7 +118,7 @@ package PkgTheLvWindowFlatWrapper is
       aIntClk10 : in std_logic;
 
 
-  % if include_target_io:
+  % if include_board_io:
       -----------------------------------
       -- DIO IO Node ports
       -----------------------------------

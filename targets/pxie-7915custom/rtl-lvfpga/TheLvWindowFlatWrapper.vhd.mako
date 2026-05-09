@@ -115,7 +115,7 @@ entity TheLvWindowFlatWrapper is
     pIntSync100 : in std_logic;
     aIntClk10 : in std_logic;
 
-% if include_target_io:
+% if include_board_io:
     -----------------------------------
     -- IO Node ports
     -----------------------------------
@@ -527,7 +527,7 @@ begin
       pIntSync100 => pIntSync100,
       aIntClk10 => aIntClk10,
 
-  % if include_target_io:
+  % if include_board_io:
       -----------------------------------
       -- IO Node ports
       -----------------------------------

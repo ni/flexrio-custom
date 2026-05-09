@@ -90,7 +90,7 @@ jobs:
             Pop-Location
           }
 
-      - name: Run per-target gen-target and create-project
+      - name: Run per-target gen-target and gen-vivado
         shell: pwsh
         run: |
           Set-Location $env:GITHUB_WORKSPACE
@@ -102,7 +102,7 @@ jobs:
             Push-Location (Join-Path "targets" $target)
             try {
               nihdl gen-target --config=$configPath
-              nihdl create-project --config=$configPath
+              nihdl gen-vivado --config=$configPath
             }
             finally {
               Pop-Location

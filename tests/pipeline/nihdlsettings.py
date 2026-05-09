@@ -2,7 +2,7 @@
 
 Loads each target's own nihdlsettings.py from the invocation directory,
 then applies pipeline-specific overrides (skip Vivado/ModelSim so
-create-project validates settings without requiring tool installations).
+gen-vivado validates settings without requiring tool installations).
 """
 
 import os

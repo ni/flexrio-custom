@@ -4,8 +4,8 @@
 This script iterates targets under ../targets that contain a nihdlsettings.py file,
 runs the following commands in each target directory, and keeps going on failures:
 
-1. nihdl create-project --overwrite
-2. nihdl compile-project (default) or nihdl check-syntax (--syntax-only)
+1. nihdl gen-vivado --overwrite
+2. nihdl compile-vivado (default) or nihdl check-vivado (--syntax-only)
 
 At the end, it prints a pass/fail summary for each target and overall totals.
 """
@@ -310,7 +310,7 @@ def main() -> int:
 
     parser = argparse.ArgumentParser(
         description=(
-            "Run nihdl create-project and then compile-project or check-syntax "
+            "Run nihdl gen-vivado and then compile-vivado or check-vivado "
             "for all targets."
         )
     )
@@ -328,7 +328,7 @@ def main() -> int:
     parser.add_argument(
         "--syntax-only",
         action="store_true",
-        help="Run nihdl check-syntax instead of nihdl compile-project",
+        help="Run nihdl check-vivado instead of nihdl compile-vivado",
     )
     args = parser.parse_args()
 
@@ -344,7 +344,7 @@ def main() -> int:
 
     print(f"Found {len(targets)} targets in: {args.targets_dir}")
 
-    step_two_subcommand = "check-syntax" if args.syntax_only else "compile-project"
+    step_two_subcommand = "check-vivado" if args.syntax_only else "compile-vivado"
     step_two_label = "syntax" if args.syntax_only else "compile"
 
     results: list[TargetResult] = []
@@ -354,7 +354,7 @@ def main() -> int:
         print(f"Target: {target_name}")
         print(f"Directory: {target_dir}")
 
-        create_cmd = [args.nihdl_cmd, "create-project", "--overwrite"]
+        create_cmd = [args.nihdl_cmd, "gen-vivado", "--overwrite"]
         compile_cmd = [args.nihdl_cmd, step_two_subcommand]
 
         create_result = _run_command(create_cmd, target_dir)
@@ -368,7 +368,7 @@ def main() -> int:
             if verdict_msg:
                 print(f"    Log verdict: {verdict} - {verdict_msg}")
         else:
-            print(f"    Skipping {step_two_subcommand}: create-project failed")
+            print(f"    Skipping {step_two_subcommand}: gen-vivado failed")
             compile_result = CommandResult(
                 command=" ".join(compile_cmd),
                 return_code=None,

@@ -726,11 +726,14 @@ begin  -- architecture struct
   --vhook_a bLvWindowRegPortOut bRegPortOut
   --vhook_g kHmbInUse true
   --vhook_g kDmaFifoConfArrayGeneric MergeDmaFifoConf(kDmaFifoConfArray, kUserHdlDmaFifoConf, kUserHdlDmaStartIndex)
+  --vhook_g kForceChannelEnable GetForceChannelEnable(kUserHdlDmaFifoConf, kUserHdlDmaStartIndex)
   HostInterfacex: entity work.G3UsHostInterfaceIsoPort (struct)
     generic map (
       kHmbInUse                => true,                                                      --boolean:=false
       kDmaFifoConfArrayGeneric => MergeDmaFifoConf(kDmaFifoConfArray, kUserHdlDmaFifoConf,
-                                                   kUserHdlDmaStartIndex))                   --DmaChannelConfArray_t
+                                                   kUserHdlDmaStartIndex),                    --DmaChannelConfArray_t
+      kForceChannelEnable      => GetForceChannelEnable(kUserHdlDmaFifoConf,
+                                                        kUserHdlDmaStartIndex))               --NiDmaDmaChannelOneHot_t
     port map (
       PcieRefClk_p                             => PcieRefClk_p,                              --in  std_logic
       PcieRefClk_n                             => PcieRefClk_n,                              --in  std_logic

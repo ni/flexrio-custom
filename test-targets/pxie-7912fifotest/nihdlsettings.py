@@ -1,17 +1,17 @@
-"""nihdlsettings.py - Target settings for pxie-7912custom."""
+"""nihdlsettings.py - Target settings for pxie-7912fifotest."""
 
 
 def pre_all(context):
-    """Configure all settings for pxie-7912custom."""
+    """Configure all settings for pxie-7912fifotest."""
     config = context.config
 
     # --- Settings Variables ---
     base_deps = "../../deps/flexrio/targets/pxie-7912"
-    plugin_name = "PXIe-7912Custom"
+    plugin_name = "PXIe-7912fifotest"
 
     # --- Tools ---
     config.set_vivado_tools_folder("C:/NIFPGA/programs/Vivado2021_1")
-    config.set_vivado_tcl_scripts_folder("../common/TCL")
+    config.set_vivado_tcl_scripts_folder("../../targets/common/TCL")
     config.set_modelsim_tools_folder("")
     config.set_xilinx_sim_lib_folder("")
 
@@ -42,8 +42,8 @@ def pre_all(context):
     config.add_vivado_project_constraints("objects/xdc/constraints.xdc")
 
     # --- LabVIEW FPGA Target Settings ---
-    config.set_lv_target_name("PXIe-7912Custom")
-    config.set_lv_target_guid("64c7060e-22f3-4ad5-89f8-7ee4eeb3f5a3")
+    config.set_lv_target_name("PXIe-7912fifotest")
+    config.set_lv_target_guid("82687798-aba6-46a1-a6a3-6c4ff187309a")
     config.set_lv_target_install_folder("C:/Program Files/NI/LVAddons/flexrioii/1/Targets/NI/FPGA/RIO/79XXR")
     config.set_lv_target_menus_folder("../../deps/flexrio/targets/common/lvFpgaTarget/targetpluginmenus")
     config.set_lv_target_info_ini(f"{base_deps}/lvFpgaTarget/TargetInfo.ini")

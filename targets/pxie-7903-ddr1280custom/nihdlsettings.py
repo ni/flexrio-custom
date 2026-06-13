@@ -19,7 +19,7 @@ def pre_all(context):
     config.set_target_family("FlexRIO")
     config.set_base_target("PXIe-7903-DDR1280")
 
-     # --- Dependencies ---   
+    # --- Dependencies ---
     config.set_dependencies("../../dependencies.toml")
 
     # --- HDL Source Code ---
@@ -27,6 +27,9 @@ def pre_all(context):
     config.add_hdl_file_list("vivadoprojectsources.txt")
 
     # --- LabVIEW Window Netlist for Synthesis ---
+    # This example contains a netlist that was generated using the LabVIEW project in the docs folder.
+    # When you generate your own netlist from a LabVIEW FPGA VI, change this path to point to the folder
+    # containing the generated netlist (e.g., "objects/TheWindow").
     config.set_lv_window_netlist_folder("lvWindowNetlist")
 
     # --- Vivado Project Settings ---
@@ -71,7 +74,7 @@ def pre_all(context):
     config.set_clock_output(f"objects/LVTargetPlugin/{plugin_name}/CustomClocks.xml")
 
     # --- HDL-to-Host Interfaces ---
-    config.set_max_hdl_reg_offset(16)
+    config.set_max_hdl_reg_offset(1024)  # Pick a large number to give us plenty of headroom
 
     # --- CLIP Migration Settings ---
     config.set_clip_input_xml("")

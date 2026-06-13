@@ -19,7 +19,7 @@ def pre_all(context):
     config.set_target_family("FlexRIO")
     config.set_base_target("PXIe-7912")
 
-     # --- Dependencies ---   
+    # --- Dependencies ---
     config.set_dependencies("../../dependencies.toml")
 
     # --- HDL Source Code ---
@@ -28,6 +28,9 @@ def pre_all(context):
     config.add_hdl_file_list("../../deps/flexrio-deps/hdl_shared_deps_list/hdlsharedvivadoprojectdeps.txt")
 
     # --- LabVIEW Window Netlist for Synthesis ---
+    # This example contains a netlist that was generated using the LabVIEW project in the docs folder.
+    # When you generate your own netlist from a LabVIEW FPGA VI, change this path to point to the folder
+    # containing the generated netlist (e.g., "objects/TheWindow").
     config.set_lv_window_netlist_folder("objects/FPGA_VI_FIFO_2")
  
     # --- Vivado Project Settings ---
@@ -60,20 +63,20 @@ def pre_all(context):
     config.set_include_board_io_on_lv_window(False)
     config.set_include_custom_io_on_lv_window(False)
 
-    # --- LabVIEW FPGA Target Generated VHDL  ---
+    # --- LabVIEW FPGA Target Generated VHDL ---
     config.add_window_vhdl_template(f"{base_deps}/rtl-lvfpga/lvgen/TheWindow.vhd.mako")
     config.add_window_vhdl_template("rtl-lvfpga/TheLvWindowFlatWrapper.vhd.mako")
     config.add_window_vhdl_template("rtl-lvfpga/PkgTheLvWindowFlatWrapper.vhd.mako")
     config.set_window_vhdl_output_folder("objects/GeneratedHDL")
 
-     # --- LabVIEW FPGA Target Generated Resource XML ---   
+    # --- LabVIEW FPGA Target Generated Resource XML ---
     config.add_lv_target_xml_template(f"{base_deps}/lvFpgaTarget/Resource.xml.mako")
     config.add_lv_target_xml_template(f"{base_deps}/lvFpgaTarget/Macallan7912.xml.mako")
     config.set_boardio_output(f"objects/LVTargetPlugin/{plugin_name}/boardio.xml")
     config.set_clock_output(f"objects/LVTargetPlugin/{plugin_name}/CustomClocks.xml")
 
-    # --- HDL-to-Host Interfaces ---   
-    config.set_max_hdl_reg_offset(1000)  # Pick a large number to give us plenty of headroom
+    # --- HDL-to-Host Interfaces ---
+    config.set_max_hdl_reg_offset(1024)  # Pick a large number to give us plenty of headroom
 
     # --- CLIP Migration Settings ---
     config.set_clip_input_xml("")

@@ -19,14 +19,18 @@ def pre_all(context):
     config.set_target_family("FlexRIO")
     config.set_base_target("PXIe-7981")
 
-     # --- Dependencies ---   
+    # --- Dependencies ---
     config.set_dependencies("../../dependencies.toml")
 
     # --- HDL Source Code ---
     config.add_hdl_file_list(f"{base_deps}/vivadoprojectdeps.txt")
     config.add_hdl_file_list("vivadoprojectsources.txt")
+    config.add_hdl_file_list("../../deps/flexrio-deps/hdl_shared_deps_list/hdlsharedvivadoprojectdeps.txt")
 
     # --- LabVIEW Window Netlist for Synthesis ---
+    # This example contains a netlist that was generated using the LabVIEW project in the docs folder.
+    # When you generate your own netlist from a LabVIEW FPGA VI, change this path to point to the folder
+    # containing the generated netlist (e.g., "objects/TheWindow").
     config.set_lv_window_netlist_folder("lvWindowNetlist")
 
     # --- Vivado Project Settings ---
@@ -46,7 +50,8 @@ def pre_all(context):
     config.set_lv_target_install_folder("C:/Program Files/NI/LVAddons/flexrioii/1/Targets/NI/FPGA/RIO/79XXR")
     config.set_lv_target_menus_folder("../../deps/flexrio/targets/common/lvFpgaTarget/targetpluginmenus")
     config.set_lv_target_info_ini(f"{base_deps}/lvFpgaTarget/TargetInfo.ini")
-    config.set_lv_target_exclude_files(f"{base_deps}/lvtargetexcludefiles.txt")
+    config.add_lv_target_exclude_files(f"{base_deps}/lvtargetexcludefiles.txt")
+    config.add_lv_target_exclude_files("../../deps/flexrio-deps/hdl_shared_deps_list/hdlsharedlvtargetexcludefiles.txt")
     config.set_lv_target_plugin_output_folder(f"objects/LVTargetPlugin/{plugin_name}")
 
     # --- LabVIEW FPGA Target Constraints ---
@@ -71,7 +76,7 @@ def pre_all(context):
     config.set_clock_output(f"objects/LVTargetPlugin/{plugin_name}/CustomClocks.xml")
 
     # --- HDL-to-Host Interfaces ---
-    config.set_max_hdl_reg_offset(16)
+    config.set_max_hdl_reg_offset(1024)  # Pick a large number to give us plenty of headroom
 
     # --- CLIP Migration Settings ---
     config.set_clip_input_xml("")

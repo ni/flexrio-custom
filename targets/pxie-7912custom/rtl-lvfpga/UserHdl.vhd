@@ -37,11 +37,16 @@ use work.PkgNiSharedFifo.all;
 use work.PkgUserHdl.all;
 
 entity UserHdl is
+  generic(
+    -- Number of auxiliary board DIO lines routed to UserHdl (the LV Window has
+    -- board IO disabled on this custom target).
+    kNumAuxIoData : natural := 8
+  );
   port(
     BusClk         : in  std_logic;
     DmaClk         : in  std_logic;
     aBusReset      : in  boolean;
-    abDiagramReset : in  boolean;
+    aDiagramReset  : in  std_logic;
 
     bRegPortIn  : in  RegPortIn_t;
     bRegPortOut : out RegPortOut_t;
@@ -60,7 +65,18 @@ entity UserHdl is
     dReaderInputStreamInterfaceFromFifo   : out InputStreamInterfaceFromFifo_t;
     -- Output direction: connected to NiSharedFifoReader
     dReaderOutputStreamInterfaceToFifo   : in  OutputStreamInterfaceToFifo_t;
-    dReaderOutputStreamInterfaceFromFifo  : out OutputStreamInterfaceFromFifo_t
+    dReaderOutputStreamInterfaceFromFifo  : out OutputStreamInterfaceFromFifo_t;
+
+    -- Board IO (AuxDio): the LV Window has board IO disabled on this custom
+    -- target (set_include_board_io_on_lv_window(False)), so the carrier's
+    -- auxiliary DIO lines are brought into UserHdl. Inputs are read back from
+    -- the IO buffers / fixed logic; outputs drive the pins and DIO control.
+    aLvAuxDioInputData    : in  std_logic_vector(kNumAuxIoData-1 downto 0);
+    bdDoneaLvAuxDio       : in  std_logic_vector(kNumAuxIoData-1 downto 0);
+    aLvAuxDioOutputData   : out std_logic_vector(kNumAuxIoData-1 downto 0);
+    aLvAuxDioOutputEnable : out std_logic_vector(kNumAuxIoData-1 downto 0);
+    bdDirectionaLvAuxDio  : out std_logic_vector(kNumAuxIoData-1 downto 0);
+    bdRequestaLvAuxDio    : out std_logic_vector(kNumAuxIoData-1 downto 0)
   );
 end entity UserHdl;
 
@@ -256,7 +272,7 @@ begin
       kDisableOnFifoTimeout => false
     )
     port map(
-      aDiagramReset                 => abDiagramReset,
+      aDiagramReset                 => to_Boolean(aDiagramReset),
       aBusReset                     => aBusReset,
       BusClk                        => DmaClk,
       bInputStreamInterfaceToFifo   => dWriterInputStreamInterfaceToFifo,
@@ -289,7 +305,7 @@ begin
       kDisableOnFifoTimeout => false
     )
     port map(
-      aDiagramReset                  => abDiagramReset,
+      aDiagramReset                  => to_Boolean(aDiagramReset),
       aBusReset                      => aBusReset,
       BusClk                         => DmaClk,
       bOutputStreamInterfaceToFifo   => dReaderOutputStreamInterfaceToFifo,
@@ -415,5 +431,30 @@ begin
   ---------------------------------------------------------------------------
   dWriterOutputStreamInterfaceFromFifo <= kOutputStreamInterfaceFromFifoZero;
   dReaderInputStreamInterfaceFromFifo  <= kInputStreamInterfaceFromFifoZero;
+
+  ---------------------------------------------------------------------------
+  -- Board IO (AuxDio) -- user-extendable placeholder
+  ---------------------------------------------------------------------------
+  -- Because the LV Window has board IO disabled on this custom target, the
+  -- carrier's kNumAuxIoData auxiliary DIO lines are routed here instead of to
+  -- the LabVIEW diagram. In MacallanTop these signals connect to:
+  --   * MacallanIoBuffers : aLvAuxDio{Output,Input}Data, aLvAuxDioOutputEnable
+  --   * Fixed-logic DIO   : bd{Request,Direction}aLvAuxDio (out), bdDoneaLvAuxDio (in)
+  --
+  -- All outputs are driven to 0 by default:
+  --   * aLvAuxDioOutputEnable = 0 keeps every line tristated (high-Z), which is
+  --     the safe default -- UserHdl does not drive the physical pins.
+  --   * aLvAuxDioOutputData / bdDirectionaLvAuxDio / bdRequestaLvAuxDio = 0 are
+  --     inert defaults.
+  --
+  -- To use the DIO lines, replace these constant assignments with your own
+  -- custom logic: drive aLvAuxDioOutputData/OutputEnable to control the pins,
+  -- read aLvAuxDioInputData for the pin state, and use the bd* request/
+  -- direction/done handshake as needed. aLvAuxDioInputData and bdDoneaLvAuxDio
+  -- are provided as inputs for that logic.
+  aLvAuxDioOutputData   <= (others => '0');
+  aLvAuxDioOutputEnable <= (others => '0');
+  bdDirectionaLvAuxDio  <= (others => '0');
+  bdRequestaLvAuxDio    <= (others => '0');
 
 end rtl;

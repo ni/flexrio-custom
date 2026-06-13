@@ -1162,11 +1162,14 @@ begin  -- architecture struct
   -- User HDL block (registers + FIFOs)
   ---------------------------------------------------------------------------
   UserHdl_inst : entity work.UserHdl
+    generic map(
+      kNumAuxIoData => kNumAuxIoData
+    )
     port map(
       BusClk         => BusClk,
       DmaClk         => DmaClk,
       aBusReset      => aBusReset,
-      abDiagramReset => abDiagramReset,
+      aDiagramReset  => aDiagramReset,
       bRegPortIn     => bRegPortIn,
       bRegPortOut    => bRegPortOutUserHdl,
       -- Writer channel: conf(1) = TargetToHost at DMA index kUserHdlDmaStartIndex - 1
@@ -1178,7 +1181,15 @@ begin  -- architecture struct
       dReaderInputStreamInterfaceToFifo    => dInputStreamInterfaceToFifo(kUserHdlDmaStartIndex),
       dReaderInputStreamInterfaceFromFifo  => dInputStreamInterfaceFromFifo(kUserHdlDmaStartIndex),
       dReaderOutputStreamInterfaceToFifo   => dOutputStreamInterfaceToFifo(kUserHdlDmaStartIndex),
-      dReaderOutputStreamInterfaceFromFifo => dOutputStreamInterfaceFromFifo(kUserHdlDmaStartIndex)
+      dReaderOutputStreamInterfaceFromFifo => dOutputStreamInterfaceFromFifo(kUserHdlDmaStartIndex),
+      -- Board IO (AuxDio): board IO is disabled on the LV Window for this
+      -- target, so the carrier's auxiliary DIO lines are routed to UserHdl.
+      aLvAuxDioInputData    => aLvAuxDioInputData,
+      bdDoneaLvAuxDio       => bdDoneaLvAuxDio,
+      aLvAuxDioOutputData   => aLvAuxDioOutputData,
+      aLvAuxDioOutputEnable => aLvAuxDioOutputEnable,
+      bdDirectionaLvAuxDio  => bdDirectionaLvAuxDio,
+      bdRequestaLvAuxDio    => bdRequestaLvAuxDio
     );
 
   ---------------------------------------------------------------------------

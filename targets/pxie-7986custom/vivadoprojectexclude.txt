@@ -1,0 +1,8 @@
+# HDL files to exclude from the assembled Vivado/ModelSim file list.
+#
+# The shared FIFO dependency list (hdlsharedvivadoprojectdeps.txt) was generated
+# from an UltraScale (US) target, so it pulls in the US copy of PkgNiDmaConfig.vhd.
+# This target is UltraScale+ (USP) and its own vivadoprojectdeps.txt supplies the
+# correct USP copy (PCIe/USP/G3x8Tandem/Source/PkgNiDmaConfig.vhd). Exclude the US
+# copy here so the two do not collide on the same file name during gen-vivado.
+../../deps/flexrio-deps/encrypted/nicores_nidmaip.1.1.0d14/PCIe/US/G3x8Tandem/Source/PkgNiDmaConfig.vhd

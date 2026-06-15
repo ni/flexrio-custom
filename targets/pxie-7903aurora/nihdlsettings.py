@@ -31,8 +31,13 @@ def pre_all(context):
     # --- LabVIEW Window Netlist for Synthesis ---
     # This example contains a netlist that was generated using the LabVIEW project in the docs folder.
     # When you generate your own netlist from a LabVIEW FPGA VI, change this path to point to the folder
-    # containing the generated netlist (e.g., "objects/TheWindow").
-    config.set_lv_window_netlist_folder("lvWindowNetlist")
+    # containing the generated netlist (e.g., "objects/TheLvWindowNetlist").
+    #
+    # This example ships with the blank LabVIEW window netlist that does not contain the code necessary to 
+    # run the Aurora IP.  We use the blank netlist so tha the design will compile.  The Aurora example's 
+    # netlist is too large to put on GitHub so you will need to generate a Vivado Project Export from the 
+    # Aurora example and generate the netlist from that.
+    config.set_lv_window_netlist_folder("blankLvWindowNetlist")
 
     # --- Vivado Project Settings ---
     config.set_top_level_entity("SasquatchTopTemplate")
@@ -90,8 +95,8 @@ def pre_all(context):
     config.set_clip_output_xdc_folder("objects/CLIPMigration/xdc")
 
     # --- Generate LV Window Netlist Settings ---
-    config.set_lv_window_vivado_project_export_xpr("C:/temp/GH9_AC_VPE_A/VivadoProject/Top_FPGA_dash_2_dash_port.xpr")
-    config.set_lv_window_netlist_output_folder("objects/TheWindow")
+    config.set_lv_window_vivado_project_export_xpr(r"C:\Temp\testVPE\PXIe-7903Aurora_VPE\VivadoProject\BlankRunningVI.xpr")
+    config.set_lv_window_netlist_output_folder("objects/TheLvWindowNetlist")
 
     # --- Window Hierarchy Settings ---
     config.set_entity_path_to_window("TheLvWindowWrapper/TheLvWindow")

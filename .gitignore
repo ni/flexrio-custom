@@ -10,6 +10,9 @@ __pycache__/
 # Ignore Python virtual environment
 .venv/
 .Xil/
+# Ignore LabVIEW local project settings (machine-specific, never check in)
+*.aliases
+*.lvlps
 # Ignore temporary MS Office files
 ~*.xlsx
 ~*.pptx

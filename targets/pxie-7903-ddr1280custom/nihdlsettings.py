@@ -29,8 +29,8 @@ def pre_all(context):
     # --- LabVIEW Window Netlist for Synthesis ---
     # This example contains a netlist that was generated using the LabVIEW project in the docs folder.
     # When you generate your own netlist from a LabVIEW FPGA VI, change this path to point to the folder
-    # containing the generated netlist (e.g., "objects/TheWindow").
-    config.set_lv_window_netlist_folder("lvWindowNetlist")
+    # containing the generated netlist (e.g., "objects/TheLvWindowNetlist").
+    config.set_lv_window_netlist_folder("blankLvWindowNetlist")
 
     # --- Vivado Project Settings ---
     config.set_top_level_entity("SasquatchTopTemplate")
@@ -87,8 +87,8 @@ def pre_all(context):
     config.set_clip_output_xdc_folder("objects/CLIPMigration/xdc")
 
     # --- Generate LV Window Netlist Settings ---
-    config.set_lv_window_vivado_project_export_xpr("C:/temp/customwindow/7903_DDR1280_VPE/VivadoProject/Running5.xpr")
-    config.set_lv_window_netlist_output_folder("objects/TheWindow")
+    config.set_lv_window_vivado_project_export_xpr(r"C:\temp\MyProjectVPE\MyProject.xpr")
+    config.set_lv_window_netlist_output_folder("objects/TheLvWindowNetlist")
 
     # --- Window Hierarchy Settings ---
     config.set_entity_path_to_window("TheLvWindowWrapper/TheLvWindow")

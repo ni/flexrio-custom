@@ -95,7 +95,7 @@ def pre_all(context):
     config.set_clip_output_xdc_folder("objects/CLIPMigration/xdc")
 
     # --- Generate LV Window Netlist Settings ---
-    config.set_lv_window_vivado_project_export_xpr(r"C:\Temp\testVPE\PXIe-7903Aurora_VPE\VivadoProject\BlankRunningVI.xpr")
+    config.set_lv_window_vivado_project_export_xpr(r"C:\temp\MyProjectVPE\MyProject.xpr")
     config.set_lv_window_netlist_output_folder("objects/TheLvWindowNetlist")
 
     # --- Window Hierarchy Settings ---

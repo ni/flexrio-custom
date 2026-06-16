@@ -149,6 +149,67 @@ NIHDL_TESTS: dict[str, NihdlTest] = {
 
 
 # ---------------------------------------------------------------------------
+# Predefined test sequences (workflows)
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class TestSequence:
+    """A named workflow: an ordered list of tests plus the netlist mode.
+
+    A sequence bundles a few NIHDL_TESTS keys with the window-netlist override
+    that applies to the whole run. The override only affects the gen-window /
+    gen-vivado netlist folders; it is a no-op for the other commands, so a
+    single mode can safely apply to every step in the sequence.
+    """
+
+    key: str  # CLI-friendly identifier, e.g. "test-netlists"
+    description: str  # one-line summary for --list and --help
+    test_keys: list[str]  # NIHDL_TESTS keys to run, in order
+    use_objects_lv_window: bool = False  # gen-vivado reads objects/ netlist
+    write_shipping_netlist: bool = False  # gen-window writes the shipping netlist
+    note: str = ""  # extra guidance printed before the run (e.g. a manual step)
+
+
+# Registry of predefined workflows. Run one with:
+#     python run_tests.py --sequence <key>
+TEST_SEQUENCES: dict[str, TestSequence] = {
+    "setup-targets": TestSequence(
+        key="setup-targets",
+        description="Generate and install LabVIEW FPGA target support files",
+        test_keys=["gen-target", "install-target"],
+        note=(
+            "Next, manually open LabVIEW and generate the VPEs (Vivado project "
+            "exports) for all projects before running the netlist sequences."
+        ),
+    ),
+    "check-shipping-netlists": TestSequence(
+        key="check-shipping-netlists",
+        description="Build and compile using the checked-in shipping netlists",
+        test_keys=["gen-vivado", "compile-vivado"],
+    ),
+    "test-netlists": TestSequence(
+        key="test-netlists",
+        description=(
+            "Generate fresh netlists into objects/ and build/compile from them; "
+            "the checked-in shipping netlists are left untouched"
+        ),
+        test_keys=["gen-window", "gen-vivado", "compile-vivado"],
+        use_objects_lv_window=True,
+    ),
+    "update-shipping-netlists": TestSequence(
+        key="update-shipping-netlists",
+        description=(
+            "Regenerate the checked-in shipping netlists, then build/compile "
+            "from them"
+        ),
+        test_keys=["gen-window", "gen-vivado", "compile-vivado"],
+        write_shipping_netlist=True,
+    ),
+}
+
+
+# ---------------------------------------------------------------------------
 # Vivado log parsing
 # ---------------------------------------------------------------------------
 
@@ -300,6 +361,8 @@ def default_test_targets_dir() -> Path:
 # Shared wrapper nihdlsettings.py passed to every nihdl command via --config.
 # It loads each target's own settings and applies machine-independent test
 # overrides (window netlist folders and the Vivado project export .xpr path).
+# Behavior is tuned per run via generic ``--set KEY=VALUE`` overrides that nihdl
+# forwards to the wrapper as ``context.settings`` (see run_test).
 WRAPPER_SETTINGS = Path(__file__).resolve().parent / "nihdlsettings.py"
 
 
@@ -362,14 +425,25 @@ def run_test(
     test: NihdlTest,
     targets: list[DiscoveredTarget],
     nihdl_cmd: str = "nihdl",
+    use_objects_lv_window: bool = False,
+    write_shipping_netlist: bool = False,
 ) -> list[TargetResult]:
     """Run one nihdl-command test in every target directory.
 
     Keeps going on failures and returns a list of per-target results.
     """
     print("\n" + "=" * 80)
-    print(f"TEST: {test.key} — {test.description}")
+    print(f"TEST: {test.key} \u2014 {test.description}")
     print("=" * 80)
+
+    # Tune the shared wrapper's behavior via generic --set overrides that nihdl
+    # forwards to the wrapper's hooks as context.settings (no variant files, no
+    # environment variables).
+    set_overrides: list[str] = []
+    if use_objects_lv_window:
+        set_overrides += ["--set", "lv_window_input=objects"]
+    if write_shipping_netlist:
+        set_overrides += ["--set", "lv_window_output=shipping"]
 
     results: list[TargetResult] = []
     for target in targets:
@@ -380,7 +454,12 @@ def run_test(
         # Run every nihdl command through the shared test wrapper settings so
         # the tests use machine-independent paths instead of the per-developer
         # paths in each target's own nihdlsettings.py.
-        command = [nihdl_cmd, *test.subcommand, f"--config={WRAPPER_SETTINGS}"]
+        command = [
+            nihdl_cmd,
+            *test.subcommand,
+            f"--config={WRAPPER_SETTINGS}",
+            *set_overrides,
+        ]
         command_result = run_command(command, target.path)
 
         if test.log_verdict_key and command_result.return_code == 0:
@@ -484,27 +563,51 @@ def add_common_arguments(parser: argparse.ArgumentParser) -> None:
         help=f"Path to test-targets folder (default: {default_test_targets_dir()})",
     )
     parser.add_argument(
-        "--no-test-targets",
-        action="store_true",
-        help="Exclude the test-targets folder (only run the targets folder)",
-    )
-    parser.add_argument(
-        "--only-test-targets",
-        action="store_true",
-        help="Only run the test-targets folder (exclude the targets folder)",
-    )
-    parser.add_argument(
         "--nihdl-cmd",
         default="nihdl",
         help="Command name or full path for nihdl executable (default: nihdl)",
     )
+    parser.add_argument(
+        "--target",
+        action="append",
+        metavar="NAME",
+        help=(
+            "Only run on the named target folder, e.g. --target pxie-7903custom. "
+            "Repeatable to select several. Matched case-insensitively against "
+            "the target directory name. Defaults to every discovered target -- "
+            "handy for rerunning a sequence on the one target that misbehaved."
+        ),
+    )
 
 
 def resolve_targets(args: argparse.Namespace) -> list[DiscoveredTarget]:
-    """Discover targets based on the common CLI arguments."""
-    dirs: list[Path] = []
-    if not args.only_test_targets:
-        dirs.append(args.targets_dir)
-    if not args.no_test_targets:
-        dirs.append(args.test_targets_dir)
-    return discover_targets(dirs)
+    """Discover targets based on the common CLI arguments.
+
+    When --target is supplied, the discovered list is filtered down to the
+    requested target folder name(s). Any name that matches nothing produces a
+    warning listing the targets that are actually available.
+    """
+    discovered = discover_targets([args.targets_dir, args.test_targets_dir])
+
+    requested = getattr(args, "target", None)
+    if not requested:
+        return discovered
+
+    wanted = [name.strip().lower() for name in requested]
+    selected: list[DiscoveredTarget] = []
+    matched: set[str] = set()
+    for target in discovered:
+        folder = target.path.name.lower()
+        display = target.display_name.lower()
+        for name in wanted:
+            if name == folder or name == display or display.endswith("/" + name):
+                selected.append(target)
+                matched.add(name)
+                break
+
+    unmatched = [orig for orig, low in zip(requested, wanted) if low not in matched]
+    if unmatched:
+        available = ", ".join(t.path.name for t in discovered) or "(none)"
+        print(f"Warning: --target not found: {', '.join(unmatched)}")
+        print(f"Available targets: {available}")
+    return selected

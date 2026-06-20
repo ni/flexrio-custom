@@ -62,15 +62,25 @@ Within a pair, the Reader and Writer share `FifoWidth` and
 `ElementsPerClockCycle`. All pairs use `ElementsPerClockCycle = 1`, Reader
 depth = 1029, Writer depth = 1023.
 
-| Pair | Width (bits) | Signed | FxpType | Host data type |
-|------|--------------|--------|---------|----------------|
-| 0 | 32 | yes | no  | I32 |
-| 1 | 16 | no  | no  | U16 |
-| 2 | 8  | yes | no  | I8 |
-| 3 | 8  | no  | no  | U8 (BOOLEAN in driver test) |
-| 4 | 64 | no  | no  | U64 |
-| 5 | 64 | yes | no  | I64 (SGL in driver test) |
-| 6 | 64 | yes | yes | FXP (64-bit fixed-point signed) |
+The Reader (Host-to-Target) and Writer (Target-to-Host) FIFOs for each pair are
+identified by two indices:
+
+- **User conf index** — position within `kUserHdlDmaFifoConf` in `PkgUserHdl.vhd`
+  (Reader = `2p`, Writer = `2p+1`).
+- **DMA stream index** — position in the full 64-entry `kDmaFifoConfArray` used
+  by the hardware and the host C API. Derived as
+  `kUserHdlDmaStartIndex − user_conf_index` where
+  `kUserHdlDmaStartIndex = kNumberOfDmaChannels(64) − 1 − kNiFpgaFixedInputPorts(3) − kNiFpgaFixedOutputPorts(2) = 58`.
+
+| Pair | Width (bits) | Signed | FxpType | Host data type | H→T conf | H→T DMA | T→H conf | T→H DMA |
+|------|--------------|--------|---------|----------------|----------|---------|----------|---------|
+| 0 | 32 | yes | no  | I32                         |  0 | 58 |  1 | 57 |
+| 1 | 16 | no  | no  | U16                         |  2 | 56 |  3 | 55 |
+| 2 | 8  | yes | no  | I8                          |  4 | 54 |  5 | 53 |
+| 3 | 8  | no  | no  | U8 (BOOLEAN in driver test) |  6 | 52 |  7 | 51 |
+| 4 | 64 | no  | no  | U64                         |  8 | 50 |  9 | 49 |
+| 5 | 64 | yes | no  | I64 (SGL in driver test)    | 10 | 48 | 11 | 47 |
+| 6 | 64 | yes | yes | FXP (64-bit fixed-point signed) | 12 | 46 | 13 | 45 |
 
 ### Full address map
 

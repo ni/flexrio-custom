@@ -232,7 +232,7 @@ begin
         kSampleWidth           => kUserHdlDmaFifoConf(2*p).FifoWidth,
         kElementsPerClockCycle => kUserHdlDmaFifoConf(2*p).ElementsPerClockCycle,
         kSignedData            => kUserHdlDmaFifoConf(2*p+1).SignedData,
-        kFxpType               => kUserHdlDmaFifoConf(2*p).FxpType
+        kFxpType               => false
       )
       port map(
         BusClk         => BusClk,

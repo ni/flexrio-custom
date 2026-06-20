@@ -33,7 +33,7 @@ def pre_all(context):
     config.set_lv_window_netlist_folder("blankLvWindowNetlist")
 
     # --- Vivado Project Settings ---
-    config.set_top_level_entity("SasquatchTopTemplate")
+    config.set_vivado_top_entity("SasquatchTopTemplate")
     config.set_fpga_part("xcvu11p-flgb2104-2-e")
     config.set_vivado_project_folder("VivadoProject")
 

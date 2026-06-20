@@ -251,7 +251,7 @@ begin
       kSampleWidth          => kUserHdlDmaFifoConf(1).FifoWidth,
       kNumOfSamplesPerWrite => kUserHdlDmaFifoConf(1).ElementsPerClockCycle,
       kSignExtend           => kUserHdlDmaFifoConf(1).SignedData,
-      kFxpType              => kUserHdlDmaFifoConf(1).FxpType,
+      kFxpType              => false,
       kPeerToPeer           => false,
       kDisableOnFifoTimeout => false
     )
@@ -284,7 +284,7 @@ begin
       kFifoDepth            => kUserHdlDmaFifoConf(0).FifoDepth,
       kSampleWidth          => kUserHdlDmaFifoConf(0).FifoWidth,
       kNumOfSamplesPerRead  => kUserHdlDmaFifoConf(0).ElementsPerClockCycle,
-      kFxpType              => kUserHdlDmaFifoConf(0).FxpType,
+      kFxpType              => false,
       kPeerToPeer           => false,
       kDisableOnFifoTimeout => false
     )

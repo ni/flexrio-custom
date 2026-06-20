@@ -12,8 +12,8 @@ def pre_all(context):
     # --- Tools ---
     config.set_vivado_tools_folder("C:/NIFPGA/programs/Vivado2021_1")
     config.set_vivado_tcl_scripts_folder("../common/TCL")
-    config.set_modelsim_tools_folder("")
-    config.set_xilinx_sim_lib_folder("")
+    config.set_modelsim_tools_folder("C:/modeltech_pe_2020.4")
+    config.set_xilinx_sim_lib_folder("C:/dev/libraries/vivado/2021.1/modelsim_PE_2020")
 
     # --- General Settings ---
     config.set_target_family("FlexRIO")
@@ -34,7 +34,7 @@ def pre_all(context):
     config.set_lv_window_netlist_folder("blankLvWindowNetlist")
  
     # --- Vivado Project Settings ---
-    config.set_top_level_entity("MacallanTop")
+    config.set_vivado_top_entity("MacallanTop")
     config.set_fpga_part("xcku040-ffva1156-2-e")
     config.set_vivado_project_folder("VivadoProject")
 
@@ -98,6 +98,9 @@ def pre_all(context):
 
     # --- ModelSim Project Settings ---
     config.set_modelsim_project_folder("ModelSimProject")
+    config.set_modelsim_top_entity("tb_UserHdl")
+    config.add_modelsim_file_list("modelsimprojectsources.txt")
+    config.add_modelsim_file_list("../../deps/flexrio-deps/hdl_shared_deps_list/hdlsharedvivadoprojectdeps.txt")
 
 
 def post_all(context):

@@ -145,6 +145,18 @@ NIHDL_TESTS: dict[str, NihdlTest] = {
         subcommand=["install-target"],
         description="Install LabVIEW FPGA target support files",
     ),
+    "gen-modelsim": NihdlTest(
+        key="gen-modelsim",
+        label="gen-sim",
+        subcommand=["gen-modelsim", "--overwrite"],
+        description="Generate (overwrite) the ModelSim simulation project",
+    ),
+    "sim-modelsim": NihdlTest(
+        key="sim-modelsim",
+        label="sim",
+        subcommand=["sim-modelsim"],
+        description="Run the ModelSim testbench simulation",
+    ),
 }
 
 
@@ -174,8 +186,8 @@ class TestSequence:
 # Registry of predefined workflows. Run one with:
 #     python run_tests.py --sequence <key>
 TEST_SEQUENCES: dict[str, TestSequence] = {
-    "setup-targets": TestSequence(
-        key="setup-targets",
+    "gen-install-lv-targets": TestSequence(
+        key="gen-install-lv-targets",
         description="Generate and install LabVIEW FPGA target support files",
         test_keys=["gen-target", "install-target"],
         note=(
@@ -183,13 +195,13 @@ TEST_SEQUENCES: dict[str, TestSequence] = {
             "exports) for all projects before running the netlist sequences."
         ),
     ),
-    "check-shipping-netlists": TestSequence(
-        key="check-shipping-netlists",
+    "compile-targets-use-shipping-window": TestSequence(
+        key="compile-targets-use-shipping-window",
         description="Build and compile using the checked-in shipping netlists",
         test_keys=["gen-vivado", "compile-vivado"],
     ),
-    "test-netlists": TestSequence(
-        key="test-netlists",
+    "compile-targets-gen-objects-window": TestSequence(
+        key="compile-targets-gen-objects-window",
         description=(
             "Generate fresh netlists into objects/ and build/compile from them; "
             "the checked-in shipping netlists are left untouched"
@@ -197,14 +209,22 @@ TEST_SEQUENCES: dict[str, TestSequence] = {
         test_keys=["gen-window", "gen-vivado", "compile-vivado"],
         use_objects_lv_window=True,
     ),
-    "update-shipping-netlists": TestSequence(
-        key="update-shipping-netlists",
+    "compile-targets-gen-shipping-window": TestSequence(
+        key="compile-targets-gen-shipping-window",
         description=(
             "Regenerate the checked-in shipping netlists, then build/compile "
             "from them"
         ),
         test_keys=["gen-window", "gen-vivado", "compile-vivado"],
         write_shipping_netlist=True,
+    ),
+    "simulate-targets": TestSequence(
+        key="simulate-targets",
+        description=(
+            "Generate the ModelSim project and run the testbench simulation "
+            "for each target"
+        ),
+        test_keys=["gen-modelsim", "sim-modelsim"],
     ),
 }
 

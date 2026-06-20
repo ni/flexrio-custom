@@ -31,7 +31,7 @@ python run_tests.py check-vivado
 python run_tests.py gen-vivado compile-vivado
 
 # Run a predefined workflow:
-python run_tests.py --sequence check-shipping-netlists
+python run_tests.py --sequence compile-targets-use-shipping-window
 
 # Run interactively (you'll be prompted to pick the tests):
 python run_tests.py
@@ -63,6 +63,8 @@ the authoritative list; at time of writing:
 | `gen-window`     | `gen-window`             | Generate the LabVIEW window netlist               |
 | `gen-target`     | `gen-target`             | Generate LabVIEW FPGA target support files        |
 | `install-target` | `install-target`         | Install LabVIEW FPGA target support files         |
+| `gen-modelsim`   | `gen-modelsim --overwrite` | Generate (overwrite) the ModelSim simulation project |
+| `sim-modelsim`   | `sim-modelsim`           | Run the ModelSim testbench simulation             |
 
 The options of each underlying `nihdl` subcommand are owned by `nihdl`, not by
 this script. To discover them, ask `nihdl` directly, e.g. `nihdl gen-vivado
@@ -73,27 +75,28 @@ this script. To discover them, ask `nihdl` directly, e.g. `nihdl gen-vivado
 Sequences are the recommended way to drive a real workflow. Run one with
 `--sequence <key>`:
 
-| Sequence                  | Steps                                       | Netlist mode               |
-| ------------------------- | ------------------------------------------- | -------------------------- |
-| `setup-targets`           | `gen-target` → `install-target`             | (none)                     |
-| `check-shipping-netlists` | `gen-vivado` → `compile-vivado`             | uses checked-in netlists   |
-| `test-netlists`           | `gen-window` → `gen-vivado` → `compile-vivado` | reads `objects/` netlist |
-| `update-shipping-netlists`| `gen-window` → `gen-vivado` → `compile-vivado` | writes shipping netlist  |
+| Sequence                              | Steps                                       | Netlist mode               |
+| ------------------------------------- | ------------------------------------------- | -------------------------- |
+| `gen-install-lv-targets`              | `gen-target` → `install-target`             | (none)                     |
+| `compile-targets-use-shipping-window` | `gen-vivado` → `compile-vivado`             | uses checked-in netlists   |
+| `compile-targets-gen-shipping-window` | `gen-window` → `gen-vivado` → `compile-vivado` | writes shipping netlist  |
+| `compile-targets-gen-objects-window`  | `gen-window` → `gen-vivado` → `compile-vivado` | reads `objects/` netlist |
+| `simulate-targets`                    | `gen-modelsim` → `sim-modelsim`             | (none)                     |
 
 A typical end-to-end flow:
 
-1. `python run_tests.py --sequence setup-targets`
+1. `python run_tests.py --sequence gen-install-lv-targets`
    Generates and installs the target support files. **Then manually open
    LabVIEW and generate the VPEs (Vivado project exports) for all projects** —
    the harness can't do that part for you.
-2. `python run_tests.py --sequence check-shipping-netlists`
+2. `python run_tests.py --sequence compile-targets-use-shipping-window`
    Sanity-check that the netlists already committed to the repo still build and
    compile.
-3. `python run_tests.py --sequence test-netlists`
+3. `python run_tests.py --sequence compile-targets-gen-objects-window`
    Regenerate netlists into the scratch `objects/` folder and build/compile from
    them. The checked-in shipping netlists are left untouched — this is your "try
    it before you commit it" pass.
-4. `python run_tests.py --sequence update-shipping-netlists`
+4. `python run_tests.py --sequence compile-targets-gen-shipping-window`
    Regenerate the checked-in shipping netlists, then build/compile from them.
    Run this when you're ready to refresh what gets committed to GitHub.
 
@@ -125,9 +128,9 @@ subcommands. Defaults if you pass neither:
 - `gen-vivado` reads the folder configured in the target's own
   `nihdlsettings.py` (i.e. the checked-in shipping netlist).
 
-The four sequences are just convenient names for the useful combinations of
-these modes, so most of the time you should reach for `--sequence` rather than
-the raw flags.
+The netlist-mode sequences are just convenient names for the useful
+combinations of these modes, so most of the time you should reach for
+`--sequence` rather than the raw flags.
 
 ## Target selection
 
@@ -171,13 +174,14 @@ Run `python run_tests.py --help` for the full, always-current list.
 python run_tests.py --list
 
 # Workflows
-python run_tests.py --sequence setup-targets
-python run_tests.py --sequence check-shipping-netlists
-python run_tests.py --sequence test-netlists
-python run_tests.py --sequence update-shipping-netlists
+python run_tests.py --sequence gen-install-lv-targets
+python run_tests.py --sequence compile-targets-use-shipping-window
+python run_tests.py --sequence compile-targets-gen-objects-window
+python run_tests.py --sequence compile-targets-gen-shipping-window
+python run_tests.py --sequence simulate-targets
 
 # Re-run a sequence on just the one target that misbehaved
-python run_tests.py --sequence check-shipping-netlists --target pxie-7903custom
+python run_tests.py --sequence compile-targets-use-shipping-window --target pxie-7903custom
 
 # Individual tests
 python run_tests.py check-vivado

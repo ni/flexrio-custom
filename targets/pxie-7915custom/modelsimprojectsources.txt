@@ -1,0 +1,32 @@
+# ModelSim simulation sources for tb_UserHdl.
+#
+# Curated subset for simulating UserHdl in isolation. This deliberately
+# excludes the top-level design, the generated LV Window, and netlist-based IP
+# (instruction FIFO, DRAM, timing engine, fixed logic, PCIe DMA) that is
+# part of the full synthesis design but cannot be compiled/simulated in a
+# plain vcom flow. The shared infrastructure packages UserHdl depends on
+# (PkgNiUtilities, PkgCommunicationInterface, PkgDmaPort*) come from
+# hdlsharedvivadoprojectdeps.txt.
+
+# Communication interface configuration (consumed by PkgDmaPortCommunicationInterface)
+../../deps/flexrio-deps/encrypted/common/rtl-lvfpga/lvgen/PkgCommIntConfiguration.vhd
+../../deps/flexrio-deps/encrypted/common/rtl-lvfpga/lvgen/PkgDmaPortCommIfcRegs.vhd
+
+# Shared host register blocks
+../../deps/hdl-shared/host_interfaces/register/HDL/NiSharedHostRegister.vhd
+../../deps/hdl-shared/host_interfaces/register/HDL/NiSharedCommonHostRegs.vhd
+../../deps/hdl-shared/host_interfaces/register/HDL/NiSharedHostRegisterArray.vhd
+
+# Shared FIFO endpoints
+../../deps/hdl-shared/host_interfaces/fifo/HDL/NiSharedFifoWriterCore.vhd
+../../deps/hdl-shared/host_interfaces/fifo/HDL/NiSharedFifoWriter.vhd
+../../deps/hdl-shared/host_interfaces/fifo/HDL/NiSharedFifoReaderCore.vhd
+../../deps/hdl-shared/host_interfaces/fifo/HDL/NiSharedFifoReader.vhd
+../../deps/hdl-shared/host_interfaces/fifo/HDL/PkgNiSharedFifo.vhd
+
+# User HDL block under test
+rtl-lvfpga/PkgUserHdl.vhd
+rtl-lvfpga/UserHdl.vhd
+
+# Testbench
+rtl-lvfpga/testbenches/tb_UserHdl.vhd

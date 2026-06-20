@@ -36,7 +36,6 @@ package PkgUserHdl is
   -- ElementsPerClockCycle : 1, 2, 4, 8, 16, 32, or 64
   -- Mode                  : NiFpgaHostToTarget or NiFpgaTargetToHost
   -- SignedData            : true if host data type is signed
-  -- FxpType               : true if host data type is fixed point
   --
   -- FifoDepth (TargetToHost / PeerToPeer Writer):
   --   2^N - 1, minimum 63, maximum 1048575 (2^20 -1)
@@ -50,11 +49,10 @@ package PkgUserHdl is
   -- for 16-bit data types, the max fifo width is 1048575 (2^20 - 1)
   -- for 32-bit data types, the max fifo width is 524287 (2^19 - 1)
   -- for 64-bit data types, the max fifo width is 262143 (2^18 - 1)
-  -- for fixed-point data types, round up to the nearest 16/32/64-bit width and use the corresponding max fifo width above.
 
   constant kUserHdlDmaFifoConf : UserDmaFifoConfArray_t(0 to kNumUserHdlDmaChannels - 1) := (
-    0 => (FifoDepth => 1029, FifoWidth => 32, ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget, SignedData => true, FxpType => false),
-    1 => (FifoDepth => 1023, FifoWidth => 32, ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost, SignedData => true, FxpType => false)
+    0 => (FifoDepth => 1029, FifoWidth => 32, ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget, SignedData => true),
+    1 => (FifoDepth => 1023, FifoWidth => 32, ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost, SignedData => true)
   );
 
   ---------------------------------------------------------------------------

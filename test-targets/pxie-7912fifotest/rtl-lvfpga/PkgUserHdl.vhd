@@ -43,7 +43,6 @@ package PkgUserHdl is
   -- ElementsPerClockCycle : 1, 2, 4, 8, 16, 32, or 64
   -- Mode                  : NiFpgaHostToTarget or NiFpgaTargetToHost
   -- SignedData            : true if host data type is signed
-  -- FxpType               : true if host data type is fixed point
   --
   -- FifoDepth (TargetToHost / PeerToPeer Writer):
   --   2^N - 1, minimum 63, maximum 1048575 (2^20 -1)
@@ -57,33 +56,31 @@ package PkgUserHdl is
   -- for 16-bit data types, the max fifo width is 1048575 (2^20 - 1)
   -- for 32-bit data types, the max fifo width is 524287 (2^19 - 1)
   -- for 64-bit data types, the max fifo width is 262143 (2^18 - 1)
-  -- for fixed-point data types, round up to the nearest 16/32/64-bit width and use the corresponding max fifo width above.
   --
   -- All pairs use a nominal 1024-element FIFO: Reader depth = 1024 + 6*1 - 1 = 1029,
   -- Writer depth = 1024 - 1 = 1023 (ElementsPerClockCycle = 1).
 
   constant kUserHdlDmaFifoConf : UserDmaFifoConfArray_t(0 to kNumUserHdlDmaChannels - 1) := (
     -- Pair 0: 32-bit signed
-    0  => (FifoDepth => 1029, FifoWidth => 32, ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget, SignedData => true,  FxpType => false),
-    1  => (FifoDepth => 1023, FifoWidth => 32, ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost, SignedData => true,  FxpType => false),
+    0  => (FifoDepth => 1029, FifoWidth => 32, ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget, SignedData => true),
+    1  => (FifoDepth => 1023, FifoWidth => 32, ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost, SignedData => true),
     -- Pair 1: 16-bit unsigned
-    2  => (FifoDepth => 1029, FifoWidth => 16, ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget, SignedData => false, FxpType => false),
-    3  => (FifoDepth => 1023, FifoWidth => 16, ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost, SignedData => false, FxpType => false),
+    2  => (FifoDepth => 1029, FifoWidth => 16, ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget, SignedData => false),
+    3  => (FifoDepth => 1023, FifoWidth => 16, ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost, SignedData => false),
     -- Pair 2: 8-bit signed
-    4  => (FifoDepth => 1029, FifoWidth => 8,  ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget, SignedData => true,  FxpType => false),
-    5  => (FifoDepth => 1023, FifoWidth => 8,  ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost, SignedData => true,  FxpType => false),
+    4  => (FifoDepth => 1029, FifoWidth => 8,  ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget, SignedData => true),
+    5  => (FifoDepth => 1023, FifoWidth => 8,  ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost, SignedData => true),
     -- Pair 3: 8-bit unsigned (maps to BOOLEAN in driver test)
-    6  => (FifoDepth => 1029, FifoWidth => 8,  ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget, SignedData => false, FxpType => false),
-    7  => (FifoDepth => 1023, FifoWidth => 8,  ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost, SignedData => false, FxpType => false),
+    6  => (FifoDepth => 1029, FifoWidth => 8,  ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget, SignedData => false),
+    7  => (FifoDepth => 1023, FifoWidth => 8,  ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost, SignedData => false),
     -- Pair 4: 64-bit unsigned
-    8  => (FifoDepth => 1029, FifoWidth => 64, ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget, SignedData => false, FxpType => false),
-    9  => (FifoDepth => 1023, FifoWidth => 64, ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost, SignedData => false, FxpType => false),
+    8  => (FifoDepth => 1029, FifoWidth => 64, ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget, SignedData => false),
+    9  => (FifoDepth => 1023, FifoWidth => 64, ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost, SignedData => false),
     -- Pair 5: 64-bit signed (maps to SGL in driver test)
-    10 => (FifoDepth => 1029, FifoWidth => 64, ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget, SignedData => true,  FxpType => false),
-    11 => (FifoDepth => 1023, FifoWidth => 64, ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost, SignedData => true,  FxpType => false),
-    -- Pair 6: 64-bit fixed-point signed
-    12 => (FifoDepth => 1029, FifoWidth => 64, ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget, SignedData => true,  FxpType => true),
-    13 => (FifoDepth => 1023, FifoWidth => 64, ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost, SignedData => true,  FxpType => true)
+    10 => (FifoDepth => 1029, FifoWidth => 64, ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget, SignedData => true),
+    11 => (FifoDepth => 1023, FifoWidth => 64, ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost, SignedData => true),
+    12 => (FifoDepth => 1029, FifoWidth => 64, ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget, SignedData => true),
+    13 => (FifoDepth => 1023, FifoWidth => 64, ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost, SignedData => true)
   );
 
   ---------------------------------------------------------------------------

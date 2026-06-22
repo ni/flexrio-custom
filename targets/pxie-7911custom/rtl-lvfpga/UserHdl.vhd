@@ -35,6 +35,7 @@ use work.PkgDmaPortDmaFifos.all;
 use work.PkgDmaPortCommIfcStreamStates.all;
 use work.PkgNiSharedFifo.all;
 use work.PkgUserHdl.all;
+use work.PkgNiHdlSettings.all;
 
 entity UserHdl is
   port(
@@ -123,7 +124,8 @@ begin
     generic map(
       kSignature               => x"7911BEEF",
       kVersion                 => x"00000001",
-      kOldestCompatibleVersion => x"00000001"
+      kOldestCompatibleVersion => x"00000001",
+      kMaxHdlRegOffset         => kMaxHdlRegOffset
     )
     port map(
       BusClk      => BusClk,
@@ -144,7 +146,8 @@ begin
                         kLoopbackInBIdx  => false,
                         kLoopbackOutAIdx => true,
                         kLoopbackOutBIdx => true),
-      kUseFpgaAck   => (0 to kNumDemoRegs-1 => false)
+      kUseFpgaAck   => (0 to kNumDemoRegs-1 => false),
+      kMaxHdlRegOffset => kMaxHdlRegOffset
     )
     port map(
       BusClk         => BusClk,
@@ -202,7 +205,8 @@ begin
                         kWriterDataIdx      => false,
                         kReaderStrobeIdx    => false,
                         kReaderDataIdx      => true),
-      kUseFpgaAck   => (0 to kNumFifoRegs-1 => false)
+      kUseFpgaAck   => (0 to kNumFifoRegs-1 => false),
+      kMaxHdlRegOffset => kMaxHdlRegOffset
     )
     port map(
       BusClk         => BusClk,

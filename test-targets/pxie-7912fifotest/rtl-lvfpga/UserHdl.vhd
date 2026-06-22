@@ -40,6 +40,7 @@ use work.PkgDmaPortDmaFifos.all;
 use work.PkgDmaPortCommIfcStreamStates.all;
 use work.PkgNiSharedFifo.all;
 use work.PkgUserHdl.all;
+use work.PkgNiHdlSettings.all;
 
 entity UserHdl is
   port(
@@ -52,13 +53,13 @@ entity UserHdl is
     bRegPortOut : out RegPortOut_t;
 
     -- DMA stream interfaces for all UserHdl FIFO channels, indexed by config
-    -- index (0 to kNumUserHdlDmaChannels-1). For pair p:
+    -- index (0 to kNumHdlFifos-1). For pair p:
     --   config(2*p)   = Reader (Host-to-Target)
     --   config(2*p+1) = Writer (Target-to-Host)
-    dUserInputStreamInterfaceToFifo    : in  InputStreamInterfaceToFifoArray_t(0 to kNumUserHdlDmaChannels-1);
-    dUserInputStreamInterfaceFromFifo  : out InputStreamInterfaceFromFifoArray_t(0 to kNumUserHdlDmaChannels-1);
-    dUserOutputStreamInterfaceToFifo   : in  OutputStreamInterfaceToFifoArray_t(0 to kNumUserHdlDmaChannels-1);
-    dUserOutputStreamInterfaceFromFifo : out OutputStreamInterfaceFromFifoArray_t(0 to kNumUserHdlDmaChannels-1)
+    dUserInputStreamInterfaceToFifo    : in  InputStreamInterfaceToFifoArray_t(0 to kNumHdlFifos-1);
+    dUserInputStreamInterfaceFromFifo  : out InputStreamInterfaceFromFifoArray_t(0 to kNumHdlFifos-1);
+    dUserOutputStreamInterfaceToFifo   : in  OutputStreamInterfaceToFifoArray_t(0 to kNumHdlFifos-1);
+    dUserOutputStreamInterfaceFromFifo : out OutputStreamInterfaceFromFifoArray_t(0 to kNumHdlFifos-1)
   );
 end entity UserHdl;
 
@@ -109,7 +110,8 @@ begin
     generic map(
       kSignature               => x"7912BEEF",
       kVersion                 => x"00000001",
-      kOldestCompatibleVersion => x"00000001"
+      kOldestCompatibleVersion => x"00000001",
+      kMaxHdlRegOffset         => kMaxHdlRegOffset
     )
     port map(
       BusClk      => BusClk,
@@ -130,7 +132,8 @@ begin
                         kLoopbackInBIdx  => false,
                         kLoopbackOutAIdx => true,
                         kLoopbackOutBIdx => true),
-      kUseFpgaAck   => (0 to kNumDemoRegs-1 => false)
+      kUseFpgaAck   => (0 to kNumDemoRegs-1 => false),
+      kMaxHdlRegOffset => kMaxHdlRegOffset
     )
     port map(
       BusClk         => BusClk,
@@ -180,7 +183,8 @@ begin
       kBaseAddress  => kFifoRegsBaseAddress,
       kDefault      => (0 to kNumFifoRegs-1 => x"00000000"),
       kReadOnly     => FifoRegReadOnly,
-      kUseFpgaAck   => (0 to kNumFifoRegs-1 => false)
+      kUseFpgaAck   => (0 to kNumFifoRegs-1 => false),
+      kMaxHdlRegOffset => kMaxHdlRegOffset
     )
     port map(
       BusClk         => BusClk,
@@ -316,5 +320,16 @@ begin
   bRegPortOut.Ready     <= bRegPortOutCommonRegs.Ready and
                            bRegPortOutDemoRegs.Ready and
                            bRegPortOutFifoRegs.Ready;
+
+  ---------------------------------------------------------------------------
+  -- FIFO-count self-check (single source of truth: nihdlsettings.py
+  -- set_num_hdl_fifos -> generated PkgNiHdlSettings.kNumHdlFifos). Each
+  -- loopback pair consumes two DMA channels, so the FIFO count must be even
+  -- for kNumLoopbackPairs (= kNumHdlFifos / 2) to be exact.
+  ---------------------------------------------------------------------------
+  assert (kNumHdlFifos mod 2) = 0
+    report "kNumHdlFifos must be even: each loopback pair uses two DMA channels. "
+         & "Set set_num_hdl_fifos in nihdlsettings.py to an even value."
+    severity failure;
 
 end rtl;

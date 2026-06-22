@@ -35,13 +35,9 @@ use work.PkgDmaPortDmaFifos.all;
 use work.PkgDmaPortCommIfcStreamStates.all;
 use work.PkgNiSharedFifo.all;
 use work.PkgUserHdl.all;
+use work.PkgNiHdlSettings.all;
 
 entity UserHdl is
-  generic(
-    -- Number of auxiliary board DIO lines routed to UserHdl (the LV Window has
-    -- board IO disabled on this custom target).
-    kNumAuxIoData : natural := 8
-  );
   port(
     BusClk         : in  std_logic;
     DmaClk         : in  std_logic;
@@ -67,15 +63,121 @@ entity UserHdl is
     dReaderOutputStreamInterfaceToFifo   : in  OutputStreamInterfaceToFifo_t;
     dReaderOutputStreamInterfaceFromFifo  : out OutputStreamInterfaceFromFifo_t;
 
-    -- Board IO (Base DIO): the LV Window has board IO disabled on this custom
-    -- target (set_include_board_io_on_lv_window(False)), so the carrier's
-    -- auxiliary base DIO lines are brought into UserHdl. aLvAuxDioInputData is
-    -- read back from the IO buffer; aLvAuxDioOutputData/OutputEnable drive the
-    -- pins. This target's DIO node has no bd* request/direction/done handshake
-    -- (those are tied off in the carrier), so only these three lines are routed.
-    aLvAuxDioInputData    : in  std_logic_vector(kNumAuxIoData-1 downto 0);
-    aLvAuxDioOutputData   : out std_logic_vector(kNumAuxIoData-1 downto 0);
-    aLvAuxDioOutputEnable : out std_logic_vector(kNumAuxIoData-1 downto 0)
+    -- Board IO: the LV Window has board IO disabled on this custom target
+    -- (set_include_board_io_on_lv_window(False)), so every board IO interface
+    -- that would normally connect to the LV Window is brought into UserHdl
+    -- instead. These ports EXACTLY match the include_board_io block of
+    -- TheLvWindowFlatWrapper for this target.
+
+    -----------------------------------
+    -- CLIP Socket ports
+    -----------------------------------
+
+    -- AxiClk is the same as BusCLk is the same as PllClk80
+    AxiClk                          : in  std_logic;
+    -- Diagram AxiStream
+    xDiagramAxiStreamFromClipTData  : out std_logic_vector(31 downto 0);
+    xDiagramAxiStreamFromClipTLast  : out std_logic;
+    xDiagramAxiStreamFromClipTReady : out std_logic;
+    xDiagramAxiStreamFromClipTValid : out std_logic;
+    xDiagramAxiStreamToClipTData    : in  std_logic_vector(31 downto 0);
+    xDiagramAxiStreamToClipTLast    : in  std_logic;
+    xDiagramAxiStreamToClipTReady   : in  std_logic;
+    xDiagramAxiStreamToClipTValid   : in  std_logic;
+    -- Diagram Host AxiStream
+    xHostAxiStreamFromClipTData     : out std_logic_vector(31 downto 0);
+    xHostAxiStreamFromClipTLast     : out std_logic;
+    xHostAxiStreamFromClipTReady    : out std_logic;
+    xHostAxiStreamFromClipTValid    : out std_logic;
+    xHostAxiStreamToClipTData       : in  std_logic_vector(31 downto 0);
+    xHostAxiStreamToClipTLast       : in  std_logic;
+    xHostAxiStreamToClipTReady      : in  std_logic;
+    xHostAxiStreamToClipTValid      : in  std_logic;
+    -- Axi4Lite Interface from the CLIP to FixedLogic
+    xClipAxi4LiteMasterARAddr       : out std_logic_vector(31 downto 0);
+    xClipAxi4LiteMasterARProt       : out std_logic_vector(2 downto 0);
+    xClipAxi4LiteMasterARReady      : in  std_logic;
+    xClipAxi4LiteMasterARValid      : out std_logic;
+    xClipAxi4LiteMasterAWAddr       : out std_logic_vector(31 downto 0);
+    xClipAxi4LiteMasterAWProt       : out std_logic_vector(2 downto 0);
+    xClipAxi4LiteMasterAWReady      : in  std_logic;
+    xClipAxi4LiteMasterAWValid      : out std_logic;
+    xClipAxi4LiteMasterBReady       : out std_logic;
+    xClipAxi4LiteMasterBResp        : in  std_logic_vector(1 downto 0);
+    xClipAxi4LiteMasterBValid       : in  std_logic;
+    xClipAxi4LiteMasterRData        : in  std_logic_vector(31 downto 0);
+    xClipAxi4LiteMasterRReady       : out std_logic;
+    xClipAxi4LiteMasterRResp        : in  std_logic_vector(1 downto 0);
+    xClipAxi4LiteMasterRValid       : in  std_logic;
+    xClipAxi4LiteMasterWData        : out std_logic_vector(31 downto 0);
+    xClipAxi4LiteMasterWReady       : in  std_logic;
+    xClipAxi4LiteMasterWStrb        : out std_logic_vector(3 downto 0);
+    xClipAxi4LiteMasterWValid       : out std_logic;
+    xClipAxi4LiteInterrupt          : in  std_logic;
+    -- Reserved CLIP Signals
+    aReservedToClip                 : in  std_logic_vector(15 downto 0);
+    aReservedFromClip               : out std_logic_vector(15 downto 0);
+    -- CLIP Status/Configuration
+    stIoModuleSupportsFRAGLs        : out std_logic;
+    xIoPresent                      : in  std_logic;
+    xIoReady                        : in  std_logic;
+    xIoOutputEnable                 : in  std_logic;
+    -- Synchronization
+    dvTdcAssert                     : out std_logic;
+    dtTdcAssert                     : in  std_logic;
+    dtDevClkEn                      : out std_logic;
+
+    -------------------------------------------------------------------------------------
+    -- Base IO
+    -------------------------------------------------------------------------------------
+
+    -- Base board I2C
+    aBaseI2cSclIn                   : in    std_logic;
+    aBaseI2cSclOut                  : out   std_logic;
+    aBaseI2cSclTri                  : out   std_logic;
+    aBaseI2cSdaIn                   : in    std_logic;
+    aBaseI2cSdaOut                  : out   std_logic;
+    aBaseI2cSdaTri                  : out   std_logic;
+
+    aBaseConfigReset                : out   std_logic;
+
+    -- Base board DIO
+    aBaseDioIn                      : in    std_logic_vector(31 downto 0);
+    aBaseDioOut                     : out   std_logic_vector(31 downto 0);
+    aBaseDioOutEn                   : out   std_logic_vector(31 downto 0);
+    aBaseExClk                      : in    std_logic;
+
+    -- MGTs for QSFP ports
+    Qsfp0MgtRx_p                    : in    std_logic_vector(3 downto 0);
+    Qsfp0MgtRx_n                    : in    std_logic_vector(3 downto 0);
+    Qsfp0MgtTx_p                    : out   std_logic_vector(3 downto 0);
+    Qsfp0MgtTx_n                    : out   std_logic_vector(3 downto 0);
+    Qsfp0MgtRefClk_p                : in    std_logic_vector(1 downto 0);
+    Qsfp0MgtRefClk_n                : in    std_logic_vector(1 downto 0);
+
+    Qsfp1MgtRx_p                    : in    std_logic_vector(3 downto 0);
+    Qsfp1MgtRx_n                    : in    std_logic_vector(3 downto 0);
+    Qsfp1MgtTx_p                    : out   std_logic_vector(3 downto 0);
+    Qsfp1MgtTx_n                    : out   std_logic_vector(3 downto 0);
+    Qsfp1MgtRefClk_p                : in    std_logic_vector(1 downto 0);
+    Qsfp1MgtRefClk_n                : in    std_logic_vector(1 downto 0);
+
+    Qsfp0SocketClk80                : in    std_logic;
+    Qsfp1SocketClk80                : in    std_logic;
+
+    -------------------------------------------------------------------------------------
+    -- IoModule Socketed CLIP - IoModule physical interface
+    -------------------------------------------------------------------------------------
+    -- Configuration / Single-Ended
+    aSeGpio                         : inout std_logic_vector(29 downto 0);
+    -------------------------------------------------------------------------------------
+    -- GPIO
+    aDiffGpio_p                     : inout std_logic_vector(69 downto 0);
+    aDiffGpio_n                     : inout std_logic_vector(69 downto 0);
+    -------------------------------------------------------------------------------------
+    -- Clocking
+    SampleClk                       : in    std_logic;
+    DeviceClk                       : in    std_logic
   );
 end entity UserHdl;
 
@@ -138,7 +240,8 @@ begin
     generic map(
       kSignature               => x"7994BEEF",
       kVersion                 => x"00000001",
-      kOldestCompatibleVersion => x"00000001"
+      kOldestCompatibleVersion => x"00000001",
+      kMaxHdlRegOffset         => kMaxHdlRegOffset
     )
     port map(
       BusClk      => BusClk,
@@ -159,7 +262,8 @@ begin
                         kLoopbackInBIdx  => false,
                         kLoopbackOutAIdx => true,
                         kLoopbackOutBIdx => true),
-      kUseFpgaAck   => (0 to kNumDemoRegs-1 => false)
+      kUseFpgaAck   => (0 to kNumDemoRegs-1 => false),
+      kMaxHdlRegOffset => kMaxHdlRegOffset
     )
     port map(
       BusClk         => BusClk,
@@ -217,7 +321,8 @@ begin
                         kWriterDataIdx      => false,
                         kReaderStrobeIdx    => false,
                         kReaderDataIdx      => true),
-      kUseFpgaAck   => (0 to kNumFifoRegs-1 => false)
+      kUseFpgaAck   => (0 to kNumFifoRegs-1 => false),
+      kMaxHdlRegOffset => kMaxHdlRegOffset
     )
     port map(
       BusClk         => BusClk,
@@ -432,24 +537,50 @@ begin
   dReaderInputStreamInterfaceFromFifo  <= kInputStreamInterfaceFromFifoZero;
 
   ---------------------------------------------------------------------------
-  -- Board IO (AuxDio) -- user-extendable placeholder
+  -- Board IO -- user-extendable placeholder
   ---------------------------------------------------------------------------
-  -- Because the LV Window has board IO disabled on this custom target, the
-  -- carrier's kNumAuxIoData auxiliary DIO lines are routed here instead of to
-  -- Because the LV Window has board IO disabled on this custom target, the
-  -- carrier's kNumAuxIoData auxiliary DIO lines are routed here instead of to
-  -- the LabVIEW diagram. In BTracePlusTopTemplate these signals connect to:
-  --   * MacallanIoBuffers : aLvAuxDio{Output,Input}Data, aLvAuxDioOutputEnable
-  --
-  -- All outputs are driven to 0 by default:
-  --   * aLvAuxDioOutputEnable = 0 keeps every line tristated (high-Z), which is
-  --     the safe default -- UserHdl does not drive the physical pins.
-  --   * aLvAuxDioOutputData = 0 is an inert default.
-  --
-  -- To use the DIO lines, replace these constant assignments with your own
-  -- custom logic: drive aLvAuxDioOutputData/OutputEnable to control the pins
-  -- and read aLvAuxDioInputData for the pin state.
-  aLvAuxDioOutputData   <= (others => '0');
-  aLvAuxDioOutputEnable <= (others => '0');
+  -- Because the LV Window has board IO disabled on this custom target, every
+  -- board IO interface that would normally connect to the LV Window is routed
+  -- here instead (CLIP AxiStream / Axi4Lite, base I2C / DIO, QSFP MGTs and the
+  -- IoModule GPIO). All outputs are driven to an inert default and the inout
+  -- buses are released (high-Z); replace these assignments with custom logic
+  -- to use the board IO.
+  xDiagramAxiStreamFromClipTData  <= (others => '0');
+  xDiagramAxiStreamFromClipTLast  <= '0';
+  xDiagramAxiStreamFromClipTReady <= '0';
+  xDiagramAxiStreamFromClipTValid <= '0';
+  xHostAxiStreamFromClipTData     <= (others => '0');
+  xHostAxiStreamFromClipTLast     <= '0';
+  xHostAxiStreamFromClipTReady    <= '0';
+  xHostAxiStreamFromClipTValid    <= '0';
+  xClipAxi4LiteMasterARAddr       <= (others => '0');
+  xClipAxi4LiteMasterARProt       <= (others => '0');
+  xClipAxi4LiteMasterARValid      <= '0';
+  xClipAxi4LiteMasterAWAddr       <= (others => '0');
+  xClipAxi4LiteMasterAWProt       <= (others => '0');
+  xClipAxi4LiteMasterAWValid      <= '0';
+  xClipAxi4LiteMasterBReady       <= '0';
+  xClipAxi4LiteMasterRReady       <= '0';
+  xClipAxi4LiteMasterWData        <= (others => '0');
+  xClipAxi4LiteMasterWStrb        <= (others => '0');
+  xClipAxi4LiteMasterWValid       <= '0';
+  aReservedFromClip               <= (others => '0');
+  stIoModuleSupportsFRAGLs        <= '0';
+  dvTdcAssert                     <= '0';
+  dtDevClkEn                      <= '0';
+  aBaseI2cSclOut                  <= '0';
+  aBaseI2cSclTri                  <= '1';
+  aBaseI2cSdaOut                  <= '0';
+  aBaseI2cSdaTri                  <= '1';
+  aBaseConfigReset                <= '0';
+  aBaseDioOut                     <= (others => '0');
+  aBaseDioOutEn                   <= (others => '0');
+  Qsfp0MgtTx_p                    <= (others => '0');
+  Qsfp0MgtTx_n                    <= (others => '0');
+  Qsfp1MgtTx_p                    <= (others => '0');
+  Qsfp1MgtTx_n                    <= (others => '0');
+  aSeGpio                         <= (others => 'Z');
+  aDiffGpio_p                     <= (others => 'Z');
+  aDiffGpio_n                     <= (others => 'Z');
 
 end rtl;

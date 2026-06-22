@@ -41,6 +41,7 @@ use work.PkgDmaPortDmaFifos.all;
 -- User HDL
 use work.PkgNiSharedFifo.all;
 use work.PkgUserHdl.all;
+use work.PkgNiHdlSettings.all;
 use work.PkgDmaPortDmaFifosFlatTypes.all;
 use work.PkgDmaPortCommIfcMasterPort.all;
 use work.PkgDmaPortCommIfcMasterPortFlatTypes.all;
@@ -1243,9 +1244,6 @@ begin  -- architecture struct
   -- User HDL block (registers + FIFOs)
   ---------------------------------------------------------------------------
   UserHdl_inst : entity work.UserHdl
-    generic map(
-      kNumAuxIoData => kNumAuxIoData
-    )
     port map(
       BusClk         => BusClk,
       DmaClk         => DmaClk,
@@ -1263,12 +1261,92 @@ begin  -- architecture struct
       dReaderInputStreamInterfaceFromFifo  => dInputStreamInterfaceFromFifo(kUserHdlDmaStartIndex),
       dReaderOutputStreamInterfaceToFifo   => dOutputStreamInterfaceToFifo(kUserHdlDmaStartIndex),
       dReaderOutputStreamInterfaceFromFifo => dOutputStreamInterfaceFromFifo(kUserHdlDmaStartIndex),
-      -- Board IO (Base DIO): board IO is disabled on the LV Window for this
-      -- target, so the carrier's base DIO lines are routed to UserHdl. This
-      -- target's DIO node has no request/direction/done handshake.
-      aLvAuxDioInputData    => aBaseDioIn,
-      aLvAuxDioOutputData   => aBaseDioOut,
-      aLvAuxDioOutputEnable => aBaseDioOutEn
+      -- Board IO: board IO is disabled on the LV Window for this target
+      -- (set_include_board_io_on_lv_window(False)), so every board IO interface
+      -- that would normally connect to the LV Window is brought into UserHdl.
+      -- The actuals mirror this target's reference non-custom TheWindow port map.
+      -- CLIP Socket
+      AxiClk                          => BusClk,
+      xDiagramAxiStreamFromClipTData  => xDiagramAxiStreamFromClipTData,
+      xDiagramAxiStreamFromClipTLast  => xDiagramAxiStreamFromClipTLast,
+      xDiagramAxiStreamFromClipTReady => xDiagramAxiStreamFromClipTReady,
+      xDiagramAxiStreamFromClipTValid => xDiagramAxiStreamFromClipTValid,
+      xDiagramAxiStreamToClipTData    => xDiagramAxiStreamToClipTData,
+      xDiagramAxiStreamToClipTLast    => xDiagramAxiStreamToClipTLast,
+      xDiagramAxiStreamToClipTReady   => xDiagramAxiStreamToClipTReady,
+      xDiagramAxiStreamToClipTValid   => xDiagramAxiStreamToClipTValid,
+      xHostAxiStreamFromClipTData     => xHostAxiStreamFromClipTData,
+      xHostAxiStreamFromClipTLast     => xHostAxiStreamFromClipTLast,
+      xHostAxiStreamFromClipTReady    => xHostAxiStreamFromClipTReady,
+      xHostAxiStreamFromClipTValid    => xHostAxiStreamFromClipTValid,
+      xHostAxiStreamToClipTData       => xHostAxiStreamToClipTData,
+      xHostAxiStreamToClipTLast       => xHostAxiStreamToClipTLast,
+      xHostAxiStreamToClipTReady      => xHostAxiStreamToClipTReady,
+      xHostAxiStreamToClipTValid      => xHostAxiStreamToClipTValid,
+      xClipAxi4LiteMasterARAddr       => bdClipAxi4LiteARAddr,
+      xClipAxi4LiteMasterARProt       => bdClipAxi4LiteARProt,
+      xClipAxi4LiteMasterARReady      => bdClipAxi4LiteARReady,
+      xClipAxi4LiteMasterARValid      => bdClipAxi4LiteARValid,
+      xClipAxi4LiteMasterAWAddr       => bdClipAxi4LiteAWAddr,
+      xClipAxi4LiteMasterAWProt       => bdClipAxi4LiteAWProt,
+      xClipAxi4LiteMasterAWReady      => bdClipAxi4LiteAWReady,
+      xClipAxi4LiteMasterAWValid      => bdClipAxi4LiteAWValid,
+      xClipAxi4LiteMasterBReady       => bdClipAxi4LiteBReady,
+      xClipAxi4LiteMasterBResp        => bdClipAxi4LiteBResp,
+      xClipAxi4LiteMasterBValid       => bdClipAxi4LiteBValid,
+      xClipAxi4LiteMasterRData        => bdClipAxi4LiteRData,
+      xClipAxi4LiteMasterRReady       => bdClipAxi4LiteRReady,
+      xClipAxi4LiteMasterRResp        => bdClipAxi4LiteRResp,
+      xClipAxi4LiteMasterRValid       => bdClipAxi4LiteRValid,
+      xClipAxi4LiteMasterWData        => bdClipAxi4LiteWData,
+      xClipAxi4LiteMasterWReady       => bdClipAxi4LiteWReady,
+      xClipAxi4LiteMasterWStrb        => bdClipAxi4LiteWStrb,
+      xClipAxi4LiteMasterWValid       => bdClipAxi4LiteWValid,
+      xClipAxi4LiteInterrupt          => '0',
+      aReservedToClip                 => aReservedToClip,
+      aReservedFromClip               => aReservedFromClip,
+      stIoModuleSupportsFRAGLs        => stIoModuleSupportsFRAGLs,
+      xIoPresent                      => xIoPresent,
+      xIoReady                        => xIoReady,
+      xIoOutputEnable                 => xIoOutputEnable,
+      dvTdcAssert                     => dvTdcAssert,
+      dtTdcAssert                     => dtTdcAssert,
+      dtDevClkEn                      => dtDevClkEn,
+      -- Base IO
+      aBaseI2cSclIn                   => aI2cSclIn(kBaseBoardI2cIndex),
+      aBaseI2cSclOut                  => aI2cSclOut(kBaseBoardI2cIndex),
+      aBaseI2cSclTri                  => aI2cSclTri(kBaseBoardI2cIndex),
+      aBaseI2cSdaIn                   => aI2cSdaIn(kBaseBoardI2cIndex),
+      aBaseI2cSdaOut                  => aI2cSdaOut(kBaseBoardI2cIndex),
+      aBaseI2cSdaTri                  => aI2cSdaTri(kBaseBoardI2cIndex),
+      aBaseConfigReset                => aBaseConfigReset,
+      aBaseDioIn                      => aBaseDioIn,
+      aBaseDioOut                     => aBaseDioOut,
+      aBaseDioOutEn                   => aBaseDioOutEn,
+      aBaseExClk                      => aBaseExClk,
+      -- MGTs for QSFP ports (top-level MGT lanes are commented out on this
+      -- base design; stub the data lanes and connect only the ref clocks).
+      Qsfp0MgtRx_p                    => (others => '0'),
+      Qsfp0MgtRx_n                    => (others => '0'),
+      Qsfp0MgtTx_p                    => open,
+      Qsfp0MgtTx_n                    => open,
+      Qsfp0MgtRefClk_p                => MgtRefClk_p(3 downto 2),
+      Qsfp0MgtRefClk_n                => MgtRefClk_n(3 downto 2),
+      Qsfp1MgtRx_p                    => (others => '0'),
+      Qsfp1MgtRx_n                    => (others => '0'),
+      Qsfp1MgtTx_p                    => open,
+      Qsfp1MgtTx_n                    => open,
+      Qsfp1MgtRefClk_p                => MgtRefClk_p(1 downto 0),
+      Qsfp1MgtRefClk_n                => MgtRefClk_n(1 downto 0),
+      Qsfp0SocketClk80                => BusClk,
+      Qsfp1SocketClk80                => BusClk,
+      -- IoModule Socketed CLIP physical interface
+      aSeGpio                         => aSeGpio,
+      aDiffGpio_p                     => aDiffGpio_p,
+      aDiffGpio_n                     => aDiffGpio_n,
+      -- Clocking
+      SampleClk                       => SampleClk,
+      DeviceClk                       => DeviceClk
     );
 
   ---------------------------------------------------------------------------
@@ -1289,7 +1367,7 @@ begin  -- architecture struct
   StreamRouting : for i in dInputStreamInterfaceToFifo'range generate
 
     -- Normal channels: bidirectional pass-through to TheWindow
-    NormalChannel : if i > kUserHdlDmaStartIndex or i < kUserHdlDmaStartIndex - kNumUserHdlDmaChannels + 1 generate
+    NormalChannel : if i > kUserHdlDmaStartIndex or i < kUserHdlDmaStartIndex - kNumHdlFifos + 1 generate
       dWinInputStreamInterfaceToFifo(i)  <= dInputStreamInterfaceToFifo(i);
       dInputStreamInterfaceFromFifo(i)   <= dWinInputStreamInterfaceFromFifo(i);
       dWinOutputStreamInterfaceToFifo(i) <= dOutputStreamInterfaceToFifo(i);
@@ -1298,7 +1376,7 @@ begin  -- architecture struct
 
     -- UserHdl channels: all 4 signals connected to UserHdl via port map.
     -- Disconnect Window side by driving ToFifo inputs to zero.
-    UserHdlChannel : if i <= kUserHdlDmaStartIndex and i >= kUserHdlDmaStartIndex - kNumUserHdlDmaChannels + 1 generate
+    UserHdlChannel : if i <= kUserHdlDmaStartIndex and i >= kUserHdlDmaStartIndex - kNumHdlFifos + 1 generate
       dWinInputStreamInterfaceToFifo(i)  <= kInputStreamInterfaceToFifoZero;
       dWinOutputStreamInterfaceToFifo(i) <= kOutputStreamInterfaceToFifoZero;
     end generate UserHdlChannel;

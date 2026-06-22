@@ -664,6 +664,13 @@ architecture struct of BTracePlusTopTemplate is
   constant kDram2DPBaseAddress  : unsigned(kAlignedAddressWidth - 1 downto 0) := to_unsigned(work.PkgLvFpgaConst.kDram2DPBaseAddress / 4, kAlignedAddressWidth);
   constant kDram2DPAddressMask  : unsigned(kAlignedAddressWidth - 1 downto 0) := to_unsigned(16#1FC# / 4, kAlignedAddressWidth);
 
+  -- The Host Memory Buffer (Dram2DP) DMA channel sits directly below the user
+  -- HDL FIFO channels. The user HDL FIFOs occupy kUserHdlDmaStartIndex and grow
+  -- downward for kNumHdlFifos channels, so the HMB takes the next channel below:
+  --   kUserHdlDmaStartIndex - kNumHdlFifos
+  --   = kNumberOfDmaChannels - 1 - kNumFixedLogicDmaStreams - kNumHdlFifos
+  constant kHmbDmaChannelNum : natural := kUserHdlDmaStartIndex - kNumHdlFifos;
+
   -- ******************************************************************************************************************
   -- ********************** MODIFY THESE CONSTANTS IF NOT USING THE CLIP SOCKET INTERFACE  ****************************
   -- ******************************************************************************************************************
@@ -1394,12 +1401,13 @@ begin  -- architecture struct
 
   -- Dram2DP is used to translate write and read requests from DRAM Interface in the Window
   -- to DMAPort requests in the fixed logic DMAPort
-  -- Use DMAPort channel 0x3B, the 5th reserved channel
+  -- The HMB uses the DMAPort channel directly below the user HDL FIFO channels
+  -- (see kHmbDmaChannelNum).
   Dram2DPx: entity work.Dram2DP (rtl)
     generic map (
       kSizeOfMemBuffers   => kSizeOfMemBuffers,
       kMaxNumOfMemBuffers => kMaxNumOfMemBuffers,
-      kDmaChannelNum      => "0111011",
+      kDmaChannelNum      => std_logic_vector(to_unsigned(kHmbDmaChannelNum, 7)),
       kHmbInUse           => work.PkgLvFpgaConst.kInsertHostMemoryBufferMig,  -- in  boolean := true
       kLlbInUse           => work.PkgLvFpgaConst.kInsertLowLatencyBufferMig,  -- in  boolean := true
       kDefaultBaggage     => SetField(0, 16#00#, kNiDmaBaggageWidth),

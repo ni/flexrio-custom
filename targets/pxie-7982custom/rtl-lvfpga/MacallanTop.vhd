@@ -41,6 +41,7 @@ use work.PkgDmaPortDmaFifos.all;
 -- User HDL
 use work.PkgNiSharedFifo.all;
 use work.PkgUserHdl.all;
+use work.PkgNiHdlSettings.all;
 use work.PkgDmaPortDmaFifosFlatTypes.all;
 use work.PkgDmaPortCommIfcMasterPort.all;
 use work.PkgDmaPortCommIfcMasterPortFlatTypes.all;
@@ -1394,7 +1395,7 @@ begin  -- architecture struct
   StreamRouting : for i in dInputStreamInterfaceToFifo'range generate
 
     -- Normal channels: bidirectional pass-through to TheWindow
-    NormalChannel : if i > kUserHdlDmaStartIndex or i < kUserHdlDmaStartIndex - kNumUserHdlDmaChannels + 1 generate
+    NormalChannel : if i > kUserHdlDmaStartIndex or i < kUserHdlDmaStartIndex - kNumHdlFifos + 1 generate
       dWinInputStreamInterfaceToFifo(i)  <= dInputStreamInterfaceToFifo(i);
       dInputStreamInterfaceFromFifo(i)   <= dWinInputStreamInterfaceFromFifo(i);
       dWinOutputStreamInterfaceToFifo(i) <= dOutputStreamInterfaceToFifo(i);
@@ -1403,7 +1404,7 @@ begin  -- architecture struct
 
     -- UserHdl channels: all 4 signals connected to UserHdl via port map.
     -- Disconnect Window side by driving ToFifo inputs to zero.
-    UserHdlChannel : if i <= kUserHdlDmaStartIndex and i >= kUserHdlDmaStartIndex - kNumUserHdlDmaChannels + 1 generate
+    UserHdlChannel : if i <= kUserHdlDmaStartIndex and i >= kUserHdlDmaStartIndex - kNumHdlFifos + 1 generate
       dWinInputStreamInterfaceToFifo(i)  <= kInputStreamInterfaceToFifoZero;
       dWinOutputStreamInterfaceToFifo(i) <= kOutputStreamInterfaceToFifoZero;
     end generate UserHdlChannel;

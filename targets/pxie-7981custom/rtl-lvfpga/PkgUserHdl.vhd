@@ -24,13 +24,18 @@ library work;
   use work.PkgNiUtilities.all;
   use work.PkgCommIntConfiguration.all;
   use work.PkgNiSharedFifo.all;
+  use work.PkgNiHdlSettings.all;
 
 package PkgUserHdl is
 
   ---------------------------------------------------------------------------
   -- DMA FIFO channel configuration
   ---------------------------------------------------------------------------
-  constant kNumUserHdlDmaChannels : natural := 2;
+  -- The number of channels (kNumHdlFifos) is the single source of truth from
+  -- nihdlsettings.py (set_num_hdl_fifos), pushed into the HDL via the generated
+  -- PkgNiHdlSettings package. If the kUserHdlDmaFifoConf aggregate below does
+  -- not have exactly kNumHdlFifos elements, this package will fail to analyze
+  -- (range/aggregate mismatch).
 
   -- FifoWidth             : 1..64 (host types: Boolean, U/I[8,16,32,64], FXP, SGL-64)
   -- ElementsPerClockCycle : 1, 2, 4, 8, 16, 32, or 64
@@ -50,7 +55,7 @@ package PkgUserHdl is
   -- for 32-bit data types, the max fifo width is 524287 (2^19 - 1)
   -- for 64-bit data types, the max fifo width is 262143 (2^18 - 1)
 
-  constant kUserHdlDmaFifoConf : UserDmaFifoConfArray_t(0 to kNumUserHdlDmaChannels - 1) := (
+  constant kUserHdlDmaFifoConf : UserDmaFifoConfArray_t(0 to kNumHdlFifos - 1) := (
     0 => (FifoDepth => 1029, FifoWidth => 32, ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget, SignedData => true),
     1 => (FifoDepth => 1023, FifoWidth => 32, ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost, SignedData => true)
   );

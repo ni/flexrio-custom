@@ -38,11 +38,6 @@ use work.PkgUserHdl.all;
 use work.PkgNiHdlSettings.all;
 
 entity UserHdl is
-  generic(
-    -- Number of auxiliary board DIO lines routed to UserHdl (the LV Window has
-    -- board IO disabled on this custom target).
-    kNumAuxIoData : natural := 8
-  );
   port(
     BusClk         : in  std_logic;
     DmaClk         : in  std_logic;
@@ -68,16 +63,169 @@ entity UserHdl is
     dReaderOutputStreamInterfaceToFifo   : in  OutputStreamInterfaceToFifo_t;
     dReaderOutputStreamInterfaceFromFifo  : out OutputStreamInterfaceFromFifo_t;
 
-    -- Board IO (AuxDio): the LV Window has board IO disabled on this custom
-    -- target (set_include_board_io_on_lv_window(False)), so the carrier's
-    -- auxiliary DIO lines are brought into UserHdl. Inputs are read back from
-    -- the IO buffers / fixed logic; outputs drive the pins and DIO control.
-    aLvAuxDioInputData    : in  std_logic_vector(kNumAuxIoData-1 downto 0);
-    bdDoneaLvAuxDio       : in  std_logic_vector(kNumAuxIoData-1 downto 0);
-    aLvAuxDioOutputData   : out std_logic_vector(kNumAuxIoData-1 downto 0);
-    aLvAuxDioOutputEnable : out std_logic_vector(kNumAuxIoData-1 downto 0);
-    bdDirectionaLvAuxDio  : out std_logic_vector(kNumAuxIoData-1 downto 0);
-    bdRequestaLvAuxDio    : out std_logic_vector(kNumAuxIoData-1 downto 0)
+    -- Board IO: the LV Window has board IO disabled on this custom target
+    -- (set_include_board_io_on_lv_window(False)), so every board IO interface
+    -- that would normally connect to the LV Window is brought into UserHdl
+    -- instead. These ports EXACTLY match the include_board_io block of
+    -- TheLvWindowFlatWrapper for this target.
+    -----------------------------------
+    -- DIO IO Node ports
+    -----------------------------------
+    aLvAuxDio0OutputData   : out std_logic;
+    aLvAuxDio0InputData    : in  std_logic;
+    aLvAuxDio0OutputEnable : out std_logic;
+    oClkaLvAuxDio0         : in  std_logic;
+    aoResetaLvAuxDio0      : in  std_logic;
+    oDoneaLvAuxDio0        : in  std_logic;
+    oDirectionaLvAuxDio0   : out std_logic;
+    oRequestaLvAuxDio0     : out std_logic;
+    aLvAuxDio1OutputData   : out std_logic;
+    aLvAuxDio1InputData    : in  std_logic;
+    aLvAuxDio1OutputEnable : out std_logic;
+    oClkaLvAuxDio1         : in  std_logic;
+    aoResetaLvAuxDio1      : in  std_logic;
+    oDoneaLvAuxDio1        : in  std_logic;
+    oDirectionaLvAuxDio1   : out std_logic;
+    oRequestaLvAuxDio1     : out std_logic;
+    aLvAuxDio2OutputData   : out std_logic;
+    aLvAuxDio2InputData    : in  std_logic;
+    aLvAuxDio2OutputEnable : out std_logic;
+    oClkaLvAuxDio2         : in  std_logic;
+    aoResetaLvAuxDio2      : in  std_logic;
+    oDoneaLvAuxDio2        : in  std_logic;
+    oDirectionaLvAuxDio2   : out std_logic;
+    oRequestaLvAuxDio2     : out std_logic;
+    aLvAuxDio3OutputData   : out std_logic;
+    aLvAuxDio3InputData    : in  std_logic;
+    aLvAuxDio3OutputEnable : out std_logic;
+    oClkaLvAuxDio3         : in  std_logic;
+    aoResetaLvAuxDio3      : in  std_logic;
+    oDoneaLvAuxDio3        : in  std_logic;
+    oDirectionaLvAuxDio3   : out std_logic;
+    oRequestaLvAuxDio3     : out std_logic;
+    aLvAuxDio4OutputData   : out std_logic;
+    aLvAuxDio4InputData    : in  std_logic;
+    aLvAuxDio4OutputEnable : out std_logic;
+    oClkaLvAuxDio4         : in  std_logic;
+    aoResetaLvAuxDio4      : in  std_logic;
+    oDoneaLvAuxDio4        : in  std_logic;
+    oDirectionaLvAuxDio4   : out std_logic;
+    oRequestaLvAuxDio4     : out std_logic;
+    aLvAuxDio5OutputData   : out std_logic;
+    aLvAuxDio5InputData    : in  std_logic;
+    aLvAuxDio5OutputEnable : out std_logic;
+    oClkaLvAuxDio5         : in  std_logic;
+    aoResetaLvAuxDio5      : in  std_logic;
+    oDoneaLvAuxDio5        : in  std_logic;
+    oDirectionaLvAuxDio5   : out std_logic;
+    oRequestaLvAuxDio5     : out std_logic;
+    aLvAuxDio6OutputData   : out std_logic;
+    aLvAuxDio6InputData    : in  std_logic;
+    aLvAuxDio6OutputEnable : out std_logic;
+    oClkaLvAuxDio6         : in  std_logic;
+    aoResetaLvAuxDio6      : in  std_logic;
+    oDoneaLvAuxDio6        : in  std_logic;
+    oDirectionaLvAuxDio6   : out std_logic;
+    oRequestaLvAuxDio6     : out std_logic;
+    aLvAuxDio7OutputData   : out std_logic;
+    aLvAuxDio7InputData    : in  std_logic;
+    aLvAuxDio7OutputEnable : out std_logic;
+    oClkaLvAuxDio7         : in  std_logic;
+    aoResetaLvAuxDio7      : in  std_logic;
+    oDoneaLvAuxDio7        : in  std_logic;
+    oDirectionaLvAuxDio7   : out std_logic;
+    oRequestaLvAuxDio7     : out std_logic;
+
+    -----------------------------------
+    -- CLIP Socket ports
+    -----------------------------------
+
+    -- AxiClk is the same as BusCLk is the same as PllClk80
+    AxiClk : in std_logic;
+
+    xDiagramAxiStreamFromClipTData  : out std_logic_vector(31 downto 0);
+    xDiagramAxiStreamFromClipTLast  : out std_logic;
+    xDiagramAxiStreamFromClipTReady : out std_logic;
+    xDiagramAxiStreamFromClipTValid : out std_logic;
+    xDiagramAxiStreamToClipTData    : in  std_logic_vector(31 downto 0);
+    xDiagramAxiStreamToClipTLast    : in  std_logic;
+    xDiagramAxiStreamToClipTReady   : in  std_logic;
+    xDiagramAxiStreamToClipTValid   : in  std_logic;
+
+    xHostAxiStreamFromClipTData  : out std_logic_vector(31 downto 0);
+    xHostAxiStreamFromClipTLast  : out std_logic;
+    xHostAxiStreamFromClipTReady : out std_logic;
+    xHostAxiStreamFromClipTValid : out std_logic;
+    xHostAxiStreamToClipTData    : in  std_logic_vector(31 downto 0);
+    xHostAxiStreamToClipTLast    : in  std_logic;
+    xHostAxiStreamToClipTReady   : in  std_logic;
+    xHostAxiStreamToClipTValid   : in  std_logic;
+
+
+    -- Axi4Lite Interface from the CLIP to FixedLogic
+    xClipAxi4LiteMasterARAddr  : out std_logic_vector(31 downto 0);
+    xClipAxi4LiteMasterARProt  : out std_logic_vector(2 downto 0);
+    xClipAxi4LiteMasterARReady : in  std_logic;
+    xClipAxi4LiteMasterARValid : out std_logic;
+    xClipAxi4LiteMasterAWAddr  : out std_logic_vector(31 downto 0);
+    xClipAxi4LiteMasterAWProt  : out std_logic_vector(2 downto 0);
+    xClipAxi4LiteMasterAWReady : in  std_logic;
+    xClipAxi4LiteMasterAWValid : out std_logic;
+    xClipAxi4LiteMasterBReady  : out std_logic;
+    xClipAxi4LiteMasterBResp   : in  std_logic_vector(1 downto 0);
+    xClipAxi4LiteMasterBValid  : in  std_logic;
+    xClipAxi4LiteMasterRData   : in  std_logic_vector(31 downto 0);
+    xClipAxi4LiteMasterRReady  : out std_logic;
+    xClipAxi4LiteMasterRResp   : in  std_logic_vector(1 downto 0);
+    xClipAxi4LiteMasterRValid  : in  std_logic;
+    xClipAxi4LiteMasterWData   : out std_logic_vector(31 downto 0);
+    xClipAxi4LiteMasterWReady  : in  std_logic;
+    xClipAxi4LiteMasterWStrb   : out std_logic_vector(3 downto 0);
+    xClipAxi4LiteMasterWValid  : out std_logic;
+    xClipAxi4LiteInterrupt     : in  std_logic;
+
+    --Configuration Interface
+    -- Config Interface TX
+    aConfigTxClkLvds          : out std_logic;
+    aConfigTxClkSe            : out std_logic;
+    aConfigTxDataSe           : out std_logic_vector(6 downto 0);
+
+    -- Config Interface RX
+    aConfigRxClkLvds          : in std_logic;
+    aConfigRxClkSe            : in std_logic;
+    aConfigRxDataSe           : in std_logic_vector(6 downto 0);
+
+    -- Reserved GPIO
+    aRsrvGpio_n              : inout std_logic_vector(4 downto 0);
+    aRsrvGpio_p              : inout std_logic_vector(4 downto 0);
+
+    --Reserved CLIP Signals
+    aReservedToClip          : in std_logic_vector(15 downto 0);
+    aReservedFromClip        : out std_logic_vector(15 downto 0);
+    stIoModuleSupportsFRAGLs : out std_logic;
+
+    --General purpose Synchronization Signals
+    aGpoSync                 : out std_logic_vector(1 downto 0);
+    aTriggerIn               : in  std_logic;
+    aTriggerOut              : out std_logic;
+
+    --Synchronization Signals
+    DeviceClk            : in  std_logic;
+    aJesd204SyncReqIn_n  : in  std_logic;
+    aJesd204SyncReqOut_n : out std_logic;
+    dvJesd204SysRef      : in  std_logic;
+    dvTdcAssert          : out std_logic;
+    dtTdcAssert          : in  std_logic;
+    dtDevClkEn           : out std_logic;
+
+    --IO MGT Ports
+    MgtPortRx_n       : in  std_logic_vector(7 downto 0);
+    MgtPortRx_p       : in  std_logic_vector(7 downto 0);
+    MgtPortTx_n       : out std_logic_vector(7 downto 0);
+    MgtPortTx_p       : out std_logic_vector(7 downto 0);
+    MgtRefClk_p       : in  std_logic_vector(2 downto 0);
+    MgtRefClk_n       : in  std_logic_vector(2 downto 0);
+    ExportedMgtRefClk : out std_logic
   );
 end entity UserHdl;
 
@@ -437,28 +585,78 @@ begin
   dReaderInputStreamInterfaceFromFifo  <= kInputStreamInterfaceFromFifoZero;
 
   ---------------------------------------------------------------------------
-  -- Board IO (AuxDio) -- user-extendable placeholder
+  -- Board IO -- user-extendable placeholder
   ---------------------------------------------------------------------------
-  -- Because the LV Window has board IO disabled on this custom target, the
-  -- carrier's kNumAuxIoData auxiliary DIO lines are routed here instead of to
-  -- the LabVIEW diagram. In MacallanTop these signals connect to:
-  --   * MacallanIoBuffers : aLvAuxDio{Output,Input}Data, aLvAuxDioOutputEnable
-  --   * Fixed-logic DIO   : bd{Request,Direction}aLvAuxDio (out), bdDoneaLvAuxDio (in)
-  --
-  -- All outputs are driven to 0 by default:
-  --   * aLvAuxDioOutputEnable = 0 keeps every line tristated (high-Z), which is
-  --     the safe default -- UserHdl does not drive the physical pins.
-  --   * aLvAuxDioOutputData / bdDirectionaLvAuxDio / bdRequestaLvAuxDio = 0 are
-  --     inert defaults.
-  --
-  -- To use the DIO lines, replace these constant assignments with your own
-  -- custom logic: drive aLvAuxDioOutputData/OutputEnable to control the pins,
-  -- read aLvAuxDioInputData for the pin state, and use the bd* request/
-  -- direction/done handshake as needed. aLvAuxDioInputData and bdDoneaLvAuxDio
-  -- are provided as inputs for that logic.
-  aLvAuxDioOutputData   <= (others => '0');
-  aLvAuxDioOutputEnable <= (others => '0');
-  bdDirectionaLvAuxDio  <= (others => '0');
-  bdRequestaLvAuxDio    <= (others => '0');
+  -- Because the LV Window has board IO disabled on this custom target, every
+  -- board IO interface that would normally connect to the LV Window is routed
+  -- here instead. All outputs are driven to an inert default and the inout
+  -- buses are released (high-Z); replace these assignments with custom logic
+  -- to use the board IO.
+  aLvAuxDio0OutputData            <= '0';
+  aLvAuxDio0OutputEnable          <= '0';
+  oDirectionaLvAuxDio0            <= '0';
+  oRequestaLvAuxDio0              <= '0';
+  aLvAuxDio1OutputData            <= '0';
+  aLvAuxDio1OutputEnable          <= '0';
+  oDirectionaLvAuxDio1            <= '0';
+  oRequestaLvAuxDio1              <= '0';
+  aLvAuxDio2OutputData            <= '0';
+  aLvAuxDio2OutputEnable          <= '0';
+  oDirectionaLvAuxDio2            <= '0';
+  oRequestaLvAuxDio2              <= '0';
+  aLvAuxDio3OutputData            <= '0';
+  aLvAuxDio3OutputEnable          <= '0';
+  oDirectionaLvAuxDio3            <= '0';
+  oRequestaLvAuxDio3              <= '0';
+  aLvAuxDio4OutputData            <= '0';
+  aLvAuxDio4OutputEnable          <= '0';
+  oDirectionaLvAuxDio4            <= '0';
+  oRequestaLvAuxDio4              <= '0';
+  aLvAuxDio5OutputData            <= '0';
+  aLvAuxDio5OutputEnable          <= '0';
+  oDirectionaLvAuxDio5            <= '0';
+  oRequestaLvAuxDio5              <= '0';
+  aLvAuxDio6OutputData            <= '0';
+  aLvAuxDio6OutputEnable          <= '0';
+  oDirectionaLvAuxDio6            <= '0';
+  oRequestaLvAuxDio6              <= '0';
+  aLvAuxDio7OutputData            <= '0';
+  aLvAuxDio7OutputEnable          <= '0';
+  oDirectionaLvAuxDio7            <= '0';
+  oRequestaLvAuxDio7              <= '0';
+  xDiagramAxiStreamFromClipTData  <= (others => '0');
+  xDiagramAxiStreamFromClipTLast  <= '0';
+  xDiagramAxiStreamFromClipTReady <= '0';
+  xDiagramAxiStreamFromClipTValid <= '0';
+  xHostAxiStreamFromClipTData     <= (others => '0');
+  xHostAxiStreamFromClipTLast     <= '0';
+  xHostAxiStreamFromClipTReady    <= '0';
+  xHostAxiStreamFromClipTValid    <= '0';
+  xClipAxi4LiteMasterARAddr       <= (others => '0');
+  xClipAxi4LiteMasterARProt       <= (others => '0');
+  xClipAxi4LiteMasterARValid      <= '0';
+  xClipAxi4LiteMasterAWAddr       <= (others => '0');
+  xClipAxi4LiteMasterAWProt       <= (others => '0');
+  xClipAxi4LiteMasterAWValid      <= '0';
+  xClipAxi4LiteMasterBReady       <= '0';
+  xClipAxi4LiteMasterRReady       <= '0';
+  xClipAxi4LiteMasterWData        <= (others => '0');
+  xClipAxi4LiteMasterWStrb        <= (others => '0');
+  xClipAxi4LiteMasterWValid       <= '0';
+  aConfigTxClkLvds                <= '0';
+  aConfigTxClkSe                  <= '0';
+  aConfigTxDataSe                 <= (others => '0');
+  aRsrvGpio_n                     <= (others => 'Z');
+  aRsrvGpio_p                     <= (others => 'Z');
+  aReservedFromClip               <= (others => '0');
+  stIoModuleSupportsFRAGLs        <= '0';
+  aGpoSync                        <= (others => '0');
+  aTriggerOut                     <= '0';
+  aJesd204SyncReqOut_n            <= '0';
+  dvTdcAssert                     <= '0';
+  dtDevClkEn                      <= '0';
+  MgtPortTx_n                     <= (others => '0');
+  MgtPortTx_p                     <= (others => '0');
+  ExportedMgtRefClk               <= '0';
 
 end rtl;

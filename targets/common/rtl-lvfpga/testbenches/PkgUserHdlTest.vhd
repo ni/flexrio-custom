@@ -13,9 +13,9 @@
 --
 --   The complete test sequence (host register-port driver, demo loopback
 --   checks, FIFO endpoint register checks and the Writer/Reader FIFO data-path
---   exercises) lives here as one procedure, RunUserHdlTest. The per-aux-variant
---   core entities (UserHdlTestCoreBidir / UserHdlTestCoreSimple) only wire up
---   the DUT and call this procedure, so the stimulus is never duplicated.
+--   exercises) lives here as one procedure, RunUserHdlTest. The board-agnostic
+--   core entity (UserHdlTestCore) only generates the clocks and calls this
+--   procedure, so the stimulus is never duplicated.
 --
 --   Covers:
 --   - Common host registers (signature/version/oldest/scratch)

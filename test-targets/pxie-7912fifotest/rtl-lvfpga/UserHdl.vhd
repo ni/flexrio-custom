@@ -40,6 +40,7 @@ use work.PkgDmaPortDmaFifos.all;
 use work.PkgDmaPortCommIfcStreamStates.all;
 use work.PkgNiSharedFifo.all;
 use work.PkgUserHdl.all;
+use work.PkgNiHdlSettings.all;
 
 entity UserHdl is
   port(

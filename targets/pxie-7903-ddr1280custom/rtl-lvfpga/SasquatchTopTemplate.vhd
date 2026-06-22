@@ -717,11 +717,6 @@ architecture struct of SasquatchTopTemplate is
   signal dWinOutputStreamInterfaceToFifo  : OutputStreamInterfaceToFifoArray_t(Larger(kNumberOfDmaChannels,1)-1 downto 0);
   signal dWinOutputStreamInterfaceFromFifo: OutputStreamInterfaceFromFifoArray_t(Larger(kNumberOfDmaChannels,1)-1 downto 0);
 
-  -- Base DIO (aDio) routed to UserHdl via inferred tristate buffers in the top
-  signal aDioIn    : std_logic_vector(7 downto 0);
-  signal aDioOut   : std_logic_vector(7 downto 0);
-  signal aDioOutEn : std_logic_vector(7 downto 0);
-
   -- DMA engine Reset
   signal aBusReset : boolean := true;
 
@@ -1392,9 +1387,6 @@ begin  -- architecture struct
   -- User HDL block (registers + FIFOs)
   ---------------------------------------------------------------------------
   UserHdl_inst : entity work.UserHdl
-    generic map(
-      kNumAuxIoData => aDio'length
-    )
     port map(
       BusClk         => BusClk,
       DmaClk         => DmaClk,
@@ -1412,21 +1404,91 @@ begin  -- architecture struct
       dReaderInputStreamInterfaceFromFifo  => dInputStreamInterfaceFromFifo(kUserHdlDmaStartIndex),
       dReaderOutputStreamInterfaceToFifo   => dOutputStreamInterfaceToFifo(kUserHdlDmaStartIndex),
       dReaderOutputStreamInterfaceFromFifo => dOutputStreamInterfaceFromFifo(kUserHdlDmaStartIndex),
-      -- Board IO (Base DIO): board IO is disabled on the LV Window for this
-      -- target, so the carrier's base DIO lines (aDio) are routed to UserHdl
-      -- through the inferred tristate buffers below. This target's DIO node has
-      -- no request/direction/done handshake.
-      aLvAuxDioInputData    => aDioIn,
-      aLvAuxDioOutputData   => aDioOut,
-      aLvAuxDioOutputEnable => aDioOutEn
-    );
 
-  -- Base DIO tristate buffers: drive aDio from UserHdl when output-enabled,
-  -- otherwise leave the line high-Z; read the pin state back into aDioIn.
-  GenAuxDioBuffers : for i in aDio'range generate
-    aDio(i) <= aDioOut(i) when aDioOutEn(i) = '1' else 'Z';
-  end generate GenAuxDioBuffers;
-  aDioIn <= aDio;
+      -- ----------------------------------------------------------------------
+      -- Board IO
+      -- ----------------------------------------------------------------------
+      -- This custom target disables board IO on the LV Window
+      -- (set_include_board_io_on_lv_window(False)), so every board IO interface
+      -- that the LV Window would normally own is brought into UserHdl instead.
+      -- The CLIP-socket AxiStream/Axi4Lite and reserved signals connect to the
+      -- same carrier signals the LV Window stub drives/consumes on its diagram
+      -- (bd) side, so UserHdl simply supplies the CLIP-facing (x) side.
+      -- Board IO is not exercised by this base design: in a custom target the
+      -- MGT data lanes have no top-level ports (the user places MGT logic in
+      -- the top), so MgtPortRx is tied low and MgtPortTx is left open.
+      AxiClk                          => BusClk,
+
+      xDiagramAxiStreamFromClipTData  => xDiagramAxiStreamFromClipTData,
+      xDiagramAxiStreamFromClipTLast  => xDiagramAxiStreamFromClipTLast,
+      xDiagramAxiStreamFromClipTReady => xDiagramAxiStreamFromClipTReady,
+      xDiagramAxiStreamFromClipTValid => xDiagramAxiStreamFromClipTValid,
+      xDiagramAxiStreamToClipTData    => xDiagramAxiStreamToClipTData,
+      xDiagramAxiStreamToClipTLast    => xDiagramAxiStreamToClipTLast,
+      xDiagramAxiStreamToClipTReady   => xDiagramAxiStreamToClipTReady,
+      xDiagramAxiStreamToClipTValid   => xDiagramAxiStreamToClipTValid,
+
+      xHostAxiStreamFromClipTData     => xHostAxiStreamFromClipTData,
+      xHostAxiStreamFromClipTLast     => xHostAxiStreamFromClipTLast,
+      xHostAxiStreamFromClipTReady    => xHostAxiStreamFromClipTReady,
+      xHostAxiStreamFromClipTValid    => xHostAxiStreamFromClipTValid,
+      xHostAxiStreamToClipTData       => xHostAxiStreamToClipTData,
+      xHostAxiStreamToClipTLast       => xHostAxiStreamToClipTLast,
+      xHostAxiStreamToClipTReady      => xHostAxiStreamToClipTReady,
+      xHostAxiStreamToClipTValid      => xHostAxiStreamToClipTValid,
+
+      xClipAxi4LiteMasterARAddr       => bdClipAxi4LiteARAddr,
+      xClipAxi4LiteMasterARProt       => bdClipAxi4LiteARProt,
+      xClipAxi4LiteMasterARReady      => bdClipAxi4LiteARReady,
+      xClipAxi4LiteMasterARValid      => bdClipAxi4LiteARValid,
+      xClipAxi4LiteMasterAWAddr       => bdClipAxi4LiteAWAddr,
+      xClipAxi4LiteMasterAWProt       => bdClipAxi4LiteAWProt,
+      xClipAxi4LiteMasterAWReady      => bdClipAxi4LiteAWReady,
+      xClipAxi4LiteMasterAWValid      => bdClipAxi4LiteAWValid,
+      xClipAxi4LiteMasterBReady       => bdClipAxi4LiteBReady,
+      xClipAxi4LiteMasterBResp        => bdClipAxi4LiteBResp,
+      xClipAxi4LiteMasterBValid       => bdClipAxi4LiteBValid,
+      xClipAxi4LiteMasterRData        => bdClipAxi4LiteRData,
+      xClipAxi4LiteMasterRReady       => bdClipAxi4LiteRReady,
+      xClipAxi4LiteMasterRResp        => bdClipAxi4LiteRResp,
+      xClipAxi4LiteMasterRValid       => bdClipAxi4LiteRValid,
+      xClipAxi4LiteMasterWData        => bdClipAxi4LiteWData,
+      xClipAxi4LiteMasterWReady       => bdClipAxi4LiteWReady,
+      xClipAxi4LiteMasterWStrb        => bdClipAxi4LiteWStrb,
+      xClipAxi4LiteMasterWValid       => bdClipAxi4LiteWValid,
+      xClipAxi4LiteInterrupt          => '0',
+
+      stIoModuleSupportsFRAGLs        => stIoModuleSupportsFRAGLs,
+
+      MgtRefClk_p                     => MgtRefClk_p,
+      MgtRefClk_n                     => MgtRefClk_n,
+      MgtPortRx_p                     => (others => '0'),
+      MgtPortRx_n                     => (others => '0'),
+      MgtPortTx_p                     => open,
+      MgtPortTx_n                     => open,
+
+      aDio                            => aDio,
+
+      aLmkI2cSda                      => aLmkI2cSda,
+      aLmkI2cScl                      => aLmkI2cScl,
+      aLmk1Pdn_n                      => aLmk1Pdn_n,
+      aLmk2Pdn_n                      => aLmk2Pdn_n,
+      aLmk1Gpio0                      => aLmk1Gpio0,
+      aLmk2Gpio0                      => aLmk2Gpio0,
+      aLmk1Status0                    => aLmk1Status0,
+      aLmk1Status1                    => aLmk1Status1,
+      aLmk2Status0                    => aLmk2Status0,
+      aLmk2Status1                    => aLmk2Status1,
+      aIPassVccPowerFault_n           => aIPassVccPowerFault_n,
+      aIPassPrsnt_n                   => aIPassPrsnt_n,
+      aIPassIntr_n                    => aIPassIntr_n,
+      aIPassSCL                       => aIPassSCL,
+      aIPassSDA                       => aIPassSDA,
+      aPortExpReset_n                 => aPortExpReset_n,
+      aPortExpIntr_n                  => aPortExpIntr_n,
+      aPortExpSda                     => aPortExpSda,
+      aPortExpScl                     => aPortExpScl
+    );
 
   ---------------------------------------------------------------------------
   -- Stream Interface Routing

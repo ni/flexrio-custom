@@ -20,6 +20,9 @@
 --                        (from set_max_hdl_reg_offset)
 --     kNumHdlFifos     : number of user HDL DMA FIFOs reserved for UserHdl
 --                        (from set_num_hdl_fifos)
+--     kNumFixedLogicDmaStreams : number of DMA streams consumed by the fixed
+--                        (non-user) logic; user HDL FIFOs occupy the DMA
+--                        channels just below these (derived from target family)
 --
 --   This template is shared by all targets; the per-target values come from
 --   each target's nihdlsettings.py.
@@ -32,7 +35,8 @@ library ieee;
 
 package PkgNiHdlSettings is
 
-  constant kMaxHdlRegOffset : natural := ${max_hdl_reg_offset};
-  constant kNumHdlFifos     : natural := ${num_hdl_fifos};
+  constant kMaxHdlRegOffset         : natural := ${max_hdl_reg_offset};
+  constant kNumHdlFifos             : natural := ${num_hdl_fifos};
+  constant kNumFixedLogicDmaStreams : natural := ${num_fixed_logic_dma_streams};
 
 end PkgNiHdlSettings;

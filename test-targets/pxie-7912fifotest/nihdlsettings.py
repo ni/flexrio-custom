@@ -64,10 +64,11 @@ def pre_all(context):
     config.set_include_custom_io_on_lv_window(False)
 
     # --- LabVIEW FPGA Target Generated VHDL  ---
-    config.add_window_vhdl_template(f"{base_deps}/rtl-lvfpga/lvgen/TheWindow.vhd.mako")
-    config.add_window_vhdl_template("rtl-lvfpga/TheLvWindowFlatWrapper.vhd.mako")
-    config.add_window_vhdl_template("rtl-lvfpga/PkgTheLvWindowFlatWrapper.vhd.mako")
-    config.set_window_vhdl_output_folder("objects/GeneratedHDL")
+    config.add_generated_vhdl_template(f"{base_deps}/rtl-lvfpga/lvgen/TheWindow.vhd.mako")
+    config.add_generated_vhdl_template("rtl-lvfpga/TheLvWindowFlatWrapper.vhd.mako")
+    config.add_generated_vhdl_template("rtl-lvfpga/PkgTheLvWindowFlatWrapper.vhd.mako")
+    config.add_generated_vhdl_template("../../targets/common/rtl-lvfpga/PkgNiHdlSettings.vhd.mako")
+    config.set_generated_vhdl_output_folder("objects/GeneratedHDL")
 
      # --- LabVIEW FPGA Target Generated Resource XML ---   
     config.add_lv_target_xml_template(f"{base_deps}/lvFpgaTarget/Resource.xml.mako")
@@ -77,6 +78,7 @@ def pre_all(context):
 
     # --- HDL-to-Host Interfaces ---   
     config.set_max_hdl_reg_offset(1000)  # Pick a large number to give us plenty of headroom
+    config.set_num_hdl_fifos(14)  # 7 loopback pairs x 2 DMA channels each
 
     # --- CLIP Migration Settings ---
     config.set_clip_input_xml("")

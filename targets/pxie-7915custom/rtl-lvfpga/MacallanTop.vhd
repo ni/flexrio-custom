@@ -41,6 +41,7 @@ use work.PkgDmaPortDmaFifos.all;
 -- User HDL
 use work.PkgNiSharedFifo.all;
 use work.PkgUserHdl.all;
+use work.PkgNiHdlSettings.all;
 use work.PkgDmaPortDmaFifosFlatTypes.all;
 use work.PkgDmaPortCommIfcMasterPort.all;
 use work.PkgDmaPortCommIfcMasterPortFlatTypes.all;
@@ -1160,9 +1161,6 @@ begin  -- architecture struct
   -- User HDL block (registers + FIFOs)
   ---------------------------------------------------------------------------
   UserHdl_inst : entity work.UserHdl
-    generic map(
-      kNumAuxIoData => kNumAuxIoData
-    )
     port map(
       BusClk         => BusClk,
       DmaClk         => DmaClk,
@@ -1180,14 +1178,83 @@ begin  -- architecture struct
       dReaderInputStreamInterfaceFromFifo  => dInputStreamInterfaceFromFifo(kUserHdlDmaStartIndex),
       dReaderOutputStreamInterfaceToFifo   => dOutputStreamInterfaceToFifo(kUserHdlDmaStartIndex),
       dReaderOutputStreamInterfaceFromFifo => dOutputStreamInterfaceFromFifo(kUserHdlDmaStartIndex),
-      -- Board IO (AuxDio): board IO is disabled on the LV Window for this
-      -- target, so the carrier's auxiliary DIO lines are routed to UserHdl.
-      aLvAuxDioInputData    => aLvAuxDioInputData,
-      bdDoneaLvAuxDio       => bdDoneaLvAuxDio,
-      aLvAuxDioOutputData   => aLvAuxDioOutputData,
-      aLvAuxDioOutputEnable => aLvAuxDioOutputEnable,
-      bdDirectionaLvAuxDio  => bdDirectionaLvAuxDio,
-      bdRequestaLvAuxDio    => bdRequestaLvAuxDio
+      -- Board IO: board IO is disabled on the LV Window for this target, so
+      -- every board IO interface that would normally connect to the LV Window
+      -- is routed to UserHdl instead, wired exactly as the non-custom target's
+      -- TheWindow instantiation does.
+      aLvAuxDio0OutputData   => aLvAuxDioOutputData(0),
+      aLvAuxDio0InputData    => aLvAuxDioInputData(0),
+      aLvAuxDio0OutputEnable => aLvAuxDioOutputEnable(0),
+      oClkaLvAuxDio0         => BusClk,
+      aoResetaLvAuxDio0      => to_StdLogic(abDiagramReset),
+      oDoneaLvAuxDio0        => bdDoneaLvAuxDio(0),
+      oDirectionaLvAuxDio0   => bdDirectionaLvAuxDio(0),
+      oRequestaLvAuxDio0     => bdRequestaLvAuxDio(0),
+      aLvAuxDio1OutputData   => aLvAuxDioOutputData(1),
+      aLvAuxDio1InputData    => aLvAuxDioInputData(1),
+      aLvAuxDio1OutputEnable => aLvAuxDioOutputEnable(1),
+      oClkaLvAuxDio1         => BusClk,
+      aoResetaLvAuxDio1      => to_StdLogic(abDiagramReset),
+      oDoneaLvAuxDio1        => bdDoneaLvAuxDio(1),
+      oDirectionaLvAuxDio1   => bdDirectionaLvAuxDio(1),
+      oRequestaLvAuxDio1     => bdRequestaLvAuxDio(1),
+      aLvAuxDio2OutputData   => aLvAuxDioOutputData(2),
+      aLvAuxDio2InputData    => aLvAuxDioInputData(2),
+      aLvAuxDio2OutputEnable => aLvAuxDioOutputEnable(2),
+      oClkaLvAuxDio2         => BusClk,
+      aoResetaLvAuxDio2      => to_StdLogic(abDiagramReset),
+      oDoneaLvAuxDio2        => bdDoneaLvAuxDio(2),
+      oDirectionaLvAuxDio2   => bdDirectionaLvAuxDio(2),
+      oRequestaLvAuxDio2     => bdRequestaLvAuxDio(2),
+      aLvAuxDio3OutputData   => aLvAuxDioOutputData(3),
+      aLvAuxDio3InputData    => aLvAuxDioInputData(3),
+      aLvAuxDio3OutputEnable => aLvAuxDioOutputEnable(3),
+      oClkaLvAuxDio3         => BusClk,
+      aoResetaLvAuxDio3      => to_StdLogic(abDiagramReset),
+      oDoneaLvAuxDio3        => bdDoneaLvAuxDio(3),
+      oDirectionaLvAuxDio3   => bdDirectionaLvAuxDio(3),
+      oRequestaLvAuxDio3     => bdRequestaLvAuxDio(3),
+      aLvAuxDio4OutputData   => aLvAuxDioOutputData(4),
+      aLvAuxDio4InputData    => aLvAuxDioInputData(4),
+      aLvAuxDio4OutputEnable => aLvAuxDioOutputEnable(4),
+      oClkaLvAuxDio4         => BusClk,
+      aoResetaLvAuxDio4      => to_StdLogic(abDiagramReset),
+      oDoneaLvAuxDio4        => bdDoneaLvAuxDio(4),
+      oDirectionaLvAuxDio4   => bdDirectionaLvAuxDio(4),
+      oRequestaLvAuxDio4     => bdRequestaLvAuxDio(4),
+      aLvAuxDio5OutputData   => aLvAuxDioOutputData(5),
+      aLvAuxDio5InputData    => aLvAuxDioInputData(5),
+      aLvAuxDio5OutputEnable => aLvAuxDioOutputEnable(5),
+      oClkaLvAuxDio5         => BusClk,
+      aoResetaLvAuxDio5      => to_StdLogic(abDiagramReset),
+      oDoneaLvAuxDio5        => bdDoneaLvAuxDio(5),
+      oDirectionaLvAuxDio5   => bdDirectionaLvAuxDio(5),
+      oRequestaLvAuxDio5     => bdRequestaLvAuxDio(5),
+      aLvAuxDio6OutputData   => aLvAuxDioOutputData(6),
+      aLvAuxDio6InputData    => aLvAuxDioInputData(6),
+      aLvAuxDio6OutputEnable => aLvAuxDioOutputEnable(6),
+      oClkaLvAuxDio6         => BusClk,
+      aoResetaLvAuxDio6      => to_StdLogic(abDiagramReset),
+      oDoneaLvAuxDio6        => bdDoneaLvAuxDio(6),
+      oDirectionaLvAuxDio6   => bdDirectionaLvAuxDio(6),
+      oRequestaLvAuxDio6     => bdRequestaLvAuxDio(6),
+      aLvAuxDio7OutputData   => aLvAuxDioOutputData(7),
+      aLvAuxDio7InputData    => aLvAuxDioInputData(7),
+      aLvAuxDio7OutputEnable => aLvAuxDioOutputEnable(7),
+      oClkaLvAuxDio7         => BusClk,
+      aoResetaLvAuxDio7      => to_StdLogic(abDiagramReset),
+      oDoneaLvAuxDio7        => bdDoneaLvAuxDio(7),
+      oDirectionaLvAuxDio7   => bdDirectionaLvAuxDio(7),
+      oRequestaLvAuxDio7     => bdRequestaLvAuxDio(7),
+      DioMgtRefClk_p         => AuxIoMgtRefClk_p,
+      DioMgtRefClk_n         => AuxIoMgtRefClk_n,
+      DioMgtRefClkFromFam    => '0',
+      DioMgtRX_n             => AuxIoMgtRx_n,
+      DioMgtRX_p             => AuxIoMgtRx_p,
+      DioMgtTX_n             => AuxIoMgtTx_n,
+      DioMgtTX_p             => AuxIoMgtTx_p,
+      SocketClk80            => BusClk,
+      sDioMgtRefClkFromFamPresent => '0'
     );
 
   ---------------------------------------------------------------------------
@@ -1208,7 +1275,7 @@ begin  -- architecture struct
   StreamRouting : for i in dInputStreamInterfaceToFifo'range generate
 
     -- Normal channels: bidirectional pass-through to TheWindow
-    NormalChannel : if i > kUserHdlDmaStartIndex or i < kUserHdlDmaStartIndex - kNumUserHdlDmaChannels + 1 generate
+    NormalChannel : if i > kUserHdlDmaStartIndex or i < kUserHdlDmaStartIndex - kNumHdlFifos + 1 generate
       dWinInputStreamInterfaceToFifo(i)  <= dInputStreamInterfaceToFifo(i);
       dInputStreamInterfaceFromFifo(i)   <= dWinInputStreamInterfaceFromFifo(i);
       dWinOutputStreamInterfaceToFifo(i) <= dOutputStreamInterfaceToFifo(i);
@@ -1217,7 +1284,7 @@ begin  -- architecture struct
 
     -- UserHdl channels: all 4 signals connected to UserHdl via port map.
     -- Disconnect Window side by driving ToFifo inputs to zero.
-    UserHdlChannel : if i <= kUserHdlDmaStartIndex and i >= kUserHdlDmaStartIndex - kNumUserHdlDmaChannels + 1 generate
+    UserHdlChannel : if i <= kUserHdlDmaStartIndex and i >= kUserHdlDmaStartIndex - kNumHdlFifos + 1 generate
       dWinInputStreamInterfaceToFifo(i)  <= kInputStreamInterfaceToFifoZero;
       dWinOutputStreamInterfaceToFifo(i) <= kOutputStreamInterfaceToFifoZero;
     end generate UserHdlChannel;

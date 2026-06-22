@@ -24,6 +24,7 @@ library work;
   use work.PkgNiUtilities.all;
   use work.PkgCommIntConfiguration.all;
   use work.PkgNiSharedFifo.all;
+  use work.PkgNiHdlSettings.all;
 
 package PkgUserHdl is
 
@@ -36,8 +37,14 @@ package PkgUserHdl is
   --   config(2*p+1) = Writer (Target-to-Host) for pair p
   -- Within a pair the Reader and Writer must share FifoWidth and
   -- ElementsPerClockCycle so popped Reader data can be pushed into the Writer.
-  constant kNumLoopbackPairs      : natural := 7;
-  constant kNumUserHdlDmaChannels : natural := kNumLoopbackPairs * 2;
+  --
+  -- kNumHdlFifos is the single source of truth from nihdlsettings.py
+  -- (set_num_hdl_fifos), pushed into the HDL via the generated PkgNiHdlSettings
+  -- package. Each loopback pair consumes two DMA channels, so the number of
+  -- pairs is half the FIFO count. UserHdl asserts (kNumHdlFifos mod 2 = 0) and
+  -- that the kUserHdlDmaFifoConf aggregate below has exactly kNumHdlFifos
+  -- elements (range/aggregate mismatch otherwise fails analysis).
+  constant kNumLoopbackPairs      : natural := kNumHdlFifos / 2;
 
   -- FifoWidth             : 1..64 (host types: Boolean, U/I[8,16,32,64], FXP, SGL-64)
   -- ElementsPerClockCycle : 1, 2, 4, 8, 16, 32, or 64
@@ -60,7 +67,7 @@ package PkgUserHdl is
   -- All pairs use a nominal 1024-element FIFO: Reader depth = 1024 + 6*1 - 1 = 1029,
   -- Writer depth = 1024 - 1 = 1023 (ElementsPerClockCycle = 1).
 
-  constant kUserHdlDmaFifoConf : UserDmaFifoConfArray_t(0 to kNumUserHdlDmaChannels - 1) := (
+  constant kUserHdlDmaFifoConf : UserDmaFifoConfArray_t(0 to kNumHdlFifos - 1) := (
     -- Pair 0: 32-bit signed
     0  => (FifoDepth => 1029, FifoWidth => 32, ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget, SignedData => true),
     1  => (FifoDepth => 1023, FifoWidth => 32, ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost, SignedData => true),

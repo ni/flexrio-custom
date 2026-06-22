@@ -41,6 +41,7 @@ use work.PkgDmaPortDmaFifos.all;
 -- User HDL
 use work.PkgNiSharedFifo.all;
 use work.PkgUserHdl.all;
+use work.PkgNiHdlSettings.all;
 use work.PkgDmaPortDmaFifosFlatTypes.all;
 use work.PkgDmaPortCommIfcMasterPort.all;
 use work.PkgDmaPortCommIfcMasterPortFlatTypes.all;
@@ -510,12 +511,12 @@ architecture struct of MacallanTop is
   signal bRegPortOutUserHdl: RegPortOut_t;
 
   -- UserHdl stream interfaces, indexed by UserHdl config index
-  -- (0 .. kNumUserHdlDmaChannels-1). Remapped to physical DMA channels in the
+  -- (0 .. kNumHdlFifos-1). Remapped to physical DMA channels in the
   -- StreamRouting generate.
-  signal dUserHdlInputStreamInterfaceToFifo    : InputStreamInterfaceToFifoArray_t(0 to kNumUserHdlDmaChannels-1);
-  signal dUserHdlInputStreamInterfaceFromFifo  : InputStreamInterfaceFromFifoArray_t(0 to kNumUserHdlDmaChannels-1);
-  signal dUserHdlOutputStreamInterfaceToFifo   : OutputStreamInterfaceToFifoArray_t(0 to kNumUserHdlDmaChannels-1);
-  signal dUserHdlOutputStreamInterfaceFromFifo : OutputStreamInterfaceFromFifoArray_t(0 to kNumUserHdlDmaChannels-1);
+  signal dUserHdlInputStreamInterfaceToFifo    : InputStreamInterfaceToFifoArray_t(0 to kNumHdlFifos-1);
+  signal dUserHdlInputStreamInterfaceFromFifo  : InputStreamInterfaceFromFifoArray_t(0 to kNumHdlFifos-1);
+  signal dUserHdlOutputStreamInterfaceToFifo   : OutputStreamInterfaceToFifoArray_t(0 to kNumHdlFifos-1);
+  signal dUserHdlOutputStreamInterfaceFromFifo : OutputStreamInterfaceFromFifoArray_t(0 to kNumHdlFifos-1);
 
   -- Window-side stream interface signals (for UserHdl FIFO interception)
   signal dWinInputStreamInterfaceToFifo   : InputStreamInterfaceToFifoArray_t(Larger(kNumberOfDmaChannels,1)-1 downto 0);
@@ -1177,7 +1178,7 @@ begin  -- architecture struct
       abDiagramReset => abDiagramReset,
       bRegPortIn     => bRegPortIn,
       bRegPortOut    => bRegPortOutUserHdl,
-      -- Stream interfaces indexed by UserHdl config index (0 .. kNumUserHdlDmaChannels-1).
+      -- Stream interfaces indexed by UserHdl config index (0 .. kNumHdlFifos-1).
       -- Remapped to physical DMA channels by the StreamRouting generate below.
       dUserInputStreamInterfaceToFifo    => dUserHdlInputStreamInterfaceToFifo,
       dUserInputStreamInterfaceFromFifo  => dUserHdlInputStreamInterfaceFromFifo,
@@ -1203,7 +1204,7 @@ begin  -- architecture struct
   StreamRouting : for i in dInputStreamInterfaceToFifo'range generate
 
     -- Normal channels: bidirectional pass-through to TheWindow
-    NormalChannel : if i > kUserHdlDmaStartIndex or i < kUserHdlDmaStartIndex - kNumUserHdlDmaChannels + 1 generate
+    NormalChannel : if i > kUserHdlDmaStartIndex or i < kUserHdlDmaStartIndex - kNumHdlFifos + 1 generate
       dWinInputStreamInterfaceToFifo(i)  <= dInputStreamInterfaceToFifo(i);
       dInputStreamInterfaceFromFifo(i)   <= dWinInputStreamInterfaceFromFifo(i);
       dWinOutputStreamInterfaceToFifo(i) <= dOutputStreamInterfaceToFifo(i);
@@ -1213,7 +1214,7 @@ begin  -- architecture struct
     -- UserHdl channels: connected to UserHdl via config-index-ordered arrays.
     -- DMA channel i maps to UserHdl config index (kUserHdlDmaStartIndex - i).
     -- Disconnect Window side by driving ToFifo inputs to zero.
-    UserHdlChannel : if i <= kUserHdlDmaStartIndex and i >= kUserHdlDmaStartIndex - kNumUserHdlDmaChannels + 1 generate
+    UserHdlChannel : if i <= kUserHdlDmaStartIndex and i >= kUserHdlDmaStartIndex - kNumHdlFifos + 1 generate
       dUserHdlInputStreamInterfaceToFifo(kUserHdlDmaStartIndex - i)  <= dInputStreamInterfaceToFifo(i);
       dInputStreamInterfaceFromFifo(i)  <= dUserHdlInputStreamInterfaceFromFifo(kUserHdlDmaStartIndex - i);
       dUserHdlOutputStreamInterfaceToFifo(kUserHdlDmaStartIndex - i) <= dOutputStreamInterfaceToFifo(i);

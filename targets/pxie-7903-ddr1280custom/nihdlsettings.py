@@ -12,8 +12,8 @@ def pre_all(context):
     # --- Tools ---
     config.set_vivado_tools_folder("C:/NIFPGA/programs/Vivado2021_1")
     config.set_vivado_tcl_scripts_folder("../common/TCL")
-    config.set_modelsim_tools_folder("")
-    config.set_xilinx_sim_lib_folder("")
+    config.set_modelsim_tools_folder("C:/modeltech_pe_2020.4")
+    config.set_xilinx_sim_lib_folder("C:/dev/libraries/vivado/2021.1/modelsim_PE_2020")
 
     # --- General Settings ---
     config.set_target_family("FlexRIO")
@@ -25,6 +25,11 @@ def pre_all(context):
     # --- HDL Source Code ---
     config.add_hdl_file_list(f"{base_deps}/vivadoprojectdeps.txt")
     config.add_hdl_file_list("vivadoprojectsources.txt")
+    config.add_hdl_file_list("../../deps/flexrio-deps/hdl_shared_deps_list/hdlsharedvivadoprojectdeps.txt")
+
+    # Exclude the US PkgNiDmaConfig.vhd from the shared deps list; this USP target
+    # supplies the correct USP copy via its own vivadoprojectdeps.txt.
+    config.add_exclude_hdl_file_list("vivadoprojectexclude.txt")
 
     # --- LabVIEW Window Netlist for Synthesis ---
     # This example contains a netlist that was generated using the LabVIEW project in the docs folder.
@@ -49,7 +54,8 @@ def pre_all(context):
     config.set_lv_target_install_folder("C:/Program Files/NI/LVAddons/flexrioii/1/Targets/NI/FPGA/RIO/79XXR")
     config.set_lv_target_menus_folder("../../deps/flexrio/targets/common/lvFpgaTarget/targetpluginmenus")
     config.set_lv_target_info_ini(f"{base_deps}/lvFpgaTarget/TargetInfo.ini")
-    config.set_lv_target_exclude_files(f"{base_deps}/lvtargetexcludefiles.txt")
+    config.add_lv_target_exclude_files(f"{base_deps}/lvtargetexcludefiles.txt")
+    config.add_lv_target_exclude_files("../../deps/flexrio-deps/hdl_shared_deps_list/hdlsharedlvtargetexcludefiles.txt")
     config.set_lv_target_plugin_output_folder(f"objects/LVTargetPlugin/{plugin_name}")
 
     # --- LabVIEW FPGA Target Constraints ---
@@ -62,10 +68,11 @@ def pre_all(context):
     config.set_include_custom_io_on_lv_window(False)
 
     # --- LabVIEW FPGA Target Generated VHDL ---
-    config.add_window_vhdl_template(f"{base_deps}/rtl-lvfpga/lvgen/TheWindow.vhd.mako")
-    config.add_window_vhdl_template("rtl-lvfpga/TheLvWindowFlatWrapper.vhd.mako")
-    config.add_window_vhdl_template("rtl-lvfpga/PkgTheLvWindowFlatWrapper.vhd.mako")
-    config.set_window_vhdl_output_folder("objects/GeneratedHDL")
+    config.add_generated_vhdl_template(f"{base_deps}/rtl-lvfpga/lvgen/TheWindow.vhd.mako")
+    config.add_generated_vhdl_template("rtl-lvfpga/TheLvWindowFlatWrapper.vhd.mako")
+    config.add_generated_vhdl_template("rtl-lvfpga/PkgTheLvWindowFlatWrapper.vhd.mako")
+    config.add_generated_vhdl_template("../common/rtl-lvfpga/PkgNiHdlSettings.vhd.mako")
+    config.set_generated_vhdl_output_folder("objects/GeneratedHDL")
 
     # --- LabVIEW FPGA Target Generated Resource XML ---
     config.add_lv_target_xml_template(f"{base_deps}/lvFpgaTarget/Resource.xml.mako")
@@ -75,6 +82,7 @@ def pre_all(context):
 
     # --- HDL-to-Host Interfaces ---
     config.set_max_hdl_reg_offset(1024)  # Pick a large number to give us plenty of headroom
+    config.set_num_hdl_fifos(2)  # Number of user HDL DMA FIFOs reserved for UserHdl
 
     # --- CLIP Migration Settings ---
     config.set_clip_input_xml("")
@@ -96,11 +104,10 @@ def pre_all(context):
 
     # --- ModelSim Project Settings ---
     config.set_modelsim_project_folder("ModelSimProject")
+    config.set_modelsim_top_entity("tb_UserHdl")
+    config.add_modelsim_file_list("modelsimprojectsources.txt")
+    config.add_modelsim_file_list("../../deps/flexrio-deps/hdl_shared_deps_list/hdlsharedvivadoprojectdeps.txt")
 
-
-def post_all(context):
-    """Called after every command completes."""
-    pass
 
 def post_all(context):
     """Called after every command completes."""

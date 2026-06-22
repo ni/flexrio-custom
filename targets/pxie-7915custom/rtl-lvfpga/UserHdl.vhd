@@ -35,13 +35,9 @@ use work.PkgDmaPortDmaFifos.all;
 use work.PkgDmaPortCommIfcStreamStates.all;
 use work.PkgNiSharedFifo.all;
 use work.PkgUserHdl.all;
+use work.PkgNiHdlSettings.all;
 
 entity UserHdl is
-  generic(
-    -- Number of auxiliary board DIO lines routed to UserHdl (the LV Window has
-    -- board IO disabled on this custom target).
-    kNumAuxIoData : natural := 8
-  );
   port(
     BusClk         : in  std_logic;
     DmaClk         : in  std_logic;
@@ -67,16 +63,88 @@ entity UserHdl is
     dReaderOutputStreamInterfaceToFifo   : in  OutputStreamInterfaceToFifo_t;
     dReaderOutputStreamInterfaceFromFifo  : out OutputStreamInterfaceFromFifo_t;
 
-    -- Board IO (AuxDio): the LV Window has board IO disabled on this custom
-    -- target (set_include_board_io_on_lv_window(False)), so the carrier's
-    -- auxiliary DIO lines are brought into UserHdl. Inputs are read back from
-    -- the IO buffers / fixed logic; outputs drive the pins and DIO control.
-    aLvAuxDioInputData    : in  std_logic_vector(kNumAuxIoData-1 downto 0);
-    bdDoneaLvAuxDio       : in  std_logic_vector(kNumAuxIoData-1 downto 0);
-    aLvAuxDioOutputData   : out std_logic_vector(kNumAuxIoData-1 downto 0);
-    aLvAuxDioOutputEnable : out std_logic_vector(kNumAuxIoData-1 downto 0);
-    bdDirectionaLvAuxDio  : out std_logic_vector(kNumAuxIoData-1 downto 0);
-    bdRequestaLvAuxDio    : out std_logic_vector(kNumAuxIoData-1 downto 0)
+    -- Board IO: the LV Window has board IO disabled on this custom target
+    -- (set_include_board_io_on_lv_window(False)), so every board IO interface
+    -- that would normally connect to the LV Window is brought into UserHdl
+    -- instead. These ports EXACTLY match the include_board_io block of
+    -- TheLvWindowFlatWrapper for this target.
+
+    -- IO Node ports
+    aLvAuxDio0OutputData   : out std_logic;
+    aLvAuxDio0InputData    : in  std_logic;
+    aLvAuxDio0OutputEnable : out std_logic;
+    oClkaLvAuxDio0         : in  std_logic;
+    aoResetaLvAuxDio0      : in  std_logic;
+    oDoneaLvAuxDio0        : in  std_logic;
+    oDirectionaLvAuxDio0   : out std_logic;
+    oRequestaLvAuxDio0     : out std_logic;
+    aLvAuxDio1OutputData   : out std_logic;
+    aLvAuxDio1InputData    : in  std_logic;
+    aLvAuxDio1OutputEnable : out std_logic;
+    oClkaLvAuxDio1         : in  std_logic;
+    aoResetaLvAuxDio1      : in  std_logic;
+    oDoneaLvAuxDio1        : in  std_logic;
+    oDirectionaLvAuxDio1   : out std_logic;
+    oRequestaLvAuxDio1     : out std_logic;
+    aLvAuxDio2OutputData   : out std_logic;
+    aLvAuxDio2InputData    : in  std_logic;
+    aLvAuxDio2OutputEnable : out std_logic;
+    oClkaLvAuxDio2         : in  std_logic;
+    aoResetaLvAuxDio2      : in  std_logic;
+    oDoneaLvAuxDio2        : in  std_logic;
+    oDirectionaLvAuxDio2   : out std_logic;
+    oRequestaLvAuxDio2     : out std_logic;
+    aLvAuxDio3OutputData   : out std_logic;
+    aLvAuxDio3InputData    : in  std_logic;
+    aLvAuxDio3OutputEnable : out std_logic;
+    oClkaLvAuxDio3         : in  std_logic;
+    aoResetaLvAuxDio3      : in  std_logic;
+    oDoneaLvAuxDio3        : in  std_logic;
+    oDirectionaLvAuxDio3   : out std_logic;
+    oRequestaLvAuxDio3     : out std_logic;
+    aLvAuxDio4OutputData   : out std_logic;
+    aLvAuxDio4InputData    : in  std_logic;
+    aLvAuxDio4OutputEnable : out std_logic;
+    oClkaLvAuxDio4         : in  std_logic;
+    aoResetaLvAuxDio4      : in  std_logic;
+    oDoneaLvAuxDio4        : in  std_logic;
+    oDirectionaLvAuxDio4   : out std_logic;
+    oRequestaLvAuxDio4     : out std_logic;
+    aLvAuxDio5OutputData   : out std_logic;
+    aLvAuxDio5InputData    : in  std_logic;
+    aLvAuxDio5OutputEnable : out std_logic;
+    oClkaLvAuxDio5         : in  std_logic;
+    aoResetaLvAuxDio5      : in  std_logic;
+    oDoneaLvAuxDio5        : in  std_logic;
+    oDirectionaLvAuxDio5   : out std_logic;
+    oRequestaLvAuxDio5     : out std_logic;
+    aLvAuxDio6OutputData   : out std_logic;
+    aLvAuxDio6InputData    : in  std_logic;
+    aLvAuxDio6OutputEnable : out std_logic;
+    oClkaLvAuxDio6         : in  std_logic;
+    aoResetaLvAuxDio6      : in  std_logic;
+    oDoneaLvAuxDio6        : in  std_logic;
+    oDirectionaLvAuxDio6   : out std_logic;
+    oRequestaLvAuxDio6     : out std_logic;
+    aLvAuxDio7OutputData   : out std_logic;
+    aLvAuxDio7InputData    : in  std_logic;
+    aLvAuxDio7OutputEnable : out std_logic;
+    oClkaLvAuxDio7         : in  std_logic;
+    aoResetaLvAuxDio7      : in  std_logic;
+    oDoneaLvAuxDio7        : in  std_logic;
+    oDirectionaLvAuxDio7   : out std_logic;
+    oRequestaLvAuxDio7     : out std_logic;
+
+    -- MGT CLIP Socket ports (Nanopitch I/O)
+    DioMgtRefClk_p              : in  std_logic;
+    DioMgtRefClk_n              : in  std_logic;
+    DioMgtRefClkFromFam         : in  std_logic;
+    DioMgtRX_n                  : in  std_logic_vector(3 downto 0);
+    DioMgtRX_p                  : in  std_logic_vector(3 downto 0);
+    DioMgtTX_n                  : out std_logic_vector(3 downto 0);
+    DioMgtTX_p                  : out std_logic_vector(3 downto 0);
+    SocketClk80                 : in  std_logic;
+    sDioMgtRefClkFromFamPresent : in  std_logic
   );
 end entity UserHdl;
 
@@ -139,7 +207,8 @@ begin
     generic map(
       kSignature               => x"7915BEEF",
       kVersion                 => x"00000001",
-      kOldestCompatibleVersion => x"00000001"
+      kOldestCompatibleVersion => x"00000001",
+      kMaxHdlRegOffset         => kMaxHdlRegOffset
     )
     port map(
       BusClk      => BusClk,
@@ -160,7 +229,8 @@ begin
                         kLoopbackInBIdx  => false,
                         kLoopbackOutAIdx => true,
                         kLoopbackOutBIdx => true),
-      kUseFpgaAck   => (0 to kNumDemoRegs-1 => false)
+      kUseFpgaAck   => (0 to kNumDemoRegs-1 => false),
+      kMaxHdlRegOffset => kMaxHdlRegOffset
     )
     port map(
       BusClk         => BusClk,
@@ -218,7 +288,8 @@ begin
                         kWriterDataIdx      => false,
                         kReaderStrobeIdx    => false,
                         kReaderDataIdx      => true),
-      kUseFpgaAck   => (0 to kNumFifoRegs-1 => false)
+      kUseFpgaAck   => (0 to kNumFifoRegs-1 => false),
+      kMaxHdlRegOffset => kMaxHdlRegOffset
     )
     port map(
       BusClk         => BusClk,
@@ -433,28 +504,53 @@ begin
   dReaderInputStreamInterfaceFromFifo  <= kInputStreamInterfaceFromFifoZero;
 
   ---------------------------------------------------------------------------
-  -- Board IO (AuxDio) -- user-extendable placeholder
+  -- Board IO -- user-extendable placeholder
   ---------------------------------------------------------------------------
-  -- Because the LV Window has board IO disabled on this custom target, the
-  -- carrier's kNumAuxIoData auxiliary DIO lines are routed here instead of to
-  -- the LabVIEW diagram. In MacallanTop these signals connect to:
-  --   * MacallanIoBuffers : aLvAuxDio{Output,Input}Data, aLvAuxDioOutputEnable
-  --   * Fixed-logic DIO   : bd{Request,Direction}aLvAuxDio (out), bdDoneaLvAuxDio (in)
+  -- Because the LV Window has board IO disabled on this custom target, every
+  -- board IO interface that would normally connect to the LabVIEW diagram is
+  -- routed here instead. All outputs are driven to their inert defaults:
+  --   * aLvAuxDioNOutputEnable = 0 keeps each line tristated (high-Z), the safe
+  --     default -- UserHdl does not drive the physical pins.
+  --   * aLvAuxDioNOutputData / oDirectionaLvAuxDioN / oRequestaLvAuxDioN match
+  --     the LV Window's reset defaults.
+  --   * DioMgtTX_n / DioMgtTX_p are held at 0.
   --
-  -- All outputs are driven to 0 by default:
-  --   * aLvAuxDioOutputEnable = 0 keeps every line tristated (high-Z), which is
-  --     the safe default -- UserHdl does not drive the physical pins.
-  --   * aLvAuxDioOutputData / bdDirectionaLvAuxDio / bdRequestaLvAuxDio = 0 are
-  --     inert defaults.
-  --
-  -- To use the DIO lines, replace these constant assignments with your own
-  -- custom logic: drive aLvAuxDioOutputData/OutputEnable to control the pins,
-  -- read aLvAuxDioInputData for the pin state, and use the bd* request/
-  -- direction/done handshake as needed. aLvAuxDioInputData and bdDoneaLvAuxDio
-  -- are provided as inputs for that logic.
-  aLvAuxDioOutputData   <= (others => '0');
-  aLvAuxDioOutputEnable <= (others => '0');
-  bdDirectionaLvAuxDio  <= (others => '0');
-  bdRequestaLvAuxDio    <= (others => '0');
+  -- To use the board IO, replace these constant assignments with your own
+  -- custom logic. The matching input ports (aLvAuxDioNInputData, oDoneaLvAuxDioN,
+  -- the MGT receive/clock ports) are provided for that logic.
+  aLvAuxDio0OutputData   <= '0';
+  aLvAuxDio0OutputEnable <= '0';
+  oDirectionaLvAuxDio0   <= '0';
+  oRequestaLvAuxDio0     <= '1';
+  aLvAuxDio1OutputData   <= '0';
+  aLvAuxDio1OutputEnable <= '0';
+  oDirectionaLvAuxDio1   <= '0';
+  oRequestaLvAuxDio1     <= '1';
+  aLvAuxDio2OutputData   <= '0';
+  aLvAuxDio2OutputEnable <= '0';
+  oDirectionaLvAuxDio2   <= '0';
+  oRequestaLvAuxDio2     <= '1';
+  aLvAuxDio3OutputData   <= '0';
+  aLvAuxDio3OutputEnable <= '0';
+  oDirectionaLvAuxDio3   <= '0';
+  oRequestaLvAuxDio3     <= '1';
+  aLvAuxDio4OutputData   <= '0';
+  aLvAuxDio4OutputEnable <= '0';
+  oDirectionaLvAuxDio4   <= '0';
+  oRequestaLvAuxDio4     <= '1';
+  aLvAuxDio5OutputData   <= '0';
+  aLvAuxDio5OutputEnable <= '0';
+  oDirectionaLvAuxDio5   <= '0';
+  oRequestaLvAuxDio5     <= '1';
+  aLvAuxDio6OutputData   <= '0';
+  aLvAuxDio6OutputEnable <= '0';
+  oDirectionaLvAuxDio6   <= '0';
+  oRequestaLvAuxDio6     <= '1';
+  aLvAuxDio7OutputData   <= '0';
+  aLvAuxDio7OutputEnable <= '0';
+  oDirectionaLvAuxDio7   <= '0';
+  oRequestaLvAuxDio7     <= '1';
+  DioMgtTX_n <= (others => '0');
+  DioMgtTX_p <= (others => '0');
 
 end rtl;

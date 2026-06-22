@@ -24,9 +24,17 @@
 ../../deps/hdl-shared/host_interfaces/fifo/HDL/NiSharedFifoReader.vhd
 ../../deps/hdl-shared/host_interfaces/fifo/HDL/PkgNiSharedFifo.vhd
 
+# Generated HDL settings package (single source of truth for kMaxHdlRegOffset /
+# kNumHdlFifos). Produced from nihdlsettings.py before sources are gathered.
+objects/GeneratedHDL/PkgNiHdlSettings.vhd
+
 # User HDL block under test
 rtl-lvfpga/PkgUserHdl.vhd
 rtl-lvfpga/UserHdl.vhd
 
-# Testbench
+# Single-sourced test stimulus (shared package) and the board-agnostic test
+# core, plus this target's tb wrapper that instantiates UserHdl directly and
+# ties off its board IO.
+../common/rtl-lvfpga/testbenches/PkgUserHdlTest.vhd
+../common/rtl-lvfpga/testbenches/UserHdlTestCore.vhd
 rtl-lvfpga/testbenches/tb_UserHdl.vhd

@@ -1,0 +1,38 @@
+------------------------------------------------------------------------------------------
+--
+-- File: PkgNiHdlSettings.vhd
+--
+------------------------------------------------------------------------------------------
+-- (c) 2026 Copyright National Instruments Corporation
+--
+-- SPDX-License-Identifier: MIT
+------------------------------------------------------------------------------------------
+--
+-- Purpose:
+--   GENERATED FILE - DO NOT EDIT.
+--
+--   This package is generated from nihdlsettings.py (the single source of truth
+--   shared with the LabVIEW FPGA target plugin) by the nihdl tooling. It exposes
+--   those settings to the HDL so the UserHdl block can self-check them during
+--   elaboration (synthesis and simulation):
+--
+--     kMaxHdlRegOffset : maximum byte offset available for HDL registers
+--                        (from set_max_hdl_reg_offset)
+--     kNumHdlFifos     : number of user HDL DMA FIFOs reserved for UserHdl
+--                        (from set_num_hdl_fifos)
+--
+--   This template is shared by all targets; the per-target values come from
+--   each target's nihdlsettings.py.
+--
+------------------------------------------------------------------------------------------
+
+library ieee;
+  use ieee.std_logic_1164.all;
+  use ieee.numeric_std.all;
+
+package PkgNiHdlSettings is
+
+  constant kMaxHdlRegOffset : natural := ${max_hdl_reg_offset};
+  constant kNumHdlFifos     : natural := ${num_hdl_fifos};
+
+end PkgNiHdlSettings;

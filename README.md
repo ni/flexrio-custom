@@ -16,7 +16,7 @@ Pre-release custom FlexRIO code for use with LabVIEW FPGA HDL Tools
     * Use LabVIEW FPGA to make a top-level VI that is exported as a netlist and brought into your custom HDL to build in Vivado
 * You can communicate between the NI-RIO driver on a host PC and custom HDL directly using
     * Registers
-    * DMA FIFOs (future - not yet supported)
+    * DMA FIFOs
 * All of this is pre-release and not supported by NI
     * Use the [Issues](https://github.com/ni/flexrio-custom/issues) and [Discussions](https://github.com/ni/flexrio-custom/discussions) sections in this repository to collaborate with the developers and other lead users
 <br><br><br>
@@ -51,6 +51,25 @@ Pre-release custom FlexRIO code for use with LabVIEW FPGA HDL Tools
 
 For the High-Speed Serial and Multifunction IO Modules, start with the Custom folder for the baseboard module.
 
+# Customizing IO Module Devices
+
+Modules with integrated IO use an IO Module ID (also called Terminal Block ID or TbId in the VHDL) to ensure that the LabVIEW FPGA CLIP node is compatible with the device.  When customizing the device in VHDL, use this IO Module ID to ensure that the integrated IO is enabled.
+
+## IO Module IDs
+
+| Device | IO Module ID |
+| --- | --- |
+| PXIe-7903 | 0x10937AEC |
+| PXIe-7903-DDR1280 | 0x10937AEC |
+| PXIe-7911 | none |
+| PXIe-7912 | none |
+| PXIe-7915 | none |
+| PXIe-6593 KU35 | 0x109379F9 |
+| PXIe-6593 KU40 | 0x109379F9 |
+| PXIe-6593 KU60 | 0x109379F9 |
+| PXIe-6594 | 0x109379FC |
+| PXIe-7890 | 0x10937AA7 |
+| PXIe-7891 | 0x10937AA8 |
 
 # System Setup
 Follow these steps to setup your machine to use the LabVIEW FPGA HDL Tools with this flexrio-custom GitHub repository
@@ -60,7 +79,7 @@ Use NI Package Manager to install the following software:
 * LabVIEW 2023 (or newer)
 * LabVIEW FPGA 2023 (or newer)
 * LabVIEW FPGA Compilation tool for Vivado 2021.1
-* FlexRIO 2025 (or newer)
+* FlexRIO 2026 Q3 (or newer)
 
 Install the following 3rd party software:
 * Install latest version Git  – https://git-scm.com/downloads
@@ -105,116 +124,37 @@ This will download the dependencies specified in the dependencies.toml file foun
 
 # Getting Started
 
-## Exercise 1 - Read the LabVIEW FPGA HDL Tools README
-https://github.com/ni/labview-fpga-hdl-tools/blob/main/README.md
+Step-by-step exercises for building bitfiles, customizing a target, and migrating a socketed CLIP have moved to [docs/GettingStarted.md](docs/GettingStarted.md).
 
-## Exercise 2 - Build a bitfile for the custom PXIe-7903 project
-### 1) Go to the custom target folder
-> cd C:\dev\github\flexrio-custom\targets\pxie-7903custom
-
-### 2) Create a Vivado Project
-> nihdl create-project
-
-### 3) Launch Vivado
-> nihdl launch-vivado
-
-### 4) Build a bitfile
-In Vivado, click "Generate Bitstream" in left-hand tools menu
-
-## Exercise 3 - Customize your own PXIe-7903
-### 1) Make a copy of the custom target folder
-> C:\dev\github\flexrio-custom\targets\pxie-7903custom-mycopy
-
-### 2) Edit the projectsettings.ini file in pxie-7903-mycopy
-Set `LVTargetName` to `PXIe-7903custom-mycopy`
-
-Run `nihdl get-guid` to generate a new GUID
-
-Copy the new GUID into the `LVTargetGUID` setting
-
-### 3) Edit the top-level FPGA file
-Open rtl-lvfpga/SasquatchTopTemplate
-
-Find `HdlSharedCommonHostRegs_inst` and set `kSigniature` to `x"7903FEED"`
-
-### 4) Create a Vivado project
-> nihdl create-project
-
-### 5) Launch Vivado and generate a bitfile
-> nihdl launch-vivado
-
-In Vivado, click "Generate Bitstream" in left-hand tools menu
-
-### 7) Generate and install the custom LabVIEW FPGA Target
-> nihdl gen-target
-
-> nihdl install-target
-
-### 8) Test the target in LabVIEW 
-Use the NI-RIO API to download and run the bitfile
-
-Make sure to use the <b>Open Dynamic Bitfile Reference</b> (and not the normal Open FPGA VI Reference)
-
-Use the read/write register subVI's from the hdl-shared repo to access the FPGA's registers
-> C:\dev\github\flexrio-custom\deps\hdl-shared\host_interfaces\register\LabVIEW
-
-Here is an example VI that demonstrates this:
-> C:\dev\github\flexrio-custom\targets\pxie-7903custom\docs\Examples\Custom_FPGA_Target_Host_Example.vi
-
-Use the following register map for the common registers:
-
-| Register | Offset | Access |
-| --- | ---: | --- |
-| kSignatureOffset | 0 | read-only |
-| kVersionOffset | 4 | read-only |
-| kOldestCompatibleVersionOffset` | 8 | read-only |
-| kScratchOffset | 12 | read-write |
-
-## Exercise 4 - Migrate a Socketed CLIP to use a custom LabVIEW FPGA target
-The PXIe-7903Aurora example has the socketed CLIP node instantiated in the FPGA top-level entity to make a custom LabVIEW FPGA target with it.  Read the CLIP Migration Hands-On Guide that walks you through how this was done.
-> C:\dev\github\flexrio-custom\targets\pxie-7903aurora\docs\CLIP Migration Hands-On Guide.pdf
-
-
-# Customizing IO Module Devices
-
-Modules with integrated IO use an IO Module ID (also called Terminal Block ID or TbId in the VHDL) to ensure that the LabVIEW FPGA CLIP node is compatible with the device.  When customizing the device in VHDL, use this IO Module ID to ensure that the integrated IO is enabled.
-
-## IO Module IDs
-
-| Device | IO Module ID |
-| --- | --- |
-| PXIe-7903 | 0x10937AEC |
-| PXIe-7903-DDR1280 | 0x10937AEC |
-| PXIe-7911 | none |
-| PXIe-7912 | none |
-| PXIe-7915 | none |
-| PXIe-6593 KU35 | 0x109379F9 |
-| PXIe-6593 KU40 | 0x109379F9 |
-| PXIe-6593 KU60 | 0x109379F9 |
-| PXIe-6594 | 0x109379FC |
-| PXIe-7890 | 0x10937AA7 |
-| PXIe-7891 | 0x10937AA8 |
 
 # Repo Folder Hierarchy
 
 * Root repo folder
     * `.github` - CI workflows and repo automation
     * `deps` - checked-out GitHub dependencies installed by `nihdl install-deps`
-    * `docs` - documentation (`docs/public`)
-    * `targets` - FPGA target projects
+    * `docs` - repository documentation
+    * `targets` - FPGA target projects (one folder per supported device)
+        * `common` - shared files used across the target projects
         * `pxie-7903custom` - example custom PXIe-7903 device (consider this to be the "Hello World" example)
-            * `projectsettings.ini` - tool configuration
+            * `nihdlsettings.py` - tool configuration (Python-based target settings)
             * `nisetup.bat` - runs the repo-root setup script to activate the Python environment
             * `lvFpgaTarget` - LabVIEW FPGA target plugin source files
-            * `lvWindowNetlist` - extracted/generated LabVIEW window netlist content
+            * `blankLvWindowNetlist` - placeholder LabVIEW window netlist content
             * `rtl-lvfpga` - target HDL sources
             * `xdc` - timing constraints
-            * `VivadoProject` - Vivado project files
-            * `objects` - generated outputs from HDL tools
+            * `VivadoProject` - Vivado project files (ignored in .gitignore)
+            * `ModelSimProject` - ModelSim simulation project files (ignored in .gitignore)
+            * `objects` - generated outputs from HDL tools (ignored in .gitignore)
+            * `docs` - target-specific documentation and examples
             * `vivadoprojectsources.txt` - source list used for Vivado project generation
+            * `vivadoprojectexclude.txt` - files excluded from the generated Vivado project
+            * `modelsimprojectsources.txt` - source list used for ModelSim project generation
         * `pxie-7903aurora` - example of migrating the Aurora CLIP to make a custom Aurora PXIe-7903 device
+        * `pxie-7xxxCustom` - additional custom device examples
+    * `tests` / `test-targets` - automated tests and test targets
     * `dependencies.toml` - dependency version specification for `nihdl install-deps` and Python tool versions
     * `nisetup.bat` - sets up a Python virtual environment and installs dependencies
     * `nisetup.py` - Python script that creates the venv and installs packages from `dependencies.toml`
+    * `CONTRIBUTING.md`, `SECURITY.md`, `LICENSE` - project meta files
 
 

@@ -37,10 +37,16 @@ package PkgUserHdl is
   -- not have exactly kNumHdlFifos elements, this package will fail to analyze
   -- (range/aggregate mismatch).
 
-  -- FifoWidth             : 1..64 (host types: Boolean, U/I[8,16,32,64], FXP, SGL-64)
+  -- DataType              : host data type for the FIFO. The element width and
+  --                         signedness are derived automatically. Valid values:
+  --                           kBoolean                 (Boolean, maps to U8)
+  --                           kUnsigned8  / kInteger8  (U8  / I8)
+  --                           kUnsigned16 / kInteger16 (U16 / I16)
+  --                           kUnsigned32 / kInteger32 (U32 / I32)
+  --                           kUnsigned64 / kInteger64 (U64 / I64)
+  --                           kSingle                  (SGL, single-precision float)
   -- ElementsPerClockCycle : 1, 2, 4, 8, 16, 32, or 64
   -- Mode                  : NiFpgaHostToTarget or NiFpgaTargetToHost
-  -- SignedData            : true if host data type is signed
   --
   -- FifoDepth (TargetToHost / PeerToPeer Writer):
   --   2^N - 1, minimum 63, maximum 1048575 (2^20 -1)
@@ -56,8 +62,8 @@ package PkgUserHdl is
   -- for 64-bit data types, the max fifo width is 262143 (2^18 - 1)
 
   constant kUserHdlDmaFifoConf : UserDmaFifoConfArray_t(0 to kNumHdlFifos - 1) := (
-    0 => (FifoDepth => 1029, FifoWidth => 32, ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget, SignedData => true),
-    1 => (FifoDepth => 1023, FifoWidth => 32, ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost, SignedData => true)
+    0 => (FifoDepth => 1029, DataType => kInteger32, ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget),
+    1 => (FifoDepth => 1023, DataType => kInteger32, ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost)
   );
 
   ---------------------------------------------------------------------------

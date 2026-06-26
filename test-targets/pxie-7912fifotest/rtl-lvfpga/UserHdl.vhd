@@ -233,9 +233,9 @@ begin
       generic map(
         kReaderFifoDepth       => kUserHdlDmaFifoConf(2*p).FifoDepth,
         kWriterFifoDepth       => kUserHdlDmaFifoConf(2*p+1).FifoDepth,
-        kSampleWidth           => kUserHdlDmaFifoConf(2*p).FifoWidth,
+        kSampleWidth           => FifoDataWidth(kUserHdlDmaFifoConf(2*p).DataType),
         kElementsPerClockCycle => kUserHdlDmaFifoConf(2*p).ElementsPerClockCycle,
-        kSignedData            => kUserHdlDmaFifoConf(2*p+1).SignedData,
+        kSignedData            => FifoDataIsSigned(kUserHdlDmaFifoConf(2*p+1).DataType),
         kFxpType               => false
       )
       port map(

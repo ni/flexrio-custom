@@ -35,7 +35,7 @@ package PkgUserHdl is
   -- Each pair uses two DMA channels (config indices), laid out as:
   --   config(2*p)   = Reader (Host-to-Target) for pair p
   --   config(2*p+1) = Writer (Target-to-Host) for pair p
-  -- Within a pair the Reader and Writer must share FifoWidth and
+  -- Within a pair the Reader and Writer must share DataType and
   -- ElementsPerClockCycle so popped Reader data can be pushed into the Writer.
   --
   -- kNumHdlFifos is the single source of truth from nihdlsettings.py
@@ -46,10 +46,16 @@ package PkgUserHdl is
   -- elements (range/aggregate mismatch otherwise fails analysis).
   constant kNumLoopbackPairs      : natural := kNumHdlFifos / 2;
 
-  -- FifoWidth             : 1..64 (host types: Boolean, U/I[8,16,32,64], FXP, SGL-64)
+  -- DataType              : host data type for the FIFO. The element width and
+  --                         signedness are derived automatically. Valid values:
+  --                           kBoolean                 (Boolean, maps to U8)
+  --                           kUnsigned8  / kInteger8  (U8  / I8)
+  --                           kUnsigned16 / kInteger16 (U16 / I16)
+  --                           kUnsigned32 / kInteger32 (U32 / I32)
+  --                           kUnsigned64 / kInteger64 (U64 / I64)
+  --                           kSingle                  (SGL, single-precision float)
   -- ElementsPerClockCycle : 1, 2, 4, 8, 16, 32, or 64
   -- Mode                  : NiFpgaHostToTarget or NiFpgaTargetToHost
-  -- SignedData            : true if host data type is signed
   --
   -- FifoDepth (TargetToHost / PeerToPeer Writer):
   --   2^N - 1, minimum 63, maximum 1048575 (2^20 -1)
@@ -68,26 +74,27 @@ package PkgUserHdl is
   -- Writer depth = 1024 - 1 = 1023 (ElementsPerClockCycle = 1).
 
   constant kUserHdlDmaFifoConf : UserDmaFifoConfArray_t(0 to kNumHdlFifos - 1) := (
-    -- Pair 0: 32-bit signed
-    0  => (FifoDepth => 1029, FifoWidth => 32, ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget, SignedData => true),
-    1  => (FifoDepth => 1023, FifoWidth => 32, ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost, SignedData => true),
-    -- Pair 1: 16-bit unsigned
-    2  => (FifoDepth => 1029, FifoWidth => 16, ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget, SignedData => false),
-    3  => (FifoDepth => 1023, FifoWidth => 16, ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost, SignedData => false),
-    -- Pair 2: 8-bit signed
-    4  => (FifoDepth => 1029, FifoWidth => 8,  ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget, SignedData => true),
-    5  => (FifoDepth => 1023, FifoWidth => 8,  ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost, SignedData => true),
-    -- Pair 3: 8-bit unsigned (maps to BOOLEAN in driver test)
-    6  => (FifoDepth => 1029, FifoWidth => 8,  ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget, SignedData => false),
-    7  => (FifoDepth => 1023, FifoWidth => 8,  ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost, SignedData => false),
-    -- Pair 4: 64-bit unsigned
-    8  => (FifoDepth => 1029, FifoWidth => 64, ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget, SignedData => false),
-    9  => (FifoDepth => 1023, FifoWidth => 64, ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost, SignedData => false),
-    -- Pair 5: 64-bit signed (maps to SGL in driver test)
-    10 => (FifoDepth => 1029, FifoWidth => 64, ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget, SignedData => true),
-    11 => (FifoDepth => 1023, FifoWidth => 64, ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost, SignedData => true),
-    12 => (FifoDepth => 1029, FifoWidth => 64, ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget, SignedData => true),
-    13 => (FifoDepth => 1023, FifoWidth => 64, ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost, SignedData => true)
+    -- Pair 0: I32 (32-bit signed)
+    0  => (FifoDepth => 1029, DataType => kInteger32, ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget),
+    1  => (FifoDepth => 1023, DataType => kInteger32, ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost),
+    -- Pair 1: U16 (16-bit unsigned)
+    2  => (FifoDepth => 1029, DataType => kUnsigned16, ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget),
+    3  => (FifoDepth => 1023, DataType => kUnsigned16, ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost),
+    -- Pair 2: I8 (8-bit signed)
+    4  => (FifoDepth => 1029, DataType => kInteger8,   ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget),
+    5  => (FifoDepth => 1023, DataType => kInteger8,   ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost),
+    -- Pair 3: Boolean (maps to U8)
+    6  => (FifoDepth => 1029, DataType => kBoolean,    ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget),
+    7  => (FifoDepth => 1023, DataType => kBoolean,    ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost),
+    -- Pair 4: U64 (64-bit unsigned)
+    8  => (FifoDepth => 1029, DataType => kUnsigned64, ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget),
+    9  => (FifoDepth => 1023, DataType => kUnsigned64, ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost),
+    -- Pair 5: SGL (single-precision float, 64-bit element)
+    10 => (FifoDepth => 1029, DataType => kSingle,     ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget),
+    11 => (FifoDepth => 1023, DataType => kSingle,     ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost),
+    -- Pair 6: I64 (64-bit signed)
+    12 => (FifoDepth => 1029, DataType => kInteger64,  ElementsPerClockCycle => 1, Mode => NiFpgaHostToTarget),
+    13 => (FifoDepth => 1023, DataType => kInteger64,  ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost)
   );
 
   ---------------------------------------------------------------------------

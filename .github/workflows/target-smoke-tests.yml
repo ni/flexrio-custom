@@ -11,6 +11,7 @@ on:
   pull_request:
     paths:
       - "targets/**"
+      - "test-targets/**"
       - "dependencies.toml"
       - ".github/workflows/target-smoke-tests.yml"
   push:
@@ -18,6 +19,7 @@ on:
       - main
     paths:
       - "targets/**"
+      - "test-targets/**"
       - "dependencies.toml"
       - ".github/workflows/target-smoke-tests.yml"
 
@@ -46,13 +48,13 @@ jobs:
         shell: pwsh
         run: |
           Set-Location $env:GITHUB_WORKSPACE
-          $targets = Get-ChildItem targets -Directory |
+          $targets = Get-ChildItem @("targets", "test-targets") -Directory |
             Where-Object { Test-Path (Join-Path $_.FullName "nihdlsettings.py") } |
-            Sort-Object Name |
-            Select-Object -ExpandProperty Name
+            ForEach-Object { (Resolve-Path -Relative $_.FullName) -replace '^\.[\\/]', '' -replace '\\', '/' } |
+            Sort-Object
 
           if (-not $targets) {
-            throw "No targets with nihdlsettings.py were found under targets/."
+            throw "No targets with nihdlsettings.py were found under targets/ or test-targets/."
           }
 
           "targets=$($targets -join ',')" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
@@ -77,8 +79,8 @@ jobs:
             Write-Host "Using extra install-deps args: $($extraArgs -join ' ')"
           }
 
-          Write-Host "Running install-deps from targets/$firstTarget"
-          Push-Location (Join-Path "targets" $firstTarget)
+          Write-Host "Running install-deps from $firstTarget"
+          Push-Location $firstTarget
           try {
             & nihdl install-deps --config=$configPath @extraArgs
           }
@@ -95,7 +97,7 @@ jobs:
 
           foreach ($target in $targets) {
             Write-Host "::group::$target"
-            Push-Location (Join-Path "targets" $target)
+            Push-Location $target
             try {
               nihdl gen-target --config=$configPath
               nihdl gen-vivado --config=$configPath

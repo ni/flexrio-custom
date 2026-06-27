@@ -305,6 +305,7 @@ def main() -> int:
             nihdl_cmd=args.nihdl_cmd,
             use_objects_lv_window=use_objects_lv_window,
             write_shipping_netlist=write_shipping_netlist,
+            use_xilinx_env=args.xilinx_from_env,
         )
         print_test_summary(test, results)
         overall[test_key] = all(result.passed for result in results)

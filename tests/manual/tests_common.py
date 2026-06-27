@@ -447,6 +447,7 @@ def run_test(
     nihdl_cmd: str = "nihdl",
     use_objects_lv_window: bool = False,
     write_shipping_netlist: bool = False,
+    use_xilinx_env: bool = False,
 ) -> list[TargetResult]:
     """Run one nihdl-command test in every target directory.
 
@@ -464,6 +465,8 @@ def run_test(
         set_overrides += ["--set", "lv_window_input=objects"]
     if write_shipping_netlist:
         set_overrides += ["--set", "lv_window_output=shipping"]
+    if use_xilinx_env:
+        set_overrides += ["--set", "use_xilinx_env=1"]
 
     results: list[TargetResult] = []
     for target in targets:
@@ -586,6 +589,15 @@ def add_common_arguments(parser: argparse.ArgumentParser) -> None:
         "--nihdl-cmd",
         default="nihdl",
         help="Command name or full path for nihdl executable (default: nihdl)",
+    )
+    parser.add_argument(
+        "--xilinx-from-env",
+        action="store_true",
+        help=(
+            "Override the Vivado tools folder from the XILINX environment "
+            "variable (set_vivado_tools_folder). Intended for CI/pipeline runs "
+            "where XILINX selects the Vivado install. No-op if XILINX is unset."
+        ),
     )
     parser.add_argument(
         "--target",

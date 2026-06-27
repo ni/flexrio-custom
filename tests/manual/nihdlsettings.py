@@ -130,9 +130,20 @@ def pre_all(context):
         netlist (default: the target's own input folder).
       * ``lv_window_output=shipping``  gen-window writes the checked-in shipping
         netlist at the target root (default: the scratch objects/ folder).
+      * ``use_xilinx_env=1``           override the Vivado tools folder from the
+        XILINX environment variable (for CI/pipeline runs). No-op if XILINX is
+        unset. Forwarded by run_tests.py's --xilinx-from-env flag.
     """
     apply_test_overrides(
         context,
         use_objects_lv_window=context.settings.get("lv_window_input") == "objects",
         write_shipping_netlist=context.settings.get("lv_window_output") == "shipping",
     )
+
+    # CI/pipeline: select the Vivado install via the XILINX environment variable
+    # when explicitly enabled. Applied after the target settings load so it
+    # overrides any Vivado tools folder the target configured.
+    if context.settings.get("use_xilinx_env"):
+        xilinx_path = os.environ.get("XILINX")
+        if xilinx_path:
+            context.config.set_vivado_tools_folder(xilinx_path)

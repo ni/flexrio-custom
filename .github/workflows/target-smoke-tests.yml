@@ -43,6 +43,13 @@ jobs:
           Set-Location $env:GITHUB_WORKSPACE
           python nisetup.py --no-venv
 
+      - name: Show nihdl version
+        shell: pwsh
+        run: |
+          Set-Location $env:GITHUB_WORKSPACE
+          Write-Host "labview-fpga-hdl-tools version in use:"
+          nihdl version
+
       - name: Discover target folders
         id: discover
         shell: pwsh

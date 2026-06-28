@@ -12,5 +12,5 @@ github_dependencies = [
 ]
 
 python_dependencies = [
-    "labview-fpga-hdl-tools~=1.0.0",
+    "labview-fpga-hdl-tools~=1.1.0",
 ]

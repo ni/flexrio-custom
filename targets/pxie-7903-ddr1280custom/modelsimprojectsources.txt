@@ -22,12 +22,23 @@
 ../../deps/hdl-shared/host_interfaces/register/HDL/NiSharedCommonHostRegs.vhd
 ../../deps/hdl-shared/host_interfaces/register/HDL/NiSharedHostRegisterArray.vhd
 
+# Register protocol checker (sim-only). NiSharedHostRegister instantiates this
+# under "synthesis translate_off"; vcom compiles that region, so the checker
+# entity must be present for simulation.
+../../deps/hdl-shared/host_interfaces/register/HDL/verification/RegPortProtocolChecker.vhd
+
 # Shared FIFO endpoints
 ../../deps/hdl-shared/host_interfaces/fifo/HDL/NiSharedFifoWriterCore.vhd
 ../../deps/hdl-shared/host_interfaces/fifo/HDL/NiSharedFifoWriter.vhd
 ../../deps/hdl-shared/host_interfaces/fifo/HDL/NiSharedFifoReaderCore.vhd
 ../../deps/hdl-shared/host_interfaces/fifo/HDL/NiSharedFifoReader.vhd
 ../../deps/hdl-shared/host_interfaces/fifo/HDL/PkgNiSharedFifo.vhd
+
+# Shared FIFO protocol checkers (sim-only). NiSharedFifoReader/Writer instantiate
+# these under "synthesis translate_off"; vcom compiles that region, so the checker
+# entities must be present for simulation.
+../../deps/hdl-shared/host_interfaces/fifo/HDL/verification/NiSharedFifoWriterChecker.vhd
+../../deps/hdl-shared/host_interfaces/fifo/HDL/verification/NiSharedFifoReaderChecker.vhd
 
 # Generated HDL settings package (single source of truth for kMaxHdlRegOffset /
 # kNumHdlFifos). Produced from nihdlsettings.py before sources are gathered.

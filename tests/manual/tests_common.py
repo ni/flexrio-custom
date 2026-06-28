@@ -482,6 +482,7 @@ def run_test(
         # paths in each target's own nihdlsettings.py.
         command = [
             nihdl_cmd,
+            "--verbose",
             *test.subcommand,
             f"--config={WRAPPER_SETTINGS}",
             *set_overrides,

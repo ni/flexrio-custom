@@ -89,7 +89,7 @@ jobs:
           Write-Host "Running install-deps from $firstTarget"
           Push-Location $firstTarget
           try {
-            & nihdl install-deps --config=$configPath @extraArgs
+            & nihdl --verbose install-deps --config=$configPath @extraArgs
           }
           finally {
             Pop-Location
@@ -106,8 +106,8 @@ jobs:
             Write-Host "::group::$target"
             Push-Location $target
             try {
-              nihdl gen-target --config=$configPath
-              nihdl gen-vivado --config=$configPath
+              nihdl --verbose gen-target --config=$configPath
+              nihdl --verbose gen-vivado --config=$configPath
             }
             finally {
               Pop-Location

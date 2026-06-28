@@ -336,9 +336,9 @@ begin
   WriterFifo_inst : entity work.NiSharedFifoWriter
     generic map(
       kFifoDepth            => kUserHdlDmaFifoConf(1).FifoDepth,
-      kSampleWidth          => kUserHdlDmaFifoConf(1).FifoWidth,
+      kSampleWidth          => FifoDataWidth(kUserHdlDmaFifoConf(1).DataType),
       kNumOfSamplesPerWrite => kUserHdlDmaFifoConf(1).ElementsPerClockCycle,
-      kSignExtend           => kUserHdlDmaFifoConf(1).SignedData,
+      kSignExtend           => FifoDataIsSigned(kUserHdlDmaFifoConf(1).DataType),
       kFxpType              => false,
       kPeerToPeer           => false,
       kDisableOnFifoTimeout => false
@@ -370,7 +370,7 @@ begin
   ReaderFifo_inst : entity work.NiSharedFifoReader
     generic map(
       kFifoDepth            => kUserHdlDmaFifoConf(0).FifoDepth,
-      kSampleWidth          => kUserHdlDmaFifoConf(0).FifoWidth,
+      kSampleWidth          => FifoDataWidth(kUserHdlDmaFifoConf(0).DataType),
       kNumOfSamplesPerRead  => kUserHdlDmaFifoConf(0).ElementsPerClockCycle,
       kFxpType              => false,
       kPeerToPeer           => false,

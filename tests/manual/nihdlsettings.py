@@ -130,9 +130,35 @@ def pre_all(context):
         netlist (default: the target's own input folder).
       * ``lv_window_output=shipping``  gen-window writes the checked-in shipping
         netlist at the target root (default: the scratch objects/ folder).
+      * ``use_xilinx_env=1``           override the Vivado tools folder from the
+        XILINX environment variable (for CI/pipeline runs). No-op if XILINX is
+        unset. Forwarded by run_tests.py's --xilinx-from-env flag.
+      * ``use_modelsim_env=1``         override the ModelSim tools folder from
+        the MODELSIM environment variable (for CI/pipeline runs). MODELSIM
+        points at the modelsim.ini file, so its parent directory is used as the
+        tools folder. No-op if MODELSIM is unset. Forwarded by run_tests.py's
+        --modelsim-from-env flag.
     """
     apply_test_overrides(
         context,
         use_objects_lv_window=context.settings.get("lv_window_input") == "objects",
         write_shipping_netlist=context.settings.get("lv_window_output") == "shipping",
     )
+
+    # CI/pipeline: select the Vivado install via the XILINX environment variable
+    # when explicitly enabled. Applied after the target settings load so it
+    # overrides any Vivado tools folder the target configured.
+    if context.settings.get("use_xilinx_env"):
+        xilinx_path = os.environ.get("XILINX")
+        if xilinx_path:
+            context.config.set_vivado_tools_folder(xilinx_path)
+
+    # CI/pipeline: select the ModelSim install via the MODELSIM environment
+    # variable when explicitly enabled. MODELSIM points at the modelsim.ini
+    # file, so use its parent directory as the tools folder. Applied after the
+    # target settings load so it overrides any ModelSim folder the target
+    # configured.
+    if context.settings.get("use_modelsim_env"):
+        modelsim_ini = os.environ.get("MODELSIM")
+        if modelsim_ini:
+            context.config.set_modelsim_tools_folder(os.path.dirname(modelsim_ini))

@@ -306,6 +306,7 @@ def main() -> int:
             use_objects_lv_window=use_objects_lv_window,
             write_shipping_netlist=write_shipping_netlist,
             use_xilinx_env=args.xilinx_from_env,
+            use_modelsim_env=args.modelsim_from_env,
         )
         print_test_summary(test, results)
         overall[test_key] = all(result.passed for result in results)

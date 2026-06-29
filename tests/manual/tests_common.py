@@ -100,6 +100,7 @@ class NihdlTest:
     description: str = ""
     log_verdict_key: str = ""  # key into _LOG_VERDICTS, or "" to skip
     check_timing: bool = False
+    requires_testbench: bool = False  # only run on targets with a testbench
 
 
 # Registry of all available nihdl-command tests. The test shell (run_tests.py)
@@ -150,12 +151,14 @@ NIHDL_TESTS: dict[str, NihdlTest] = {
         label="gen-sim",
         subcommand=["gen-modelsim", "--overwrite"],
         description="Generate (overwrite) the ModelSim simulation project",
+        requires_testbench=True,
     ),
     "sim-modelsim": NihdlTest(
         key="sim-modelsim",
         label="sim",
         subcommand=["sim-modelsim"],
         description="Run the ModelSim testbench simulation",
+        requires_testbench=True,
     ),
 }
 
@@ -410,6 +413,24 @@ def discover_targets(targets_dirs: list[Path]) -> list[DiscoveredTarget]:
     return found
 
 
+# A target is intended to be simulated only when its nihdlsettings.py sets a
+# (non-empty) ModelSim top entity, e.g. config.set_modelsim_top_entity("tb_UserHdl").
+# Targets without it (e.g. pxie-7903aurora, pxie-7912fifotest) have no testbench,
+# so the ModelSim tests are skipped for them rather than failing the run.
+_MODELSIM_TOP_ENTITY_RE = re.compile(
+    r"""set_modelsim_top_entity\s*\(\s*["']([^"']+)["']\s*\)"""
+)
+
+
+def target_has_testbench(target_path: Path) -> bool:
+    """Return True if the target's nihdlsettings.py sets a ModelSim top entity."""
+    settings_path = target_path / "nihdlsettings.py"
+    try:
+        settings_text = settings_path.read_text(errors="replace")
+    except OSError:
+        return False
+    return bool(_MODELSIM_TOP_ENTITY_RE.search(settings_text))
+
 def run_command(command: list[str], cwd: Path) -> CommandResult:
     """Run a command in cwd and return status without raising."""
     command_text = " ".join(command)
@@ -476,6 +497,24 @@ def run_test(
         print("\n" + "-" * 80)
         print(f"Target: {target.display_name}")
         print(f"Directory: {target.path}")
+
+        # Simulation tests only apply to targets with a testbench (those whose
+        # nihdlsettings.py sets a ModelSim top entity). Skip the rest so a
+        # target without a testbench does not fail the run.
+        if test.requires_testbench and not target_has_testbench(target.path):
+            print("    Skipping: no testbench (no set_modelsim_top_entity in nihdlsettings.py)")
+            results.append(
+                TargetResult(
+                    target_name=target.display_name,
+                    command_result=CommandResult(
+                        command=" ".join(test.subcommand),
+                        return_code=None,
+                        duration_seconds=0.0,
+                        skipped=True,
+                    ),
+                )
+            )
+            continue
 
         # Run every nihdl command through the shared test wrapper settings so
         # the tests use machine-independent paths instead of the per-developer

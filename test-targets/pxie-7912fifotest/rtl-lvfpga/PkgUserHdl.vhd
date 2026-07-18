@@ -97,6 +97,16 @@ package PkgUserHdl is
     13 => (FifoDepth => 1023, DataType => kInteger64,  ElementsPerClockCycle => 1, Mode => NiFpgaTargetToHost)
   );
 
+  -- DERIVED - do not edit. Starting DMA channel index where the user HDL FIFOs
+  -- are inserted, growing downward (UserConf(0) -> kUserHdlDmaStartIndex,
+  -- UserConf(1) -> kUserHdlDmaStartIndex - 1, ...). The user HDL FIFOs occupy the
+  -- DMA channels just below the fixed-logic streams. Both inputs come from the
+  -- per-target generated packages:
+  --   kNumberOfDmaChannels     - LV window config (PkgCommIntConfiguration)
+  --   kNumFixedLogicDmaStreams - HDL settings      (PkgNiHdlSettings)
+  constant kUserHdlDmaStartIndex : natural :=
+    kNumberOfDmaChannels - 1 - kNumFixedLogicDmaStreams;
+
   ---------------------------------------------------------------------------
   -- Common host registers (4 registers starting at byte offset 0x00)
   ---------------------------------------------------------------------------

@@ -4697,7 +4697,7 @@ IO Socket.DIO InNumberOfSyncRegistersForReadInProject=0;resource=/BoardIO/IO Soc
             <RelativeToLabVIEW>..\..\NI\LVAddons\flexrioii\1\Targets\NI\FPGA\RIO\79XXR\Common\CLIP\Routing\v1\MacallanDefaultRouting.xml</RelativeToLabVIEW>
             <RelativeToNiPubDocs>..\..\..\..\Program Files\NI\LVAddons\flexrioii\1\Targets\NI\FPGA\RIO\79XXR\Common\CLIP\Routing\v1\MacallanDefaultRouting.xml</RelativeToNiPubDocs>
             <RelativeToNiSharedDir>..\NI\LVAddons\flexrioii\1\Targets\NI\FPGA\RIO\79XXR\Common\CLIP\Routing\v1\MacallanDefaultRouting.xml</RelativeToNiSharedDir>
-            <RelativeToProject>..\..\..\..\..\..\..\..\Program Files\NI\LVAddons\flexrioii\1\Targets\NI\FPGA\RIO\79XXR\Common\CLIP\Routing\v1\MacallanDefaultRouting.xml</RelativeToProject>
+            <RelativeToProject>..\..\..\..\..\..\..\..\..\Program Files\NI\LVAddons\flexrioii\1\Targets\NI\FPGA\RIO\79XXR\Common\CLIP\Routing\v1\MacallanDefaultRouting.xml</RelativeToProject>
             <Valid>true</Valid>
          </DeclarationPaths>
          <Description></Description>
@@ -17696,6 +17696,7 @@ IO Socket.DIO InNumberOfSyncRegistersForReadInProject=0;resource=/BoardIO/IO Soc
 				</Item>
 			</Item>
 		</Item>
+		<Item Name="PXIe-7903 Aurora Example Host (2-port).vi" Type="VI" URL="../Host/PXIe-7903 Aurora Example Host (2-port).vi"/>
 		<Item Name="PXIe-7903 Aurora Example Host.lvlib" Type="Library" URL="../Host/PXIe-7903 Aurora Example Host.lvlib"/>
 		<Item Name="Dependencies" Type="Dependencies">
 			<Item Name="instr.lib" Type="Folder">

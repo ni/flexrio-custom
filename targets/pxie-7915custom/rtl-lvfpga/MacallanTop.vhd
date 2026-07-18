@@ -571,10 +571,8 @@ architecture struct of MacallanTop is
   constant kDram2DPAddressMask  : unsigned(kAlignedAddressWidth - 1 downto 0) := to_unsigned(16#1FC# / 4, kAlignedAddressWidth);
 
   -- The Host Memory Buffer (Dram2DP) DMA channel sits directly below the user
-  -- HDL FIFO channels. The user HDL FIFOs occupy kUserHdlDmaStartIndex and grow
-  -- downward for kNumHdlFifos channels, so the HMB takes the next channel below:
-  --   kUserHdlDmaStartIndex - kNumHdlFifos
-  --   = kNumberOfDmaChannels - 1 - kNumFixedLogicDmaStreams - kNumHdlFifos
+  -- HDL FIFO channels: the user FIFOs occupy kNumHdlFifos channels starting at
+  -- kUserHdlDmaStartIndex and growing downward, so the HMB takes the next one.
   constant kHmbDmaChannelNum : natural := kUserHdlDmaStartIndex - kNumHdlFifos;
 
   -- ******************************************************************************************************************

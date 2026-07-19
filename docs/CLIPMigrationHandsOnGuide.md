@@ -604,7 +604,7 @@ If you run into problems, you can compare the changes you made against Sasquatch
 
 ## Copy CLIP Constraints into Board Constraints
 
-The custom target provides a dedicated constraints file for inserting your own constraints.  This file is referenced by the `set_custom_constraints` setter in nihdlsettings.py.  Open it here:
+The custom target provides a dedicated constraints file for inserting your own constraints.  This file is referenced by the `add_custom_constraints` setter in nihdlsettings.py.  Open it here:
 
 ```text
 C:\dev\github\flexrio-custom\targets\pxie-7903aurora\xdc\custom_constraints.xdc

@@ -582,19 +582,18 @@ architecture struct of MacallanTop is
   -- ******************************************************************************************************************
   --
   -- The default voltage level for the AUX DIO lines is set in the LabVIEW FPGA project and gets generated into
-  -- kAuxDioDefaultVoltage in PkgLvFpgaConst.vhd.  If you are controlling the AUX DIO from this HDL file instead of
-  -- the LV project node, you can set kAuxDioDefaultVoltageConst to what you need.  This constant is the voltage level
-  -- in milivolts.  The ONLY valid values are:
+  -- kAuxDioDefaultVoltage in PkgLvFpgaConst.vhd. This is for when the DIO is on the Window port interface and 
+  -- controlled from the LV FPGA project and VI.
+  -- 
+  -- constant kAuxDioDefaultVoltageConst : natural := kAuxDioDefaultVoltage;
+  --
+  -- If you are controlling the AUX DIO from this HDL file instead of the LV project node, you can set kAuxDioDefaultVoltageConst
+  -- to what you need here.  This constant is the voltage level in milivolts.  The ONLY valid values are:
   --                          3300 (for 3.3V), 2500 (for 2.5v), 1800 (for 1.8V), and 1100 (for 1.1V).
   --
-  -- By default, this template is set up to use the CLIP socket interface, so these constants get set to the values
-  -- defined in PkgLvFpgaConst.vhd.
-  constant kAuxDioDefaultVoltageConst : natural := kAuxDioDefaultVoltage;
+  -- In this example, the DIO is controlled from the User HDL so we must set the default voltage level here.
   --
-  -- If you are not using the DIO from the LabVIEW project because you are interfacing with the board IO directly from this
-  -- HDL file, then you can comment out the line above and uncomment the line below and set the constant to the voltage
-  -- level you need for the AUX DIO lines.
-  -- constant kAuxDioDefaultVoltageConst : natural := 3300;
+  constant kAuxDioDefaultVoltageConst : natural := 3300;
 
   -- Disable automatic io_buffer creation for FAM MGTs and signals that will instantiate
   -- their own.

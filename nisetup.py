@@ -23,6 +23,32 @@ def _read_python_dependencies(toml_path):
     return data.get("python_dependencies", [])
 
 
+def _report_nihdl_version(scripts_dir):
+    """Run `nihdl --version` from the given scripts directory and print the result."""
+    nihdl = scripts_dir / "nihdl.exe"
+    if not nihdl.exists():
+        nihdl = scripts_dir / "nihdl"
+    if not nihdl.exists():
+        print("WARNING: nihdl was not found after installation; skipping version report.")
+        return
+    result = subprocess.run([str(nihdl), "--version"], capture_output=True, text=True)
+    version = (result.stdout or result.stderr).strip()
+    if result.returncode != 0 or not version:
+        print("WARNING: could not determine nihdl version.")
+        return
+    print(f"\nLoaded HDL tools: {version}")
+
+
+def _install_packages(pip_command, packages, scripts_dir):
+    """Install packages with the given pip command and report the nihdl version."""
+    print(f"\nInstalling Python packages: {', '.join(packages)}")
+    subprocess.run(
+        [*pip_command, "install", *packages, "--quiet", "--disable-pip-version-check"],
+        check=True,
+    )
+    _report_nihdl_version(scripts_dir)
+
+
 def main():
     parser = argparse.ArgumentParser(description="Set up Python environment for this workspace.")
     parser.add_argument("repo_root", nargs="?", default=None, help="Path to repo root")
@@ -45,11 +71,7 @@ def main():
 
     if args.no_venv:
         # Pipeline mode: install directly into current Python
-        print(f"\nInstalling Python packages: {', '.join(packages)}")
-        subprocess.run(
-            [sys.executable, "-m", "pip", "install", *packages, "--quiet"],
-            check=True,
-        )
+        _install_packages([sys.executable, "-m", "pip"], packages, Path(sys.executable).parent)
         return
 
     # Local dev mode: create/reuse venv
@@ -70,11 +92,7 @@ def main():
     else:
         print("Virtual environment already exists.")
 
-    print("\nInstalling Python packages from dependencies.toml ...")
-    subprocess.run(
-        [str(venv_pip), "install", *packages, "--quiet"],
-        check=True,
-    )
+    _install_packages([str(venv_pip)], packages, venv_pip.parent)
 
 
 if __name__ == "__main__":

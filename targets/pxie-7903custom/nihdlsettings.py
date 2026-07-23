@@ -32,10 +32,6 @@ def pre_all(context):
     config.add_hdl_file_list("vivadoprojectsources.txt")
     config.add_hdl_file_list("../../deps/flexrio-deps/hdl_shared_deps_list/hdlsharedvivadoprojectdeps.txt")
 
-    # Exclude the US PkgNiDmaConfig.vhd from the shared deps list; this USP target
-    # supplies the correct USP copy via its own vivadoprojectdeps.txt.
-    config.add_exclude_hdl_file_list("vivadoprojectexclude.txt")
-
     # --- LabVIEW Window Netlist for Synthesis ---
     # This example contains a netlist that was generated using the LabVIEW project in the docs folder.
     # When you generate your own netlist from a LabVIEW FPGA VI, change this path to point to the folder

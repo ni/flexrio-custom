@@ -147,7 +147,6 @@ Step-by-step exercises for building bitfiles, customizing a target, and migratin
             * `objects` - generated outputs from HDL tools (ignored in .gitignore)
             * `docs` - target-specific documentation and examples
             * `vivadoprojectsources.txt` - source list used for Vivado project generation
-            * `vivadoprojectexclude.txt` - files excluded from the generated Vivado project
             * `modelsimprojectsources.txt` - source list used for ModelSim project generation
         * `pxie-7903aurora` - example of migrating the Aurora CLIP to make a custom Aurora PXIe-7903 device
         * `pxie-7xxxCustom` - additional custom device examples

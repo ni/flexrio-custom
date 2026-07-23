@@ -12,6 +12,9 @@
 ../../deps/flexrio-deps/encrypted/common/rtl-lvfpga/lvgen/PkgCommIntConfiguration.vhd
 ../../deps/flexrio-deps/encrypted/common/rtl-lvfpga/lvgen/PkgDmaPortCommIfcRegs.vhd
 
+# UltraScale DMA config package.
+../../deps/flexrio-deps/encrypted/nicores_nidmaip.1.1.0d14/PCIe/US/G3x8Tandem/Source/PkgNiDmaConfig.vhd
+
 # Shared host register blocks
 ../../deps/hdl-shared/host_interfaces/register/HDL/NiSharedHostRegister.vhd
 ../../deps/hdl-shared/host_interfaces/register/HDL/NiSharedCommonHostRegs.vhd

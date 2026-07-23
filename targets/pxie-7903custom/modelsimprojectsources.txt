@@ -12,9 +12,7 @@
 ../../deps/flexrio-deps/encrypted/common/rtl-lvfpga/lvgen/PkgCommIntConfiguration.vhd
 ../../deps/flexrio-deps/encrypted/common/rtl-lvfpga/lvgen/PkgDmaPortCommIfcRegs.vhd
 
-# UltraScale+ DMA config package. The shared deps list ships the US copy of
-# PkgNiDmaConfig.vhd, which vivadoprojectexclude.txt excludes for this USP
-# target; supply the matching USP copy here so PkgNiDma can resolve it.
+# UltraScale+ DMA config package.
 ../../deps/flexrio-deps/encrypted/nicores_nidmaip.1.1.0d14/PCIe/USP/G3x8TandemGty/Source/PkgNiDmaConfig.vhd
 
 # Shared host register blocks

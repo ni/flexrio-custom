@@ -16,7 +16,9 @@ import re
 import subprocess
 import time
 from dataclasses import dataclass, field
+from datetime import datetime
 from pathlib import Path
+from typing import TextIO
 
 
 # ---------------------------------------------------------------------------
@@ -431,6 +433,113 @@ def target_has_testbench(target_path: Path) -> bool:
         return False
     return bool(_MODELSIM_TOP_ENTITY_RE.search(settings_text))
 
+# ---------------------------------------------------------------------------
+# Live run logging
+# ---------------------------------------------------------------------------
+
+
+def default_test_log_dir() -> Path:
+    """Return the <repo>/objects/test_log folder that holds per-run logs."""
+    return REPO_ROOT / "objects" / "test_log"
+
+
+class RunLogger:
+    """Append-and-flush logger that mirrors progress to a per-run log file.
+
+    A new file is created for each run (named with the run start time) so
+    multiple runs never overwrite each other. Every line is flushed
+    immediately, so the file can be tailed to watch progress while the tests
+    are still running instead of waiting for the summary at the end.
+    """
+
+    def __init__(self, log_path: Path) -> None:
+        self.log_path = log_path
+        self._file: TextIO = log_path.open("a", encoding="utf-8")
+
+    def write(self, message: str = "") -> None:
+        """Write a line to the log file and flush it immediately."""
+        self._file.write(message + "\n")
+        self._file.flush()
+
+    def tee(self, message: str = "") -> None:
+        """Print a line to the console and also write it to the log file."""
+        print(message)
+        self.write(message)
+
+    def log_test_start(self, test: "NihdlTest", target_count: int) -> None:
+        """Record that a test is starting across the given number of targets."""
+        self.write("")
+        self.write("=" * 80)
+        self.write(f"TEST: {test.key} \u2014 {test.description}")
+        self.write(f"Started: {datetime.now():%Y-%m-%d %H:%M:%S}")
+        self.write(f"Targets: {target_count}")
+        self.write("=" * 80)
+
+    def log_target_result(
+        self, test: "NihdlTest", result: "TargetResult"
+    ) -> None:
+        """Record a single target's result the moment it completes."""
+        timestamp = f"{datetime.now():%H:%M:%S}"
+        command_result = result.command_result
+
+        if command_result.skipped:
+            self.write(
+                f"[{timestamp}] {test.key:14} {result.target_name:34} "
+                f"SKIP (no testbench)"
+            )
+            return
+
+        status = "PASS" if result.passed else "FAIL"
+        duration = command_result.duration_seconds
+        line = (
+            f"[{timestamp}] {test.key:14} {result.target_name:34} "
+            f"{status:4} cmd={command_result.status:4} {duration:6.1f}s"
+        )
+        if test.check_timing:
+            line += f" timing={result.timing_result.status}"
+        self.write(line)
+
+        # For anything that is not a clean pass, record the failure details so
+        # they are captured without scrolling back through the console.
+        if not result.passed:
+            if command_result.return_code not in (0, None):
+                self.write(f"           exit code: {command_result.return_code}")
+            if command_result.error_text:
+                self.write(f"           error: {command_result.error_text}")
+            if command_result.log_verdict_message:
+                self.write(f"           log: {command_result.log_verdict_message}")
+            if test.check_timing and result.timing_result.message:
+                self.write(f"           timing: {result.timing_result.message}")
+                if result.timing_result.slack_values:
+                    vals = "  ".join(
+                        f"{k}={v:+.3f}"
+                        for k, v in result.timing_result.slack_values.items()
+                    )
+                    self.write(f"           timing values: {vals}")
+
+    def close(self) -> None:
+        """Close the underlying log file."""
+        self._file.close()
+
+
+def create_run_logger() -> RunLogger:
+    """Create a RunLogger writing to a new timestamped file under objects/.
+
+    The file is named ``run_tests_<YYYYMMDD_HHMMSS>.log`` so each run of the
+    test shell produces its own log.
+    """
+    log_dir = default_test_log_dir()
+    log_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    log_path = log_dir / f"run_tests_{timestamp}.log"
+    return RunLogger(log_path)
+
+
+# ---------------------------------------------------------------------------
+# Command execution
+# ---------------------------------------------------------------------------
+
+
 def run_command(command: list[str], cwd: Path) -> CommandResult:
     """Run a command in cwd and return status without raising."""
     command_text = " ".join(command)
@@ -470,14 +579,20 @@ def run_test(
     write_shipping_netlist: bool = False,
     use_xilinx_env: bool = False,
     use_modelsim_env: bool = False,
+    logger: RunLogger | None = None,
 ) -> list[TargetResult]:
     """Run one nihdl-command test in every target directory.
 
-    Keeps going on failures and returns a list of per-target results.
+    Keeps going on failures and returns a list of per-target results. When a
+    logger is supplied, each target's result is written to the run log the
+    moment it completes so progress can be watched live.
     """
     print("\n" + "=" * 80)
     print(f"TEST: {test.key} \u2014 {test.description}")
     print("=" * 80)
+
+    if logger is not None:
+        logger.log_test_start(test, len(targets))
 
     # Tune the shared wrapper's behavior via generic --set overrides that nihdl
     # forwards to the wrapper's hooks as context.settings (no variant files, no
@@ -514,6 +629,8 @@ def run_test(
                     ),
                 )
             )
+            if logger is not None:
+                logger.log_target_result(test, results[-1])
             continue
 
         # Run every nihdl command through the shared test wrapper settings so
@@ -552,15 +669,26 @@ def run_test(
                 timing_result=timing_result,
             )
         )
+        if logger is not None:
+            logger.log_target_result(test, results[-1])
 
     return results
 
 
-def print_test_summary(test: NihdlTest, results: list[TargetResult]) -> None:
-    """Print a pass/fail summary for a single test."""
-    print("\n" + "=" * 80)
-    print(f"SUMMARY: {test.key}")
-    print("=" * 80)
+def print_test_summary(
+    test: NihdlTest,
+    results: list[TargetResult],
+    logger: RunLogger | None = None,
+) -> None:
+    """Print a pass/fail summary for a single test.
+
+    When a logger is supplied the same summary is also written to the run log.
+    """
+
+    lines: list[str] = []
+    lines.append("\n" + "=" * 80)
+    lines.append(f"SUMMARY: {test.key}")
+    lines.append("=" * 80)
 
     passed_count = 0
     failed_count = 0
@@ -585,28 +713,36 @@ def print_test_summary(test: NihdlTest, results: list[TargetResult]) -> None:
             if timing_status == "WARN":
                 timing_warn_count += 1
 
-        print(line)
+        lines.append(line)
 
         if result.command_result.error_text:
-            print(f"  error: {result.command_result.error_text}")
+            lines.append(f"  error: {result.command_result.error_text}")
         if result.command_result.log_verdict_message:
-            print(f"  log: {result.command_result.log_verdict_message}")
+            lines.append(f"  log: {result.command_result.log_verdict_message}")
         if test.check_timing and result.timing_result.message:
-            print(f"  timing: {result.timing_result.message}")
+            lines.append(f"  timing: {result.timing_result.message}")
             if result.timing_result.slack_values:
                 vals = "  ".join(
                     f"{k}={v:+.3f}"
                     for k, v in result.timing_result.slack_values.items()
                 )
-                print(f"  timing values: {vals}")
+                lines.append(f"  timing values: {vals}")
 
-    print("-" * 80)
-    print(f"Total targets: {len(results)}")
-    print(f"Passed: {passed_count}")
-    print(f"Failed: {failed_count}")
+    lines.append("-" * 80)
+    lines.append(f"Total targets: {len(results)}")
+    lines.append(f"Passed: {passed_count}")
+    lines.append(f"Failed: {failed_count}")
     if test.check_timing and timing_warn_count:
-        print(f"Timing warnings (could not determine pass/fail): {timing_warn_count}")
-    print("=" * 80)
+        lines.append(
+            f"Timing warnings (could not determine pass/fail): {timing_warn_count}"
+        )
+    lines.append("=" * 80)
+
+    for line in lines:
+        print(line)
+    if logger is not None:
+        for line in lines:
+            logger.write(line)
 
 
 # ---------------------------------------------------------------------------

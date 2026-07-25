@@ -23,12 +23,24 @@ def pre_all(context):
     # --- Dependencies ---
     config.set_dependencies("../../dependencies.toml")
 
-    # --- HDL Source Code ---
+    # --- HDL Source Code - shared by the Vivado and LabVIEW FPGA compile flows ---
     config.add_hdl_file_list(f"{base_deps}/vivadoprojectdeps.txt")
     config.add_hdl_file_list("vivadoprojectsources.txt")
     config.add_hdl_file_list("vivadoprojectclipsources.txt")
 
-    # --- LabVIEW Window Netlist for Synthesis ---
+    # --- Generated VHDL - shared by the Vivado and LabVIEW FPGA compile flows ---
+    config.add_generated_vhdl_template(f"{base_deps}/rtl-lvfpga/lvgen/TheWindow.vhd.mako")
+    config.add_generated_vhdl_template("rtl-lvfpga/TheLvWindowFlatWrapper.vhd.mako")
+    config.add_generated_vhdl_template("rtl-lvfpga/PkgTheLvWindowFlatWrapper.vhd.mako")
+    config.set_generated_vhdl_output_folder("objects/GeneratedHDL")
+
+    # --- Constraints Template - shared by the Vivado and LabVIEW FPGA compile flows ---
+    config.set_constraints_template(f"{base_deps}/xdc/constraints.xdc_template")
+
+    # --- Custom Constraints - shared by the Vivado and LabVIEW FPGA compile flows ---
+    config.add_custom_constraints("xdc/custom_constraints.xdc", order=1)
+
+    # --- LabVIEW Window Netlist for Vivado Synthesis ---
     # This example contains a netlist that was generated using the LabVIEW project in the docs folder.
     # When you generate your own netlist from a LabVIEW FPGA VI, change this path to point to the folder
     # containing the generated netlist (e.g., "objects/TheLvWindowNetlist").
@@ -45,12 +57,10 @@ def pre_all(context):
     config.set_vivado_project_folder("VivadoProject")
 
     # --- Vivado Constraints ---
-    config.set_constraints_template(f"{base_deps}/xdc/constraints.xdc_template")
-    config.add_custom_constraints("xdc/custom_constraints.xdc", order=1)
-    config.add_vivado_project_constraints(f"{base_deps}/xdc/constraints_place.xdc")
     config.add_vivado_project_constraints("objects/xdc/constraints.xdc")
+    config.add_vivado_project_constraints(f"{base_deps}/xdc/constraints_place.xdc")
 
-    # --- LabVIEW FPGA Target Settings ---
+    # --- Custom LabVIEW FPGA Target Settings ---
     config.set_lv_target_name("PXIe-7903Aurora")
     config.set_lv_target_guid("8943868e-fc0c-4e48-a2e9-1ebce7779d5c")
     config.set_lv_target_install_folder("C:/Program Files/NI/LVAddons/flexrioii/1/Targets/NI/FPGA/RIO/79XXR")
@@ -59,22 +69,16 @@ def pre_all(context):
     config.set_lv_target_exclude_files(f"{base_deps}/lvtargetexcludefiles.txt")
     config.set_lv_target_plugin_output_folder(f"objects/LVTargetPlugin/{plugin_name}")
 
-    # --- LabVIEW FPGA Target Constraints ---
-    config.add_lv_target_constraints(f"{base_deps}/xdc/constraints.xdc_template")
+    # --- Custom LabVIEW FPGA Target Constraints ---
+    config.add_lv_target_constraints("objects/lv_target_xdc/constraints.xdc")
     config.add_lv_target_constraints(f"{base_deps}/xdc/constraints_place.xdc")
 
-    # --- LabVIEW FPGA Target IO ---
+    # --- Custom LabVIEW FPGA Target IO ---
     config.set_custom_io_csv("lvFpgaTarget/LVTargetBoardIO.csv")
     config.set_include_board_io_on_lv_window(False)
     config.set_include_custom_io_on_lv_window(True)
 
-    # --- LabVIEW FPGA Target Generated VHDL ---
-    config.add_generated_vhdl_template(f"{base_deps}/rtl-lvfpga/lvgen/TheWindow.vhd.mako")
-    config.add_generated_vhdl_template("rtl-lvfpga/TheLvWindowFlatWrapper.vhd.mako")
-    config.add_generated_vhdl_template("rtl-lvfpga/PkgTheLvWindowFlatWrapper.vhd.mako")
-    config.set_generated_vhdl_output_folder("objects/GeneratedHDL")
-
-    # --- LabVIEW FPGA Target Generated Resource XML ---
+    # --- Custom LabVIEW FPGA Target Generated Resource XML ---
     config.add_lv_target_xml_template(f"{base_deps}/lvFpgaTarget/Resource.xml.mako")
     config.add_lv_target_xml_template(f"{base_deps}/lvFpgaTarget/Sasquatch7903.xml.mako")
     config.set_boardio_output(f"objects/LVTargetPlugin/{plugin_name}/boardio.xml")

@@ -10,10 +10,11 @@ Pre-release custom FlexRIO code for use with LabVIEW FPGA HDL Tools
     * https://github.com/ni/flexrio-deps
     * https://github.com/ni/flexrio-clips
     * https://github.com/ni/hdl-shared
-* You can perform workflows for customizing LabVIEW FPGA targets with HDL
-    * Use HDL-only and Vivado to build a bitfile and communicate with it from the NI-RIO driver on a host PC
-    * Use HDL to make a custom LabVIEW FPGA target that can be extended in LabVIEW FPGA and use the standard LabVIEW FPGA bitfile generation workflow
-    * Use LabVIEW FPGA to make a top-level VI that is exported as a netlist and brought into your custom HDL to build in Vivado
+* There are two **compile flows** for turning custom HDL into a bitfile (see the [LabVIEW FPGA HDL Tools Theory of Operation](https://github.com/ni/labview-fpga-hdl-tools/blob/main/docs/TheoryOfOperation.md) for the full story):
+    * **Vivado compile flow** – extend the design in HDL and compile the bitfile directly in Vivado, then communicate with it from the NI-RIO driver on a host PC (no LabVIEW required)
+    * **LabVIEW FPGA compile flow** – use HDL to make a custom LabVIEW FPGA target, then write a VI in LabVIEW FPGA and let it compile the bitfile using the standard LabVIEW FPGA bitfile-generation experience (LabVIEW FPGA runs Vivado under the hood)
+    * You can also author a top-level VI in LabVIEW FPGA, export it as a netlist, and bring it into the Vivado compile flow
+    * In short: in the **Vivado flow** you drive Vivado; in the **LabVIEW FPGA flow** LabVIEW FPGA drives Vivado for you
 * You can communicate between the NI-RIO driver on a host PC and custom HDL directly using
     * Registers
     * DMA FIFOs

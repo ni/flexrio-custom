@@ -34,11 +34,13 @@ from __future__ import annotations
 
 import argparse
 import sys
+from datetime import datetime
 
 from tests_common import (
     NIHDL_TESTS,
     TEST_SEQUENCES,
     add_common_arguments,
+    create_run_logger,
     print_test_summary,
     resolve_targets,
     run_test,
@@ -296,28 +298,60 @@ def main() -> int:
     if sequence_note:
         print(f"\nNote: {sequence_note}\n")
 
-    overall: dict[str, bool] = {}
-    for test_key in requested:
-        test = NIHDL_TESTS[test_key]
-        results = run_test(
-            test,
-            targets,
-            nihdl_cmd=args.nihdl_cmd,
-            use_objects_lv_window=use_objects_lv_window,
-            write_shipping_netlist=write_shipping_netlist,
-            use_xilinx_env=args.xilinx_from_env,
-            use_modelsim_env=args.modelsim_from_env,
-        )
-        print_test_summary(test, results)
-        overall[test_key] = all(result.passed for result in results)
+    # Open a per-run log file under objects/test_log/ and record the run
+    # parameters. Every test and per-target result is appended (and flushed)
+    # while the run is in progress, so the file can be tailed to watch progress
+    # instead of waiting for the summary at the very end.
+    logger = create_run_logger()
+    print(f"Logging this run to: {logger.log_path}\n")
+    logger.write("#" * 80)
+    logger.write("RUN TESTS")
+    logger.write("#" * 80)
+    logger.write(f"Started: {datetime.now():%Y-%m-%d %H:%M:%S}")
+    if args.sequence:
+        logger.write(f"Sequence: {args.sequence}")
+    logger.write(f"Tests: {' -> '.join(requested)}")
+    logger.write(f"Targets ({len(targets)}):")
+    for target in targets:
+        logger.write(f"  - {target.display_name}")
+    if use_objects_lv_window:
+        logger.write("Netlist mode: input window netlist from objects/ folder")
+    if write_shipping_netlist:
+        logger.write("Netlist mode: gen-window writes the shipping netlist")
+    if sequence_note:
+        logger.write(f"Note: {sequence_note}")
+    logger.write("#" * 80)
 
-    print("\n" + "#" * 80)
-    print("OVERALL SUMMARY")
-    print("#" * 80)
-    for test_key in requested:
-        status = "PASS" if overall[test_key] else "FAIL"
-        print(f"  {test_key:16} {status}")
-    print("#" * 80)
+    overall: dict[str, bool] = {}
+    try:
+        for test_key in requested:
+            test = NIHDL_TESTS[test_key]
+            results = run_test(
+                test,
+                targets,
+                nihdl_cmd=args.nihdl_cmd,
+                use_objects_lv_window=use_objects_lv_window,
+                write_shipping_netlist=write_shipping_netlist,
+                use_xilinx_env=args.xilinx_from_env,
+                use_modelsim_env=args.modelsim_from_env,
+                logger=logger,
+            )
+            print_test_summary(test, results, logger=logger)
+            overall[test_key] = all(result.passed for result in results)
+
+        summary_lines = ["\n" + "#" * 80, "OVERALL SUMMARY", "#" * 80]
+        for test_key in requested:
+            status = "PASS" if overall[test_key] else "FAIL"
+            summary_lines.append(f"  {test_key:16} {status}")
+        summary_lines.append("#" * 80)
+        summary_lines.append(f"Finished: {datetime.now():%Y-%m-%d %H:%M:%S}")
+
+        for line in summary_lines:
+            print(line)
+            logger.write(line)
+        print(f"\nFull run log: {logger.log_path}")
+    finally:
+        logger.close()
 
     return 0 if all(overall.values()) else 1
 

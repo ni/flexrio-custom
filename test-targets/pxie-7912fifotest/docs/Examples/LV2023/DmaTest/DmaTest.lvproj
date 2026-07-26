@@ -1982,7 +1982,7 @@ Host2Target"ControlLogic=0;NumberOfElements=1029;Type=1;ReadArbs=Arbitrate if Mu
 				<Property Name="NI.LV.FPGA.Version" Type="Int">5</Property>
 			</Item>
 			<Item Name="Routing" Type="FPGA Component Level IP">
-				<Property Name="NI.FPGA.79XXR.NormalizeCLIPPath" Type="Str">true</Property>
+				<Property Name="NI.FPGA.79XXR.NormalizeCLIPPath" Type="Str">false</Property>
 				<Property Name="NI.LV.CLIP.ClockConnections" Type="Xml">
 <CLIPConnections>
    <CLIPSignal name="DataClk">
@@ -3060,16 +3060,28 @@ Host2Target"ControlLogic=0;NumberOfElements=1029;Type=1;ReadArbs=Arbitrate if Mu
 			<Item Name="vi.lib" Type="Folder">
 				<Item Name="Error Cluster From Error Code.vi" Type="VI" URL="/&lt;vilib&gt;/Utility/error.llb/Error Cluster From Error Code.vi"/>
 				<Item Name="NiFpga_HdlFifo_Add.vi" Type="VI" URL="/&lt;vilib&gt;/LabVIEW Targets/FPGA/RIO/NiFpga_HostInterfaceExtensions/HdlFifo/NiFpga_HdlFifo_Add.vi"/>
+				<Item Name="NiFpga_HdlFifo_AddBool.vi" Type="VI" URL="/&lt;vilib&gt;/LabVIEW Targets/FPGA/RIO/NiFpga_HostInterfaceExtensions/HdlFifo/NiFpga_HdlFifo_AddBool.vi"/>
+				<Item Name="NiFpga_HdlFifo_AddI8.vi" Type="VI" URL="/&lt;vilib&gt;/LabVIEW Targets/FPGA/RIO/NiFpga_HostInterfaceExtensions/HdlFifo/NiFpga_HdlFifo_AddI8.vi"/>
 				<Item Name="NiFpga_HdlFifo_AddI32.vi" Type="VI" URL="/&lt;vilib&gt;/LabVIEW Targets/FPGA/RIO/NiFpga_HostInterfaceExtensions/HdlFifo/NiFpga_HdlFifo_AddI32.vi"/>
+				<Item Name="NiFpga_HdlFifo_AddSGL.vi" Type="VI" URL="/&lt;vilib&gt;/LabVIEW Targets/FPGA/RIO/NiFpga_HostInterfaceExtensions/HdlFifo/NiFpga_HdlFifo_AddSGL.vi"/>
 				<Item Name="NiFpga_HdlFifo_AddU16.vi" Type="VI" URL="/&lt;vilib&gt;/LabVIEW Targets/FPGA/RIO/NiFpga_HostInterfaceExtensions/HdlFifo/NiFpga_HdlFifo_AddU16.vi"/>
+				<Item Name="NiFpga_HdlFifo_AddU64.vi" Type="VI" URL="/&lt;vilib&gt;/LabVIEW Targets/FPGA/RIO/NiFpga_HostInterfaceExtensions/HdlFifo/NiFpga_HdlFifo_AddU64.vi"/>
 				<Item Name="NiFpga_HdlFifo_Read.vi" Type="VI" URL="/&lt;vilib&gt;/LabVIEW Targets/FPGA/RIO/NiFpga_HostInterfaceExtensions/HdlFifo/NiFpga_HdlFifo_Read.vi"/>
+				<Item Name="NiFpga_HdlFifo_ReadBool.vi" Type="VI" URL="/&lt;vilib&gt;/LabVIEW Targets/FPGA/RIO/NiFpga_HostInterfaceExtensions/HdlFifo/NiFpga_HdlFifo_ReadBool.vi"/>
+				<Item Name="NiFpga_HdlFifo_ReadI8.vi" Type="VI" URL="/&lt;vilib&gt;/LabVIEW Targets/FPGA/RIO/NiFpga_HostInterfaceExtensions/HdlFifo/NiFpga_HdlFifo_ReadI8.vi"/>
 				<Item Name="NiFpga_HdlFifo_ReadI32.vi" Type="VI" URL="/&lt;vilib&gt;/LabVIEW Targets/FPGA/RIO/NiFpga_HostInterfaceExtensions/HdlFifo/NiFpga_HdlFifo_ReadI32.vi"/>
+				<Item Name="NiFpga_HdlFifo_ReadSGL.vi" Type="VI" URL="/&lt;vilib&gt;/LabVIEW Targets/FPGA/RIO/NiFpga_HostInterfaceExtensions/HdlFifo/NiFpga_HdlFifo_ReadSGL.vi"/>
 				<Item Name="NiFpga_HdlFifo_ReadU16.vi" Type="VI" URL="/&lt;vilib&gt;/LabVIEW Targets/FPGA/RIO/NiFpga_HostInterfaceExtensions/HdlFifo/NiFpga_HdlFifo_ReadU16.vi"/>
+				<Item Name="NiFpga_HdlFifo_ReadU64.vi" Type="VI" URL="/&lt;vilib&gt;/LabVIEW Targets/FPGA/RIO/NiFpga_HostInterfaceExtensions/HdlFifo/NiFpga_HdlFifo_ReadU64.vi"/>
 				<Item Name="NiFpga_HdlFifo_Write.vi" Type="VI" URL="/&lt;vilib&gt;/LabVIEW Targets/FPGA/RIO/NiFpga_HostInterfaceExtensions/HdlFifo/NiFpga_HdlFifo_Write.vi"/>
+				<Item Name="NiFpga_HdlFifo_WriteBool.vi" Type="VI" URL="/&lt;vilib&gt;/LabVIEW Targets/FPGA/RIO/NiFpga_HostInterfaceExtensions/HdlFifo/NiFpga_HdlFifo_WriteBool.vi"/>
+				<Item Name="NiFpga_HdlFifo_WriteI8.vi" Type="VI" URL="/&lt;vilib&gt;/LabVIEW Targets/FPGA/RIO/NiFpga_HostInterfaceExtensions/HdlFifo/NiFpga_HdlFifo_WriteI8.vi"/>
 				<Item Name="NiFpga_HdlFifo_WriteI32.vi" Type="VI" URL="/&lt;vilib&gt;/LabVIEW Targets/FPGA/RIO/NiFpga_HostInterfaceExtensions/HdlFifo/NiFpga_HdlFifo_WriteI32.vi"/>
+				<Item Name="NiFpga_HdlFifo_WriteSGL.vi" Type="VI" URL="/&lt;vilib&gt;/LabVIEW Targets/FPGA/RIO/NiFpga_HostInterfaceExtensions/HdlFifo/NiFpga_HdlFifo_WriteSGL.vi"/>
 				<Item Name="NiFpga_HdlFifo_WriteU16.vi" Type="VI" URL="/&lt;vilib&gt;/LabVIEW Targets/FPGA/RIO/NiFpga_HostInterfaceExtensions/HdlFifo/NiFpga_HdlFifo_WriteU16.vi"/>
-				<Item Name="NiFpga_HdlRegister_ReadU32.vi" Type="VI" URL="/&lt;vilib&gt;/LabVIEW Targets/FPGA/RIO/NiFpga_HostInterfaceExtensions/HdlRegister/NiFpga_HdlRegister_ReadU32.vi"/>
+				<Item Name="NiFpga_HdlFifo_WriteU64.vi" Type="VI" URL="/&lt;vilib&gt;/LabVIEW Targets/FPGA/RIO/NiFpga_HostInterfaceExtensions/HdlFifo/NiFpga_HdlFifo_WriteU64.vi"/>
 			</Item>
+			<Item Name="_NiFpga_HdlFifo_GetStream.vi" Type="VI" URL="../../API/HdlFifo/private/_NiFpga_HdlFifo_GetStream.vi"/>
 		</Item>
 		<Item Name="Build Specifications" Type="Build"/>
 	</Item>

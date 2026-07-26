@@ -7,6 +7,12 @@ https://github.com/ni/labview-fpga-hdl-tools/blob/main/README.md
 
 https://github.com/ni/labview-fpga-hdl-tools/blob/main/docs/TheoryOfOperation.md
 
+Then read [Dependencies and File Management](DependenciesAndFileManagement.md) to
+understand how a custom target is assembled from the base FlexRIO target and its
+dependencies — which files you copy and modify versus reference in place, and
+what each file list (`vivadoprojectsources.txt`, `vivadoprojectdeps.txt`,
+`lvtargetexcludefiles.txt`) is for.
+
 ## Exercise 2 - Build a bitfile with the Vivado compile flow
 ### 1) Go to the custom target folder
 > cd C:\dev\github\flexrio-custom\targets\pxie-7903custom

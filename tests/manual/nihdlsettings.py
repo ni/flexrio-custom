@@ -53,6 +53,7 @@ OBJECTS_LV_WINDOW_SUBFOLDER_NAME = "testLvWindowNetlist"
 # BlankRunningVI.xpr; a few use a different VI. Keyed by LabVIEW target name.
 DEFAULT_VPE_XPR_NAME = "BlankRunningVI.xpr"
 VPE_XPR_NAME_BY_TARGET = {
+    "PXIe-7903Aurora": "Aurora2port.xpr",
     "PXIe-7912fifotest": "FifoTestLvFPGA.xpr",
 }
 

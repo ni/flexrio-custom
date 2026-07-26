@@ -13,6 +13,8 @@ __pycache__/
 # Ignore LabVIEW local project settings (machine-specific, never check in)
 *.aliases
 *.lvlps
+# Ignore LabVIEW per-VI UserState folders (machine-specific, never check in)
+*.UserState/
 # Ignore temporary MS Office files
 ~*.xlsx
 ~*.pptx

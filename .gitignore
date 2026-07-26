@@ -22,3 +22,6 @@ __pycache__/
 ~*.tmp
 deps/
 objects_old/
+# Ignore generated FPGA bitfiles (never check in compiled bitstreams)
+FPGA Bitfiles/
+*.lvbitx

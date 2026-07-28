@@ -37,7 +37,7 @@ def pre_all(context):
     config.add_generated_vhdl_template("rtl-lvfpga/TheLvWindowFlatWrapper.vhd.mako")
     config.add_generated_vhdl_template("rtl-lvfpga/PkgTheLvWindowFlatWrapper.vhd.mako")
     config.add_generated_vhdl_template("../common/rtl-lvfpga/PkgNiHdlSettings.vhd.mako")
-    config.set_generated_vhdl_output_folder("objects/GeneratedHDL")   
+    config.set_generated_vhdl_output_folder("objects/GeneratedHDL")
 
     # --- Constraints Template - shared by the Vivado and LabVIEW FPGA compile flows ---
     config.set_constraints_template(f"{base_deps}/xdc/constraints.xdc")
@@ -51,7 +51,7 @@ def pre_all(context):
     # When you generate your own netlist from a LabVIEW FPGA VI, change this path to point to the folder
     # containing the generated netlist (e.g., "objects/TheLvWindowNetlist").
     config.set_lv_window_netlist_folder("blankLvWindowNetlist")
- 
+
     # --- Vivado Project Settings ---
     config.set_vivado_top_entity("MacallanTop")
     config.set_fpga_part("xcku040-ffva1156-2-e")

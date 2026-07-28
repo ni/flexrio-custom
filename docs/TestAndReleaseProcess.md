@@ -348,6 +348,8 @@ nihdl gen-target
 nihdl install-target
 ```
 
+Note: Close all LabVIEW instances before running `install-target`, then restart LabVIEW so it picks up the target.
+
 Open the DMA test LabVIEW project:
 `C:\dev\github\flexrio-custom\test-targets\pxie-7912fifotest\docs\Examples\LV2023\DmaTest`
 
@@ -384,6 +386,8 @@ Generate and install the LV target plugin:
 nihdl gen-target
 nihdl install-target
 ```
+
+Note: Close all LabVIEW instances before running `install-target`, then restart LabVIEW so it picks up the target.
 
 Open the Aurora test LabVIEW project:
 `C:\dev\github\flexrio-custom\targets\pxie-7903aurora\docs\Examples\LV2023\AuroraCustom`

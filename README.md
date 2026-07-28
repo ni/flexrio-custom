@@ -78,10 +78,12 @@ Follow these steps to setup your machine to use the LabVIEW FPGA HDL Tools with 
 
 ## Prerequisite Software
 Use NI Package Manager to install the following software:
-* LabVIEW 2023 (or newer)
+* LabVIEW 2023 (or newer) — see the LabVIEW version note below
 * LabVIEW FPGA 2023 (or newer)
 * LabVIEW FPGA Compilation tool for Vivado 2021.1
 * FlexRIO 2026 Q3 (or newer)
+
+**LabVIEW version depends on which compile flow you use.** LabVIEW **2023 or newer** is enough for the **Vivado compile flow** — author a VI, export a LabVIEW window netlist with `gen-window`, and compile in Vivado. The **LabVIEW FPGA compile flow** (build a custom LabVIEW FPGA target and compile the bitfile in LabVIEW FPGA) requires **LabVIEW 2026 or newer**. See [Window Netlist and Constraints → LabVIEW version support](https://github.com/ni/labview-fpga-hdl-tools/blob/main/docs/WindowNetlistAndConstraints.md#labview-version-support-2023-vs-2026) for the details.
 
 Install the following 3rd party software:
 * Install latest version Git  – https://git-scm.com/downloads

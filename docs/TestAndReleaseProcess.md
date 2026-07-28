@@ -27,6 +27,22 @@ These repos are **decoupled from NI product releases** and use semantic versioni
 - https://github.com/ni/hdl-shared
 - https://github.com/ni/labview-fpga-hdl-tools
 
+### Main Branch Coherence and Dependency Pinning
+
+**The `main` branch of flexrio-custom must always be coherent and buildable using only its checked-in `dependencies.toml` — a plain `nihdl install-deps` with no `--pre --latest`.** Anyone who checks out `main` or a release tag must get a stack that builds without special flags. If `main` ever needs `--pre --latest`, its `dependencies.toml` is wrong — fix the pins.
+
+**Pinning during a pre-release cycle.** Pin the NI-versioned dependencies (`flexrio`, `flexrio-deps`, `flexrio-clips`) to their `.dev0` form, e.g. `ni/flexrio~=26.3.0.dev0`. A `.dev0` pin opts that dependency into pre-release matching, so `install-deps` automatically resolves it to the newest matching pre-release (`.dev1`, `.dev2`, …) — without `--pre`. A `dependencies.toml` pinned to `.dev0` is therefore a coherent, self-updating dev stack on its own.
+
+**`--pre --latest` is a dev-branch stop-gap only.** `nihdl install-deps --pre --latest` force-resolves the latest pre-release of *every* dependency regardless of the pins. Use it only while iterating on a flexrio-custom dev branch before the pins are settled. You should never need it on `main`.
+
+**Workflow for every release or dependency bump:**
+1. On a flexrio-custom dev branch, set `dependencies.toml` to the intended versions (`.dev0` for a pre-release cycle) and reconcile any forked files (Step 5B).
+2. Run the test sequences (Step 5C) against your dev branch — locally and/or through the internal CI test pipeline. You may use `--pre --latest` as a stop-gap while iterating, but the goal is that the pinned `dependencies.toml` passes on its own.
+3. When green, PR the dev branch (including `dependencies.toml`) to `main`.
+4. Run the test sequences again on `main` — they must pass with a plain `install-deps` (no `--pre --latest`). If they don't, the pins are wrong.
+
+This keeps `main` always working, so the shipped example targets never break against a new base target.
+
 ---
 
 ## 1. Publish NI source code files to GitHub
@@ -152,9 +168,25 @@ Use the `~=` operator so users can uptake patches without having to change the `
 "ni/flexrio~=26.3.0",
 ```
 
+For a **pre-release (development) cycle**, pin the NI-versioned deps to their `.dev0` form (e.g. `"ni/flexrio~=26.3.0.dev0"`); it auto-resolves to the latest matching `.devN` without `--pre`. See the **Main Branch Coherence and Dependency Pinning** policy near the top of this document for the full rules.
+
 Check this updated `dependencies.toml` file into `main`.
 
-### Step 5B) Testing
+### Step 5B) Reconcile the shipped example targets with the new base target
+
+A quarterly base-target bump (Step 5A) can introduce **breaking changes** to the one file each example target **forks** from the base target: its **top-level HDL file** (`SasquatchTopTemplate.vhd`, `MacallanTop.vhd`, and so on). Everything else is referenced in place and updates automatically, but the forked top file does not. **So on every quarterly release, we must reconcile the forked top-level file in each example target we ship — otherwise customers get broken examples out of the box.**
+
+> **Example (a real one).** Upgrading a PXIe-7903 Aurora custom target from `flexrio` / `flexrio-deps` **26.1.0** to **26.2.0** to pick up new generics on the fixed logic and `IoRefClkSelect`. We updated the **base** `SasquatchTopTemplate.vhd` to add those generics, so the **forked** copy in the custom target no longer matched and failed to build until the same changes were ported over.
+
+Do this for each example target under `targets/` and `test-targets/`, before the Testing stage below:
+
+1. **Diff the old base vs. the new base** version of that target's top-level HDL file to see exactly what changed between releases. Do **not** diff the forked copy against the new base — the fork has drifted too far to read that diff. The detailed mechanics (GitHub compare URLs, local diff) are in the README's [Managing Dependency Versions](../README.md#managing-dependency-versions) section — the same procedure a customer follows for their own fork.
+2. **Port the interface-affecting changes** (generics, ports, constants, signal declarations, instantiations) into the forked top-level file, preserving each example's customizations.
+3. **Rebuild** (`nihdl gen-vivado` / `nihdl gen-modelsim`) to confirm the target is healthy.
+
+Because NI authored the base-target change, you already know what changed — but still record it in the base target's release notes so external customers can follow the same old → new base diff for their own forks.
+
+### Step 5C) Testing
 The testing process can take several hours so we recommend doing this on a test machine.
 
 Test machine must have:
@@ -201,7 +233,7 @@ Run `install-deps`:
 nihdl install-deps
 ```
 
-Note: If you are testing a development release stack, run with the `--pre --latest` arguments to get the latest "dev" release versions.
+Note: `main` installs a coherent stack from its checked-in `dependencies.toml` with a plain `install-deps` and **no `--pre --latest`** — a `.dev0` pin already auto-resolves to the latest matching `.devN`. Use `--pre --latest` only as a stop-gap when iterating on a dev branch whose pins aren't settled yet.
 
 Verify the right dependencies are installed.  The report should look like this:
 ```
@@ -383,7 +415,7 @@ nihdl compile-vivado
 
 Run the `PXIe-7903 Aurora Example Host.vi` with the HDL Tools Vivado generated bitfile (in `objects/bitfiles`).
 
-### Step 5C) Release
+### Step 5D) Release
 
 Once you are satisfied with the testing results, make a release for flexrio-custom
 

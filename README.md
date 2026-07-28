@@ -10,6 +10,7 @@ Pre-release custom FlexRIO code for use with LabVIEW FPGA HDL Tools
     * https://github.com/ni/flexrio-deps
     * https://github.com/ni/flexrio-clips
     * https://github.com/ni/hdl-shared
+    * See [Dependencies and File Management](docs/DependenciesAndFileManagement.md) for how a custom target is assembled from the base target and these dependencies, and what each file list is for
 * There are two **compile flows** for turning custom HDL into a bitfile (see the [LabVIEW FPGA HDL Tools Theory of Operation](https://github.com/ni/labview-fpga-hdl-tools/blob/main/docs/TheoryOfOperation.md) for the full story):
     * **Vivado compile flow** – extend the design in HDL and compile the bitfile directly in Vivado, then communicate with it from the NI-RIO driver on a host PC (no LabVIEW required)
     * **LabVIEW FPGA compile flow** – use HDL to make a custom LabVIEW FPGA target, then write a VI in LabVIEW FPGA and let it compile the bitfile using the standard LabVIEW FPGA bitfile-generation experience (LabVIEW FPGA runs Vivado under the hood)
@@ -119,6 +120,8 @@ This creates a virtual environment, installs the correct version of the LabVIEW 
 This will download the dependencies specified in the dependencies.toml file found here:
 > C:\dev\github\flexrio-custom\dependencies.toml
 
+See [Dependencies and File Management](docs/DependenciesAndFileManagement.md) for what each dependency repo provides and how versions are managed.
+
 <br>
 <b> That's it!  Your computer is setup to use the LabVIEW FPGA HDL Tools to make custom FlexRIO FPGA devices</b>
 <br><br><br>
@@ -137,7 +140,7 @@ Step-by-step exercises for building bitfiles, customizing a target, and migratin
     * `targets` - FPGA target projects (one folder per supported device)
         * `common` - shared files used across the target projects
         * `pxie-7903custom` - example custom PXIe-7903 device (consider this to be the "Hello World" example)
-            * `nihdlsettings.py` - tool configuration (Python-based target settings)
+            * `nihdlsettings.py` - tool configuration (Python-based target settings; see [Dependencies and File Management](docs/DependenciesAndFileManagement.md))
             * `nisetup.bat` - runs the repo-root setup script to activate the Python environment
             * `lvFpgaTarget` - LabVIEW FPGA target plugin source files
             * `blankLvWindowNetlist` - placeholder LabVIEW window netlist content
@@ -147,7 +150,7 @@ Step-by-step exercises for building bitfiles, customizing a target, and migratin
             * `ModelSimProject` - ModelSim simulation project files (ignored in .gitignore)
             * `objects` - generated outputs from HDL tools (ignored in .gitignore)
             * `docs` - target-specific documentation and examples
-            * `vivadoprojectsources.txt` - source list used for Vivado project generation
+            * `vivadoprojectsources.txt` - source list used for Vivado project generation (the custom target's own sources, headed by the modified top-level VHDL file — see [Dependencies and File Management](docs/DependenciesAndFileManagement.md))
             * `modelsimprojectsources.txt` - source list used for ModelSim project generation
         * `pxie-7903aurora` - example of migrating the Aurora CLIP to make a custom Aurora PXIe-7903 device
         * `pxie-7xxxCustom` - additional custom device examples

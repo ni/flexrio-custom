@@ -95,22 +95,67 @@ jobs:
             Pop-Location
           }
 
-      - name: Run per-target gen-target and gen-vivado
+      - name: Run per-target ModelSim and Vivado make + test
         shell: pwsh
         run: |
           Set-Location $env:GITHUB_WORKSPACE
           $configPath = Join-Path $env:GITHUB_WORKSPACE "tests" "pipeline" "nihdlsettings.py"
           $targets = "${{ steps.discover.outputs.targets }}".Split(',', [System.StringSplitOptions]::RemoveEmptyEntries)
 
+          # The pipeline nihdlsettings.py sets skip_vivado / skip_modelsim, so
+          # every nihdl command below runs in validation-only mode: it generates
+          # the project and validates the settings and file lists without
+          # launching Vivado or ModelSim (neither is installed on the hosted
+          # runner). sim-modelsim / compile-vivado are intentionally NOT run here
+          # because they require the real FPGA tools.
+          $failures = @()
+
+          function Invoke-Nihdl($target, [string[]]$nihdlArgs) {
+            $label = "$target> nihdl $($nihdlArgs -join ' ')"
+            Write-Host "== $label"
+            & nihdl --verbose @nihdlArgs --config=$configPath
+            if ($LASTEXITCODE -ne 0) {
+              Write-Host "::error::FAILED ($LASTEXITCODE): $label"
+              $script:failures += $label
+            }
+          }
+
+          function Test-HasModelSim($target) {
+            $settings = Join-Path $env:GITHUB_WORKSPACE $target "nihdlsettings.py"
+            if (-not (Test-Path $settings)) { return $false }
+            return (Select-String -Path $settings -Pattern 'set_modelsim_top_entity' -Quiet)
+          }
+
           foreach ($target in $targets) {
             Write-Host "::group::$target"
+            $hasModelSim = Test-HasModelSim $target
             Push-Location $target
             try {
-              nihdl --verbose gen-target --config=$configPath
-              nihdl --verbose gen-vivado --config=$configPath
+              # LabVIEW FPGA target support files
+              Invoke-Nihdl $target @("gen-target")
+
+              # Vivado flow: make the project, then validate it (RTL check)
+              Invoke-Nihdl $target @("gen-vivado")
+              Invoke-Nihdl $target @("check-vivado")
+
+              # ModelSim flow: make + validate the ModelSim project. Only targets
+              # that declare a testbench (set_modelsim_top_entity) have one.
+              if ($hasModelSim) {
+                Invoke-Nihdl $target @("gen-modelsim", "--overwrite")
+              }
+              else {
+                Write-Host "$target> no set_modelsim_top_entity; skipping ModelSim smoke test"
+              }
             }
             finally {
               Pop-Location
               Write-Host "::endgroup::"
             }
           }
+
+          if ($failures.Count -gt 0) {
+            Write-Host "`nFAILED commands:"
+            $failures | ForEach-Object { Write-Host "  - $_" }
+            throw "$($failures.Count) nihdl command(s) failed."
+          }
+          Write-Host "`nAll target smoke tests passed."

@@ -139,11 +139,28 @@ If a dependency file collides by name with a target-specific copy, use
 `add_exclude_hdl_file_list(...)` to drop the unwanted copy (see the
 [Settings Reference](https://github.com/ni/labview-fpga-hdl-tools/blob/main/docs/SettingsReference.md)).
 
+## Generated VHDL
+
+Not every source file in the build is authored by hand. The `nihdl` tools
+**generate** some of the target's VHDL — the window instantiation and its
+flatten/unflatten wrappers (from the custom-I/O CSV) and `PkgNiHdlSettings.vhd`
+(HDL constants from `nihdlsettings.py`). These are registered with
+`add_generated_vhdl_template(...)`, rendered into `objects/GeneratedHDL/` (a build
+artifact that is **not** checked in), and then listed in
+`vivadoprojectsources.txt` / `modelsimprojectsources.txt` like any other source.
+
+They are generated — not hand-written — so the HDL and the LabVIEW FPGA target
+plugin are driven from a **single source** (`nihdlsettings.py` and the custom-I/O
+CSV) and cannot drift. For what is generated and why, see
+[Generated VHDL](https://github.com/ni/labview-fpga-hdl-tools/blob/main/docs/GeneratedVHDL.md).
+Edit the source (`nihdlsettings.py` or the CSV), never the generated `.vhd`.
+
 ## Related documentation
 
 - [README — Core Concepts and System Setup](../README.md)
 - [Getting Started exercises](GettingStarted.md)
 - [LabVIEW FPGA HDL Tools — Theory of Operation](https://github.com/ni/labview-fpga-hdl-tools/blob/main/docs/TheoryOfOperation.md)
+- [LabVIEW FPGA HDL Tools — Generated VHDL](https://github.com/ni/labview-fpga-hdl-tools/blob/main/docs/GeneratedVHDL.md)
 - [LabVIEW FPGA HDL Tools — Settings Reference](https://github.com/ni/labview-fpga-hdl-tools/blob/main/docs/SettingsReference.md)
 - [LabVIEW FPGA HDL Tools — Command Reference](https://github.com/ni/labview-fpga-hdl-tools/blob/main/docs/CommandReference.md)
 </content>

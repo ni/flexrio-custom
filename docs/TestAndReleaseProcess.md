@@ -12,9 +12,10 @@ Releasing flexrio-custom is a multi-repo process. Source code is first published
 |------|------------------|-----------|
 | 1 | Publish NI source code to GitHub (flexrio, flexrio-deps, flexrio-clips) | Required |
 | 2 | PR and release the three FlexRIO GitHub repos | Required |
-| 3 | Release hdl-shared | Only if co-developing hdl-shared |
-| 4 | Release labview-fpga-hdl-tools | Only if co-developing the HDL tools |
-| 5 | Update, test, and release flexrio-custom | Required |
+| 3 | Reconcile the shipped example targets with the new base target | Required |
+| 4 | Release hdl-shared | Only if co-developing hdl-shared |
+| 5 | Release labview-fpga-hdl-tools | Only if co-developing the HDL tools |
+| 6 | Update, test, and release flexrio-custom | Required |
 
 ### Release Versioning
 
@@ -36,8 +37,8 @@ These repos are **decoupled from NI product releases** and use semantic versioni
 **`--pre --latest` is a dev-branch stop-gap only.** `nihdl install-deps --pre --latest` force-resolves the latest pre-release of *every* dependency regardless of the pins. Use it only while iterating on a flexrio-custom dev branch before the pins are settled. You should never need it on `main`.
 
 **Workflow for every release or dependency bump:**
-1. On a flexrio-custom dev branch, set `dependencies.toml` to the intended versions (`.dev0` for a pre-release cycle) and reconcile any forked files (Step 5B).
-2. Run the test sequences (Step 5C) against your dev branch — locally and/or through the internal CI test pipeline. You may use `--pre --latest` as a stop-gap while iterating, but the goal is that the pinned `dependencies.toml` passes on its own.
+1. On a flexrio-custom dev branch, set `dependencies.toml` to the intended versions (`.dev0` for a pre-release cycle) and reconcile any forked files (Section 3).
+2. Run the test sequences (Steps 6B–6C) against your dev branch — locally and/or through the internal CI test pipeline. You may use `--pre --latest` as a stop-gap while iterating, but the goal is that the pinned `dependencies.toml` passes on its own.
 3. When green, PR the dev branch (including `dependencies.toml`) to `main`.
 4. Run the test sequences again on `main` — they must pass with a plain `install-deps` (no `--pre --latest`). If they don't, the pins are wrong.
 
@@ -55,6 +56,8 @@ You can set Publish to false - the nuget artifacts are not needed
 This copies the filtered repo contents into the `githubstaging` branches.
 
 We run the pipeline manually on `main` when we are ready to push to GitHub. Other runs of the pipeline on dev branches may overwrite the `githubstaging` branches, so we want to be sure they are freshly staged with the `main` branch contents before pushing.
+
+**Iterating with pre-releases (recommended before merging hw-flexrio changes).** While developing hw-flexrio changes, run this publish process **and** the internal GitHub test pipeline off an hw-flexrio **dev branch** to produce **`.dev0` pre-releases** of `flexrio` / `flexrio-deps` / `flexrio-clips` and validate the full stack (flexrio-custom examples + deps + tools) before merging. Once validated, PR the hw-flexrio dev branch to `main` and re-run the process on the `main` CI result to produce the final release. The build mechanics of this dev → main loop are documented in hw-flexrio `docs/githubrelease/GitHubReleaseBuild.md` ("the hw-flexrio dev → main workflow").
 
 When the pipeline has completed, inspect the staging branches to make sure they look right:
 - `ni/githubstaging/flexrio`
@@ -143,24 +146,37 @@ Make the release:
 
 Note: If you are doing a development release, name it 26.3.0.dev0 and set the "Pre-release" label
 
+## 3. Reconcile the shipped example targets with the new base target
 
-## 3. Optional - Release HDL Shared GitHub Repo
+A quarterly base-target bump (a new `flexrio` / `flexrio-deps` version) can introduce **breaking changes** to the one file each example target **forks** from the base target: its **top-level HDL file** (`SasquatchTopTemplate.vhd`, `MacallanTop.vhd`, and so on). Everything else is referenced in place and updates automatically, but the forked top file does not. **So on every quarterly release, we must reconcile the forked top-level file in each example target we ship — otherwise customers get broken examples out of the box.**
+
+> **Example (a real one).** Upgrading a PXIe-7903 Aurora custom target from `flexrio` / `flexrio-deps` **26.1.0** to **26.2.0** to pick up new generics on the fixed logic and `IoRefClkSelect`. We updated the **base** `SasquatchTopTemplate.vhd` to add those generics, so the **forked** copy in the custom target no longer matched and failed to build until the same changes were ported over.
+
+Do this for each example target under `targets/` and `test-targets/`, before the flexrio-custom testing stages (Steps 6B–6C):
+
+1. **Diff the old base vs. the new base** version of that target's top-level HDL file to see exactly what changed between releases. Do **not** diff the forked copy against the new base — the fork has drifted too far to read that diff. The detailed mechanics (GitHub compare URLs, local diff) are in the README's [Managing Dependency Versions](../README.md#managing-dependency-versions) section — the same procedure a customer follows for their own fork.
+2. **Port the interface-affecting changes** (generics, ports, constants, signal declarations, instantiations) into the forked top-level file, preserving each example's customizations.
+3. **Rebuild** (`nihdl gen-vivado` / `nihdl gen-modelsim`) to confirm the target is healthy.
+
+Because NI authored the base-target change, you already know what changed — but still record it in the base target's release notes so external customers can follow the same old → new base diff for their own forks.
+
+## 4. Optional - Release HDL Shared GitHub Repo
 
 If you are co-developing code in the hdl-shared repo along with the flexrio-custom repo, you may want to do a release of hdl-shared at this time.  However, the hdl-shared repo is decopuled from the flexrio and flexrio-custom repo versioning so it may release independently when changes or fixes are added to it.
 
 Release documentation is here:
 https://github.com/ni/hdl-shared/blob/main/docs/TestAndReleaseProcess.md
 
-## 4. Optional - Release LabVIEW FPGA HDL Tools GitHub Repo
+## 5. Optional - Release LabVIEW FPGA HDL Tools GitHub Repo
 
 If you are co-developing code in the labview-fpga-hdl-tools repo along with the flexrio-custom repo, you may want to do a release of labview-fpga-hdl-tools at this time.  However, the labview-fpga-hdl-tools repo is decopuled from the flexrio and flexrio-custom repo versioning so it may release independently when changes or fixes are added to it.
 
 Release documentation is here:
 https://github.com/ni/labview-fpga-hdl-tools/blob/main/docs/TestAndReleaseProcess.md
 
-## 5. Test and Release FlexRIO Custom GitHub Repo
+## 6. Test and Release FlexRIO Custom GitHub Repo
 
-### Step 5A) Update dependencies.toml
+### Step 6A) Update dependencies.toml
 Update the `dependencies.toml` file in flexrio-custom to use the latest flexrio, hdl-shared, and labview-fpga-hdl-tools dependencies.
 
 Use the `~=` operator so users can uptake patches without having to change the `dependencies.toml` file:
@@ -172,21 +188,16 @@ For a **pre-release (development) cycle**, pin the NI-versioned deps to their `.
 
 Check this updated `dependencies.toml` file into `main`.
 
-### Step 5B) Reconcile the shipped example targets with the new base target
+### Step 6B) Pipeline Testing
+Use the internal NI Azure pipeline `hw-flexrio-test-github-custom` to run compile and simulation testing of the flexrio-custom repo. This testing runs on an agent **without LabVIEW installed**, so it cannot run any LabVIEW-related steps — use the Manual Testing in Step 6C for those.
 
-A quarterly base-target bump (Step 5A) can introduce **breaking changes** to the one file each example target **forks** from the base target: its **top-level HDL file** (`SasquatchTopTemplate.vhd`, `MacallanTop.vhd`, and so on). Everything else is referenced in place and updates automatically, but the forked top file does not. **So on every quarterly release, we must reconcile the forked top-level file in each example target we ship — otherwise customers get broken examples out of the box.**
+Pipeline parameters:
+- **flexrio-custom branch** to test — `main` or your dev branch.
+- **hdl-shared branch** to test — `main` or your dev branch.
+- **Extra `install-deps` args** (e.g. `--pre --latest`) — a stop-gap for when a dev branch's `dependencies.toml` isn't fully pinned yet. `main` should never need these (see **Main Branch Coherence and Dependency Pinning** above).
+- **labview-fpga-hdl-tools version** — specify an explicit tool version if you are developing a new dev version that `dependencies.toml` doesn't point to yet.
 
-> **Example (a real one).** Upgrading a PXIe-7903 Aurora custom target from `flexrio` / `flexrio-deps` **26.1.0** to **26.2.0** to pick up new generics on the fixed logic and `IoRefClkSelect`. We updated the **base** `SasquatchTopTemplate.vhd` to add those generics, so the **forked** copy in the custom target no longer matched and failed to build until the same changes were ported over.
-
-Do this for each example target under `targets/` and `test-targets/`, before the Testing stage below:
-
-1. **Diff the old base vs. the new base** version of that target's top-level HDL file to see exactly what changed between releases. Do **not** diff the forked copy against the new base — the fork has drifted too far to read that diff. The detailed mechanics (GitHub compare URLs, local diff) are in the README's [Managing Dependency Versions](../README.md#managing-dependency-versions) section — the same procedure a customer follows for their own fork.
-2. **Port the interface-affecting changes** (generics, ports, constants, signal declarations, instantiations) into the forked top-level file, preserving each example's customizations.
-3. **Rebuild** (`nihdl gen-vivado` / `nihdl gen-modelsim`) to confirm the target is healthy.
-
-Because NI authored the base-target change, you already know what changed — but still record it in the base target's release notes so external customers can follow the same old → new base diff for their own forks.
-
-### Step 5C) Testing
+### Step 6C) Manual Testing
 The testing process can take several hours so we recommend doing this on a test machine.
 
 Test machine must have:
@@ -415,7 +426,7 @@ nihdl compile-vivado
 
 Run the `PXIe-7903 Aurora Example Host.vi` with the HDL Tools Vivado generated bitfile (in `objects/bitfiles`).
 
-### Step 5D) Release
+### Step 6D) Release
 
 Once you are satisfied with the testing results, make a release for flexrio-custom
 

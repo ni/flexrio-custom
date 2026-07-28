@@ -126,6 +126,81 @@ See [Dependencies and File Management](docs/DependenciesAndFileManagement.md) fo
 <b> That's it!  Your computer is setup to use the LabVIEW FPGA HDL Tools to make custom FlexRIO FPGA devices</b>
 <br><br><br>
 
+# Managing Dependency Versions
+
+`nihdl install-deps` clones the dependency repositories listed in [`dependencies.toml`](dependencies.toml) at the repo root. Understanding how those repos are versioned — and what to do when you move to a newer version — keeps your custom target building across upgrades.
+
+## Versioning schemes
+
+The dependencies use two different versioning schemes:
+
+**Locked to NI product releases — calendar versioning** (e.g. `26.3.0` = 2026 Q3). Keep these three on the **same quarterly version**:
+- `ni/flexrio` — the base FlexRIO target support your custom target builds on
+- `ni/flexrio-deps` — the encrypted base-target dependencies
+- `ni/flexrio-clips` — the socketed CLIP HDL
+
+**Decoupled from NI product releases — semantic versioning** (e.g. `2.5.0`). These release independently whenever they change:
+- `ni/hdl-shared` — reusable host interfaces (registers, DMA FIFOs)
+- `ni/labview-fpga-hdl-tools` — the `nihdl` tools themselves (also pinned as a Python package)
+
+The flexrio-custom repo itself is calendar-versioned and tracks the FlexRIO quarterly release.
+
+## Specifying versions in `dependencies.toml`
+
+Use the `~=` ("compatible release") operator so you can pick up patch fixes without editing the file:
+
+```toml
+github_dependencies = [
+    "ni/flexrio~=26.3.0",
+    "ni/flexrio-deps~=26.3.0",
+    "ni/flexrio-clips~=26.3.0",
+    "ni/hdl-shared~=1.0.0",
+]
+```
+
+NI recommends keeping `flexrio`, `flexrio-deps`, and `flexrio-clips` on the **same** quarterly version — mixing quarters can produce interface mismatches between the base target and its deps.
+
+A checked-out release tag (or `main`) already pins a coherent stack in `dependencies.toml`, so **`nihdl install-deps` alone installs the right versions — no extra flags needed.** A `.dev0` pin (e.g. `ni/flexrio~=26.3.0.dev0`) automatically resolves to the latest matching pre-release (`.dev1`, `.dev2`, …), so a development stack installs the same way. `install-deps --pre --latest` is only a convenience for pulling the newest pre-releases of *every* dependency regardless of the pins, when you are iterating on a development branch — you should not need it for a released version or `main`.
+
+See [Dependencies and File Management](docs/DependenciesAndFileManagement.md) for what each repo provides and how the file lists tie them together.
+
+## Match the installed FlexRIO driver version
+
+Choose the **quarterly version** of `flexrio` / `flexrio-deps` (and therefore of flexrio-custom) to **match the FlexRIO driver installed on your machine**. For example, with FlexRIO 2026 Q3 installed, pin the deps to `~=26.3.0`.
+
+This matters because a custom target relies on pieces that ship with the **FlexRIO driver**, not with this repo:
+
+- **Common target-plugin files.** A custom LabVIEW FPGA target plugin depends on **common target-plugin files that the FlexRIO driver installs** — these are *not* provided by the GitHub custom device target plugin. So the version of the flexrio base-target support must match the installed FlexRIO driver version.
+- **Host driver API for FIFOs and registers.** flexrio-custom exposes **DMA FIFO** and **register** host APIs on the custom FPGA device. The host-side driver for those APIs is installed with the FlexRIO driver, so the versions must match to avoid incompatibility.
+
+Keeping flexrio-custom, its `flexrio` / `flexrio-deps` dependencies, and the installed FlexRIO driver all on the **same quarterly version** avoids these mismatches.
+
+## Upgrading to a newer base-target version
+
+When you bump `flexrio` / `flexrio-deps` in `dependencies.toml` and re-run `nihdl install-deps`:
+
+- **Referenced files update automatically.** A custom target references almost everything **in place** from the base target, so those files come along with the new version with no action from you.
+- **Forked files do NOT update automatically.** A custom target **copies and modifies** the base target's **top-level HDL file** — for example `SasquatchTopTemplate.vhd` (Sasquatch / Aurora) or `MacallanTop.vhd` (Macallan). Your copy keeps the old interface, so if NI changed the base top-level file, your fork can break. (See [Dependencies and File Management](docs/DependenciesAndFileManagement.md) for which files are forked vs. referenced.)
+
+### Reconciling a forked file after an upgrade
+
+**How you'll know something broke.** After `install-deps`, the target fails to build (`nihdl gen-vivado`, `gen-target`, `gen-modelsim`, or a compile) with errors on the forked top-level file — commonly missing or extra **generics** or **ports** on instantiations of the fixed logic, the window wrapper, `IoRefClkSelect`, or clock/reset constants.
+
+**How to find what changed — diff the OLD base against the NEW base.** Your fork has usually drifted far from the base target (you added your `UserHdl`, FIFOs, custom I/O, and so on), so:
+
+- **Do NOT** diff your **customized** file against the **new base** file — that diff is dominated by *your* customizations and it's hard to see NI's changes.
+- **DO** diff the **old base** version against the **new base** version of the *same* file. That isolates exactly what NI changed between the two releases — usually a small, focused diff.
+
+Two ways to get the two base versions:
+
+- **On GitHub (easiest):** compare the two tags on `ni/flexrio` and open the top-level file, e.g. `https://github.com/ni/flexrio/compare/26.1.0...26.2.0` (or view one version directly: `https://github.com/ni/flexrio/blob/26.1.0/targets/<base-target>/rtl-lvfpga/<Top>.vhd`).
+- **Locally:** before upgrading, save a copy of `deps/flexrio/targets/<base-target>/rtl-lvfpga/<Top>.vhd`, run `install-deps` on the new version, and diff the two copies with any diff tool.
+
+**Reconcile.** For each change in the old → new base diff, decide whether it affects the interface your fork depends on (generics, ports, constants, signal declarations, instantiations). If it does, apply the equivalent edit to your forked top-level file while **preserving your customizations**, then rebuild to confirm.
+
+> Today only the **top-level HDL file** is forked. If you fork additional base-target files, apply the same old → new base diff to each of them on every version bump.
+<br><br><br>
+
 # Getting Started
 
 Step-by-step exercises for building bitfiles, customizing a target, and migrating a socketed CLIP have moved to [docs/GettingStarted.md](docs/GettingStarted.md).

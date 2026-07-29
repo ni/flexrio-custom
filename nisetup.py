@@ -7,6 +7,7 @@ Usage:
 
 import argparse
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -33,14 +34,25 @@ def _minor(version):
     return ".".join(version.split(".")[:2])
 
 
+def _pyenv_root():
+    """Return the pyenv-win root directory from the environment, or the default location."""
+    for var in ("PYENV_ROOT", "PYENV", "PYENV_HOME"):
+        value = os.environ.get(var)
+        if value:
+            return Path(value)
+    return Path.home() / ".pyenv" / "pyenv-win"
+
+
 def _pyenv_installed_versions():
-    """Return (version_name, interpreter_path) for every pyenv-installed version."""
-    try:
-        root = subprocess.run(["pyenv", "root"], capture_output=True, text=True).stdout.strip()
-    except OSError:
-        return []
-    versions_dir = Path(root) / "versions" if root else None
-    if not versions_dir or not versions_dir.exists():
+    """Return (version_name, interpreter_path) for every pyenv-installed version.
+
+    Reads the pyenv ``versions`` directory directly instead of invoking ``pyenv``.
+    On Windows ``pyenv`` is a ``.bat`` shim that ``subprocess`` cannot launch
+    (CreateProcess does not resolve PATHEXT), so shelling out silently finds
+    nothing.
+    """
+    versions_dir = _pyenv_root() / "versions"
+    if not versions_dir.exists():
         return []
     found = []
     for entry in versions_dir.iterdir():
@@ -52,26 +64,71 @@ def _pyenv_installed_versions():
     return found
 
 
+def _py_launcher_versions():
+    """Return (version, interpreter_path) for pythons known to the Windows 'py' launcher.
+
+    This finds regular python.org installs on machines that do not use pyenv.
+    """
+    py = shutil.which("py")
+    if not py:
+        return []
+    try:
+        result = subprocess.run([py, "-0p"], capture_output=True, text=True)
+    except OSError:
+        return []
+    found = []
+    for line in result.stdout.splitlines():
+        version = re.search(r"-V:(\d+\.\d+)", line)
+        path = re.search(r"[A-Za-z]:\\.*python\.exe", line, re.IGNORECASE)
+        if version and path:
+            found.append((version.group(1), path.group(0)))
+    return found
+
+
+def _installed_supported():
+    """Return (version_name, interpreter_path) for interpreters pyenv or the py launcher know about."""
+    return _pyenv_installed_versions() + _py_launcher_versions()
+
+
 def _resolve_interpreter(supported):
-    """Return an interpreter whose minor version is supported, or exit with instructions."""
+    """Return (interpreter_path, version) for a supported Python, or exit with instructions.
+
+    Order of preference: the active interpreter (if supported), then the newest
+    supported version found via pyenv or the Windows 'py' launcher. pyenv is NOT
+    required — a plain python.org install is discovered through the 'py' launcher.
+    """
     current = ".".join(map(str, sys.version_info[:3]))
     if _minor(current) in supported:
-        return sys.executable
-    # Prefer the newest pyenv-installed version whose minor is supported.
+        return sys.executable, current
     best = None
-    for name, exe in _pyenv_installed_versions():
+    for name, exe in _installed_supported():
         if _minor(name) not in supported:
             continue
         key = tuple(int(part) for part in name.split(".") if part.isdigit())
         if best is None or key > best[0]:
-            best = (key, exe)
+            best = (key, exe, name)
     if best:
-        return best[1]
+        return best[1], best[2]
+    _exit_no_supported_python(supported)
+
+
+def _exit_no_supported_python(supported):
+    """Print beginner-friendly install instructions and exit."""
+    versions = ", ".join(supported)
+    example = f"{supported[-2] if len(supported) >= 2 else supported[-1]}.0"
     print(
-        f"\nERROR: No supported Python is installed. This repo supports "
-        f"{', '.join(supported)}.\n"
-        f"       Install one of those versions (e.g. `pyenv install {supported[-1]}.x`) "
-        f"and re-run nisetup.\n"
+        f"\nERROR: nisetup could not find a Python version this repo supports.\n"
+        f"       Supported versions: {versions}\n\n"
+        f"       Do EITHER option below, then run  nisetup  again:\n\n"
+        f"       Option 1 - regular Python (simplest, no pyenv needed):\n"
+        f"         1. Download Python {example} from https://www.python.org/downloads/\n"
+        f"         2. Run the installer and CHECK the box\n"
+        f'            "Add python.exe to PATH" on the first screen.\n\n'
+        f"       Option 2 - pyenv (if your machine uses it):\n"
+        f"         1. pyenv install {example}\n"
+        f"         2. pyenv global {example}     <-- REQUIRED: this step selects the version\n"
+        f"         3. pyenv rehash\n"
+        f"         4. Confirm with:  python --version   (should show {example})\n"
     )
     sys.exit(1)
 
@@ -163,17 +220,23 @@ def main():
 
     # Recreate the venv if it is built from an unsupported Python version.
     if venv_dir.exists() and supported:
-        current = _venv_version(venv_dir)
-        if not current or _minor(current) not in supported:
+        existing = _venv_version(venv_dir)
+        if not existing or _minor(existing) not in supported:
             print(
-                f"Existing .venv (Python {current or 'unknown'}) is not a supported version "
+                f"Existing .venv (Python {existing or 'unknown'}) is not a supported version "
                 f"({', '.join(supported)}); recreating ..."
             )
             shutil.rmtree(venv_dir, ignore_errors=True)
+        else:
+            print(f"Reusing existing .venv (Python {existing}).")
 
     if not _venv_python(venv_dir).exists():
-        interpreter = _resolve_interpreter(supported) if supported else sys.executable
-        print("\nCreating virtual environment in .venv ...")
+        if supported:
+            interpreter, chosen_version = _resolve_interpreter(supported)
+        else:
+            interpreter = sys.executable
+            chosen_version = ".".join(map(str, sys.version_info[:3]))
+        print(f"\nCreating virtual environment in .venv using Python {chosen_version} ...")
         prompt_name = repo_root.resolve().name
         subprocess.run(
             [str(interpreter), "-m", "venv", str(venv_dir), "--prompt", prompt_name],
@@ -182,6 +245,7 @@ def main():
 
     venv_pip = _venv_pip(venv_dir)
     _install_packages([str(venv_pip)], packages, venv_pip.parent)
+    print(f"\nEnvironment ready: Python {_venv_version(venv_dir) or 'unknown'} in .venv")
 
 
 if __name__ == "__main__":

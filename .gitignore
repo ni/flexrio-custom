@@ -2,6 +2,8 @@
 # githubvisible=true
 # All objects folders should be ignored
 objects/
+# Ignore AI/build scratch folders (never check in)
+.build/
 # Ignore things modelsim creates
 modelsim/
 transcript

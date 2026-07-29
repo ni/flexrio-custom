@@ -231,6 +231,26 @@ architecture rtl of UserHdl is
   signal bReaderFifoStartReq : boolean := false;
   signal bReaderFifoStopReq  : boolean := false;
 
+  ---------------------------------------------------------------------------
+  -- Digital IO (base-board DIO) register + control signals
+  ---------------------------------------------------------------------------
+  signal bRegPortOutDioRegs : RegPortOut_t;
+
+  signal bDioRegFpgaHostWrite : BooleanVector(0 to kNumDioRegs-1);
+  signal bDioRegFpgaAck       : BooleanVector(0 to kNumDioRegs-1) := (others => false);
+  signal bDioRegFpgaWrite     : BooleanVector(0 to kNumDioRegs-1);
+  signal bDioRegFpgaDataIn    : Slv32Ary_t(0 to kNumDioRegs-1);
+  signal bDioRegFpgaDataOut   : Slv32Ary_t(0 to kNumDioRegs-1);
+
+  -- Per-line vectors (base-board DIO lines 0 .. kNumDioLines-1)
+  signal aDioInData    : std_logic_vector(kNumDioLines-1 downto 0);  -- async pin inputs
+  signal bDioDirection : std_logic_vector(kNumDioLines-1 downto 0);  -- Direction register
+  signal bDioOutData   : std_logic_vector(kNumDioLines-1 downto 0);  -- OutputData register
+
+  -- Input synchronizers (async pin inputs into the BusClk domain)
+  signal bDioInMeta : std_logic_vector(kNumDioLines-1 downto 0) := (others => '0');
+  signal bDioInSync : std_logic_vector(kNumDioLines-1 downto 0) := (others => '0');
+
 begin
 
   ---------------------------------------------------------------------------
@@ -518,14 +538,17 @@ begin
   ---------------------------------------------------------------------------
   bRegPortOut.Data      <= bRegPortOutCommonRegs.Data or
                            bRegPortOutDemoRegs.Data or
+                           bRegPortOutDioRegs.Data or
                            bRegPortOutFifoRegs.Data;
 
   bRegPortOut.DataValid <= bRegPortOutCommonRegs.DataValid or
                            bRegPortOutDemoRegs.DataValid or
+                           bRegPortOutDioRegs.DataValid or
                            bRegPortOutFifoRegs.DataValid;
 
   bRegPortOut.Ready     <= bRegPortOutCommonRegs.Ready and
                            bRegPortOutDemoRegs.Ready and
+                           bRegPortOutDioRegs.Ready and
                            bRegPortOutFifoRegs.Ready;
 
   ---------------------------------------------------------------------------
@@ -573,8 +596,74 @@ begin
   aBaseI2cSdaOut                  <= '0';
   aBaseI2cSdaTri                  <= '1';
   aBaseConfigReset                <= '0';
-  aBaseDioOut                     <= (others => '0');
-  aBaseDioOutEn                   <= (others => '0');
+  ---------------------------------------------------------------------------
+  -- Digital IO (base-board DIO) -- host-controlled register interface
+  ---------------------------------------------------------------------------
+  -- The base-board DIO bus (aBaseDio) is split by the carrier into separate
+  -- input / output / output-enable vectors (aBaseDioIn/Out/OutEn). There is NO
+  -- external direction handshake on this target (verified against
+  -- BTracePlusTopTemplate: a MacallanIoBuffers-style tristate drives the pins),
+  -- so a per-line output-enable directly controls the buffer. Exposed to the
+  -- host as three registers (see PkgUserHdl, docs/HostInterfaces.md, and the common FlexRIO Digital IO document ../../../docs/DigitalIO.md):
+  --   0x20 Direction  (R/W)  bit N: 1 = output, 0 = input
+  --   0x24 OutputData (R/W)  bit N: value driven when line N is an output
+  --   0x28 Status     (RO)   [31:0] live input sample per line
+  ---------------------------------------------------------------------------
+  NiDioRegisterArray_inst : entity work.NiSharedHostRegisterArray
+    generic map(
+      kNumRegisters => kNumDioRegs,
+      kBaseAddress  => kDioRegsBaseAddress,
+      kDefault      => (0 to kNumDioRegs-1 => x"00000000"),
+      kReadOnly     => (kDioDirectionIdx  => false,
+                        kDioOutputDataIdx => false,
+                        kDioStatusIdx     => true),
+      kUseFpgaAck   => (0 to kNumDioRegs-1 => false),
+      kMaxHdlRegOffset => kMaxHdlRegOffset
+    )
+    port map(
+      BusClk         => BusClk,
+      aReset         => aBusReset,
+      bRegPortIn     => bRegPortIn,
+      bRegPortOut    => bRegPortOutDioRegs,
+      bFpgaHostWrite => bDioRegFpgaHostWrite,
+      bFpgaAck       => bDioRegFpgaAck,
+      bFpgaWrite     => bDioRegFpgaWrite,
+      bFpgaDataIn    => bDioRegFpgaDataIn,
+      bFpgaDataOut   => bDioRegFpgaDataOut
+    );
+
+  -- Host R/W register fields -> per-line control vectors
+  bDioDirection <= bDioRegFpgaDataOut(kDioDirectionIdx)(kNumDioLines-1 downto 0);
+  bDioOutData   <= bDioRegFpgaDataOut(kDioOutputDataIdx)(kNumDioLines-1 downto 0);
+
+  -- Drive the separated output / output-enable vectors from the registers.
+  -- Direction bit = 1 enables the buffer to drive the pin (output).
+  aBaseDioOut   <= bDioOutData;
+  aBaseDioOutEn <= bDioDirection;
+
+  aDioInData <= aBaseDioIn;
+
+  -- Two-flop synchronizer for the asynchronous input pins.
+  DioInputSyncx : process(BusClk)
+  begin
+    if rising_edge(BusClk) then
+      bDioInMeta <= aDioInData;
+      bDioInSync <= bDioInMeta;
+    end if;
+  end process DioInputSyncx;
+
+  -- Publish live input data into the read-only Status register.
+  DioStatusRegMap : process(bDioInSync)
+    variable vStatus : std_logic_vector(31 downto 0);
+  begin
+    vStatus := (others => '0');
+    vStatus(kNumDioLines-1 downto 0) := bDioInSync;   -- [31:0] live input
+
+    bDioRegFpgaWrite  <= (others => false);
+    bDioRegFpgaDataIn <= (others => (others => '0'));
+    bDioRegFpgaWrite(kDioStatusIdx)  <= true;
+    bDioRegFpgaDataIn(kDioStatusIdx) <= vStatus;
+  end process DioStatusRegMap;
   Qsfp0MgtTx_p                    <= (others => '0');
   Qsfp0MgtTx_n                    <= (others => '0');
   Qsfp1MgtTx_p                    <= (others => '0');

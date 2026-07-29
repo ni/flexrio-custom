@@ -1,6 +1,6 @@
-# PXIe-7912 Custom Target — Host Interfaces (Register & FIFO API)
+# PXIe-7981 Custom Target — Host Interfaces (Register & FIFO API)
 
-Host-facing API reference for the PXIe-7912 **custom** target: every
+Host-facing API reference for the PXIe-7981 **custom** target: every
 host-accessible register and both DMA FIFOs exposed by the `UserHdl` block. The
 source of truth is [PkgUserHdl.vhd](../rtl-lvfpga/PkgUserHdl.vhd) and
 [UserHdl.vhd](../rtl-lvfpga/UserHdl.vhd); regenerate this document if those
@@ -26,7 +26,7 @@ offsets are byte offsets into the UserHdl register space.
 
 | Offset | Name | Access | Description |
 |--------|------|--------|-------------|
-| `0x00` | Signature | RO | Fixed signature (`0x7912BEEF`) |
+| `0x00` | Signature | RO | Fixed signature (`0x7981BEEF`) |
 | `0x04` | Version | RO | Interface version (`0x00000001`) |
 | `0x08` | OldestCompatibleVersion | RO | Oldest compatible interface version (`0x00000001`) |
 | `0x0C` | Scratch | R/W | General-purpose scratch register |

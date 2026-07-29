@@ -537,7 +537,7 @@ begin
   ---------------------------------------------------------------------------
   -- Because the LV Window has board IO disabled on this custom target, the 8
   -- Aux DIO IO-Node interfaces are routed here. They are exposed to the host as
-  -- three registers (see PkgUserHdl and docs/digital-io.md):
+  -- three registers (see PkgUserHdl, docs/HostInterfaces.md, and the common FlexRIO Digital IO document ../../../docs/DigitalIO.md):
   --   0x20 Direction  (R/W)  bit N: 1 = output, 0 = input
   --   0x24 OutputData (R/W)  bit N: value driven when line N is an output
   --   0x28 Status     (RO)   [7:0] live input, [15:8] Done per line

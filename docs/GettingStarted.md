@@ -68,6 +68,17 @@ After installing, (re)start LabVIEW so it picks up the new target — LabVIEW on
 ### 8) Test the target in LabVIEW 
 Use the NI-RIO API to download and run the bitfile
 
+> **Use _Open Dynamic Bitfile Reference_, not _Open FPGA VI Reference_.** The standard
+> NI-RIO host node **Open FPGA VI Reference** does **not** work with these custom
+> targets — the custom-target plugin support does not yet integrate with the way that
+> node loads the `.lvbitx`. Instead, open the bitfile with **Open Dynamic Bitfile
+> Reference**: wire the **bitfile path** input to your `.lvbitx`, the **device address**
+> input to the FPGA target's RIO resource, and the **type** input to an **FPGA Interface
+> Dynamic Refnum** constant configured (right-click → **Configure FPGA VI Reference**) to
+> match the bitfile. The `HostExample` VI below already does this. See
+> the target's [HostInterfaces.md](../targets/pxie-7903custom/docs/HostInterfaces.md)
+> for the register and FIFO map.
+
 Open the HostExample VI:
 > flexrio-custom\targets\pxie-7903custom\docs\Examples\LV2023\HostExample
 

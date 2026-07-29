@@ -19,6 +19,7 @@ Pre-release custom FlexRIO code for use with LabVIEW FPGA HDL Tools
 * You can communicate between the NI-RIO driver on a host PC and custom HDL directly using
     * Registers
     * DMA FIFOs
+    * **From a LabVIEW FPGA host VI, open the bitfile with _Open Dynamic Bitfile Reference_ — wire in the `.lvbitx` path and a matching FPGA VI Reference type refnum. The standard _Open FPGA VI Reference_ node does not work with these custom targets. See any target's `docs/HostInterfaces.md`.**
 * All of this is pre-release and not supported by NI
     * Use the [Issues](https://github.com/ni/flexrio-custom/issues) and [Discussions](https://github.com/ni/flexrio-custom/discussions) sections in this repository to collaborate with the developers and other lead users
 <br><br><br>

@@ -6,6 +6,8 @@ Usage:
 """
 
 import argparse
+import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -16,11 +18,88 @@ except ModuleNotFoundError:
     import tomli as tomllib
 
 
-def _read_python_dependencies(toml_path):
-    """Read python_dependencies list from dependencies.toml."""
+def _read_config(toml_path):
+    """Read python dependencies and supported interpreter versions from dependencies.toml."""
     with open(toml_path, "rb") as f:
         data = tomllib.load(f)
-    return data.get("python_dependencies", [])
+    return {
+        "packages": data.get("python_dependencies", []),
+        "supported": data.get("python_supported", []),
+    }
+
+
+def _minor(version):
+    """Return the 'X.Y' prefix of a version string (e.g. '3.11.8' -> '3.11')."""
+    return ".".join(version.split(".")[:2])
+
+
+def _pyenv_installed_versions():
+    """Return (version_name, interpreter_path) for every pyenv-installed version."""
+    try:
+        root = subprocess.run(["pyenv", "root"], capture_output=True, text=True).stdout.strip()
+    except OSError:
+        return []
+    versions_dir = Path(root) / "versions" if root else None
+    if not versions_dir or not versions_dir.exists():
+        return []
+    found = []
+    for entry in versions_dir.iterdir():
+        exe = entry / "python.exe"
+        if not exe.exists():
+            exe = entry / "bin" / "python"
+        if exe.exists():
+            found.append((entry.name, str(exe)))
+    return found
+
+
+def _resolve_interpreter(supported):
+    """Return an interpreter whose minor version is supported, or exit with instructions."""
+    current = ".".join(map(str, sys.version_info[:3]))
+    if _minor(current) in supported:
+        return sys.executable
+    # Prefer the newest pyenv-installed version whose minor is supported.
+    best = None
+    for name, exe in _pyenv_installed_versions():
+        if _minor(name) not in supported:
+            continue
+        key = tuple(int(part) for part in name.split(".") if part.isdigit())
+        if best is None or key > best[0]:
+            best = (key, exe)
+    if best:
+        return best[1]
+    print(
+        f"\nERROR: No supported Python is installed. This repo supports "
+        f"{', '.join(supported)}.\n"
+        f"       Install one of those versions (e.g. `pyenv install {supported[-1]}.x`) "
+        f"and re-run nisetup.\n"
+    )
+    sys.exit(1)
+
+
+def _venv_python(venv_dir):
+    """Return the interpreter path inside a venv for the current platform."""
+    if os.name == "nt":
+        return venv_dir / "Scripts" / "python.exe"
+    return venv_dir / "bin" / "python"
+
+
+def _venv_pip(venv_dir):
+    """Return the pip path inside a venv for the current platform."""
+    pip = venv_dir / "Scripts" / "pip.exe"
+    if not pip.exists():
+        pip = venv_dir / "bin" / "pip"
+    return pip
+
+
+def _venv_version(venv_dir):
+    """Return the 'X.Y.Z' Python version recorded in the venv's pyvenv.cfg, or None."""
+    cfg = venv_dir / "pyvenv.cfg"
+    if not cfg.exists():
+        return None
+    for line in cfg.read_text().splitlines():
+        if line.strip().startswith("version"):
+            return line.split("=", 1)[1].strip()
+    return None
 
 
 def _report_nihdl_version(scripts_dir):
@@ -62,36 +141,46 @@ def main():
         print(f"ERROR: {deps_file} not found.")
         sys.exit(1)
 
-    packages = _read_python_dependencies(deps_file)
+    config = _read_config(deps_file)
+    packages = config["packages"]
     if not packages:
         print("ERROR: No python_dependencies found in dependencies.toml.")
         sys.exit(1)
-
-    print(f"Using: Python {sys.version.split()[0]}")
+    supported = config["supported"]
 
     if args.no_venv:
-        # Pipeline mode: install directly into current Python
+        # Pipeline mode: install directly into the current Python (CI selects the version).
+        current = ".".join(map(str, sys.version_info[:3]))
+        if supported and _minor(current) not in supported:
+            print(f"ERROR: current Python {current} is not supported ({', '.join(supported)}).")
+            sys.exit(1)
+        print(f"Using: Python {current}")
         _install_packages([sys.executable, "-m", "pip"], packages, Path(sys.executable).parent)
         return
 
-    # Local dev mode: create/reuse venv
+    # Local dev mode: create/reuse a venv built from a supported interpreter.
     venv_dir = repo_root / ".venv"
-    venv_pip = venv_dir / "Scripts" / "pip.exe"
-    if not venv_pip.exists():
-        venv_pip = venv_dir / "bin" / "pip"
 
-    if not venv_pip.exists():
+    # Recreate the venv if it is built from an unsupported Python version.
+    if venv_dir.exists() and supported:
+        current = _venv_version(venv_dir)
+        if not current or _minor(current) not in supported:
+            print(
+                f"Existing .venv (Python {current or 'unknown'}) is not a supported version "
+                f"({', '.join(supported)}); recreating ..."
+            )
+            shutil.rmtree(venv_dir, ignore_errors=True)
+
+    if not _venv_python(venv_dir).exists():
+        interpreter = _resolve_interpreter(supported) if supported else sys.executable
         print("\nCreating virtual environment in .venv ...")
         prompt_name = repo_root.resolve().name
-        subprocess.run([sys.executable, "-m", "venv", str(venv_dir), "--prompt", prompt_name], check=True)
-        print("Virtual environment created.")
-        # Re-resolve after creation
-        venv_pip = venv_dir / "Scripts" / "pip.exe"
-        if not venv_pip.exists():
-            venv_pip = venv_dir / "bin" / "pip"
-    else:
-        print("Virtual environment already exists.")
+        subprocess.run(
+            [str(interpreter), "-m", "venv", str(venv_dir), "--prompt", prompt_name],
+            check=True,
+        )
 
+    venv_pip = _venv_pip(venv_dir)
     _install_packages([str(venv_pip)], packages, venv_pip.parent)
 
 

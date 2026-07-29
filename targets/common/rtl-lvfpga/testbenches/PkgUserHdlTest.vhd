@@ -46,6 +46,7 @@ package PkgUserHdlTest is
   -- are supplied by the calling core entity.
   procedure RunUserHdlTest(
     constant kSignature : in std_logic_vector(31 downto 0);
+    constant kNumDioLines : in natural := 0;
     signal BusClk : in std_logic;
     signal DmaClk : in std_logic;
     signal aBusReset : out boolean;
@@ -69,8 +70,14 @@ package body PkgUserHdlTest is
   -- Known value pushed through the Reader FIFO for the end-to-end data check.
   constant kReaderTestValue : std_logic_vector(31 downto 0) := x"5A5A1234";
 
+  -- Pattern driven onto the DIO output lines for the loopback check. Only the
+  -- low kNumDioLines bits are used (8 for Aux/base-board DIO, 32 for the wide
+  -- base-board DIO).
+  constant kDioTestPattern : std_logic_vector(31 downto 0) := x"A5A5A5A5";
+
   procedure RunUserHdlTest(
     constant kSignature : in std_logic_vector(31 downto 0);
+    constant kNumDioLines : in natural := 0;
     signal BusClk : in std_logic;
     signal DmaClk : in std_logic;
     signal aBusReset : out boolean;
@@ -84,6 +91,7 @@ package body PkgUserHdlTest is
     signal TestDone : out boolean
   ) is
     variable vReadData : std_logic_vector(31 downto 0);
+    variable vDioMask : std_logic_vector(31 downto 0);
     variable vBefore : std_logic_vector(31 downto 0);
     variable vAfter : std_logic_vector(31 downto 0);
     variable DmaResetWaitCount : natural := 0;
@@ -385,6 +393,53 @@ package body PkgUserHdlTest is
     assert vReadData = kReaderTestValue
       report "Reader FIFO data integrity check failed" severity error;
     report "Reader FIFO: end-to-end data integrity verified" severity note;
+
+    -------------------------------------------------------------------------
+    -- SECTION 6: Digital IO (Aux / base-board DIO) register interface
+    --
+    -- Only run when the target actually exposes DIO (kNumDioLines > 0; 7911 and
+    -- other no-DIO targets pass 0 and skip this). The DIO register offsets come
+    -- from PkgUserHdl (kDioRegsBaseAddress + index), exactly like the FIFO
+    -- registers above; every target defines the reserved layout so the shared
+    -- test can address it uniformly.
+    --
+    -- We set every line to output and drive a known pattern, then read it back
+    -- through the Status register's input field. The target's tb board model
+    -- loops the driven pins back to the inputs -- and, for targets with the
+    -- carrier direction handshake, drives Done so the output enable engages --
+    -- so the Status input field must return the pattern we drove.
+    -------------------------------------------------------------------------
+    if kNumDioLines > 0 then
+      report "SECTION 6: digital IO register interface" severity note;
+
+      -- Mask of the valid DIO lines (low kNumDioLines bits).
+      vDioMask := (others => '0');
+      for i in 0 to 31 loop
+        if i < kNumDioLines then
+          vDioMask(i) := '1';
+        end if;
+      end loop;
+
+      -- Set all lines to outputs and drive the known pattern.
+      HostWrite(kDioRegsBaseAddress + 4 * kDioDirectionIdx, x"FFFFFFFF");   -- Direction = all outputs
+      HostWrite(kDioRegsBaseAddress + 4 * kDioOutputDataIdx, kDioTestPattern);  -- OutputData = pattern
+
+      -- Allow the direction handshake (if any), the FPGA output enable, the
+      -- board-model loopback and the 2-flop input synchronizer to settle.
+      BusClkWait(20);
+
+      HostRead(kDioRegsBaseAddress + 4 * kDioStatusIdx, vReadData);  -- Status: [kNumDioLines-1:0] = input
+      assert (vReadData and vDioMask) = (kDioTestPattern and vDioMask)
+        report "DIO output loopback mismatch (Status input /= driven OutputData)"
+        severity error;
+      report "DIO: output pattern looped back through Status input" severity note;
+
+      -- Direction is a R/W register: confirm the written value reads back.
+      HostRead(kDioRegsBaseAddress + 4 * kDioDirectionIdx, vReadData);
+      assert (vReadData and vDioMask) = vDioMask
+        report "DIO Direction register read-back mismatch" severity error;
+      report "DIO: Direction register read-back verified" severity note;
+    end if;
 
 
     TestDone <= true;

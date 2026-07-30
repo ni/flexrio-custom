@@ -1,14 +1,16 @@
-# PXIe-7912 Custom Target — Host Interfaces (Register & FIFO API)
+# PXIe-7911 Custom Target — Host Interfaces (Register & FIFO API)
 
-Host-facing API reference for the PXIe-7912 **custom** target: every
+Host-facing API reference for the PXIe-7911 **custom** target: every
 host-accessible register and both DMA FIFOs exposed by the `UserHdl` block. The
 source of truth is [PkgUserHdl.vhd](../rtl-lvfpga/PkgUserHdl.vhd) and
 [UserHdl.vhd](../rtl-lvfpga/UserHdl.vhd); regenerate this document if those
 files change.
 
 This register layout is common to the FlexRIO custom targets; only the board
-signature and the Digital IO section differ per target (see the common
-[FlexRIO Digital IO](../../../docs/DigitalIO.md) document).
+signature and the Digital IO section differ per target. **This target has no
+DIO routed into `UserHdl`, so it has no Digital IO register block** (see the
+common [FlexRIO Digital IO](../../../docs/DigitalIO.md) document for the
+targets that do).
 
 Every register is 32 bits and occupies 4 bytes of address space. Register
 offsets are byte offsets into the UserHdl register space.
@@ -19,14 +21,15 @@ offsets are byte offsets into the UserHdl register space.
 |-------|-------------|-------------|-------|
 | Common host registers | `0x00` | 4  | Signature, Version, OldestCompatibleVersion, Scratch |
 | Demo register array   | `0x10` | 4  | Loopback demo (out = in + 1) |
-| Digital IO (Aux DIO)  | `0x20` | 3  | Direction / OutputData / Status — see [FlexRIO Digital IO](../../../docs/DigitalIO.md) |
 | FIFO registers        | `0x3C` | 9  | Control/status + register bridges for the two DMA FIFOs |
+
+(No Digital IO block — the `0x20` region is unused on this target.)
 
 ## Common host registers (`0x00`)
 
 | Offset | Name | Access | Description |
 |--------|------|--------|-------------|
-| `0x00` | Signature | RO | Fixed signature (`0x7912BEEF`) |
+| `0x00` | Signature | RO | Fixed signature (`0x7911BEEF`) |
 | `0x04` | Version | RO | Interface version (`0x00000001`) |
 | `0x08` | OldestCompatibleVersion | RO | Oldest compatible interface version (`0x00000001`) |
 | `0x0C` | Scratch | R/W | General-purpose scratch register |
@@ -42,24 +45,6 @@ offsets are byte offsets into the UserHdl register space.
 
 Write a value to `LoopbackInA`, then read `LoopbackOutA` to see value + 1
 (likewise for B). This demonstrates the FPGA-driven register array pattern.
-
-## Digital IO registers (`0x20`)
-
-Bit-per-line control of the **8** Aux DIO lines (bit N ↔ line N). This target
-uses the **Aux DIO IO-Node** interface with a carrier direction handshake — see
-the common [FlexRIO Digital IO](../../../docs/DigitalIO.md) document for the
-hardware theory of operation.
-
-| Offset | Name | Access | Description |
-|--------|------|--------|-------------|
-| `0x20` | Direction  | R/W | Bit N: `1` = output, `0` = input |
-| `0x24` | OutputData | R/W | Bit N: value driven when line N is an output |
-| `0x28` | Status     | RO  | `[7:0]` live input per line, `[15:8]` Done/ready per line |
-
-> These three registers are a **demonstration** of the DIO capability, not the
-> intended use case — the real interface is the Aux DIO IO-Node in your custom
-> HDL. See Part 2 of the common [FlexRIO Digital IO](../../../docs/DigitalIO.md)
-> document.
 
 ## FIFO registers (`0x3C`)
 
@@ -138,9 +123,6 @@ FlexRIO targets.)
 | `0x14` | LoopbackInB | Demo | R/W |
 | `0x18` | LoopbackOutA | Demo | RO |
 | `0x1C` | LoopbackOutB | Demo | RO |
-| `0x20` | Direction | Digital IO | R/W |
-| `0x24` | OutputData | Digital IO | R/W |
-| `0x28` | Status | Digital IO | RO |
 | `0x3C` | WriterStartStop | FIFO | R/W |
 | `0x40` | ReaderStartStop | FIFO | R/W |
 | `0x44` | WriterCount | FIFO | RO |

@@ -1,6 +1,6 @@
-# PXIe-7912 Custom Target — Host Interfaces (Register & FIFO API)
+# PXIe-7903 (DDR1280) Custom Target â€” Host Interfaces (Register & FIFO API)
 
-Host-facing API reference for the PXIe-7912 **custom** target: every
+Host-facing API reference for the PXIe-7903 **custom** target: every
 host-accessible register and both DMA FIFOs exposed by the `UserHdl` block. The
 source of truth is [PkgUserHdl.vhd](../rtl-lvfpga/PkgUserHdl.vhd) and
 [UserHdl.vhd](../rtl-lvfpga/UserHdl.vhd); regenerate this document if those
@@ -19,14 +19,14 @@ offsets are byte offsets into the UserHdl register space.
 |-------|-------------|-------------|-------|
 | Common host registers | `0x00` | 4  | Signature, Version, OldestCompatibleVersion, Scratch |
 | Demo register array   | `0x10` | 4  | Loopback demo (out = in + 1) |
-| Digital IO (Aux DIO)  | `0x20` | 3  | Direction / OutputData / Status — see [FlexRIO Digital IO](../../../docs/DigitalIO.md) |
+| Digital IO (base-board `aDio`) | `0x20` | 3  | Direction / OutputData / Status â€” see [FlexRIO Digital IO](../../../docs/DigitalIO.md) |
 | FIFO registers        | `0x3C` | 9  | Control/status + register bridges for the two DMA FIFOs |
 
 ## Common host registers (`0x00`)
 
 | Offset | Name | Access | Description |
 |--------|------|--------|-------------|
-| `0x00` | Signature | RO | Fixed signature (`0x7912BEEF`) |
+| `0x00` | Signature | RO | Fixed signature (`0x7903BEEF`) |
 | `0x04` | Version | RO | Interface version (`0x00000001`) |
 | `0x08` | OldestCompatibleVersion | RO | Oldest compatible interface version (`0x00000001`) |
 | `0x0C` | Scratch | R/W | General-purpose scratch register |
@@ -45,21 +45,22 @@ Write a value to `LoopbackInA`, then read `LoopbackOutA` to see value + 1
 
 ## Digital IO registers (`0x20`)
 
-Bit-per-line control of the **8** Aux DIO lines (bit N ↔ line N). This target
-uses the **Aux DIO IO-Node** interface with a carrier direction handshake — see
-the common [FlexRIO Digital IO](../../../docs/DigitalIO.md) document for the
-hardware theory of operation.
+Bit-per-line control of the **8** base-board DIO lines (bit N â†” line N). This
+target drives the DIO through a **direct bidirectional bus** (`aDio`) with **no**
+external direction handshake â€” see the common
+[FlexRIO Digital IO](../../../docs/DigitalIO.md) document for the hardware
+theory of operation.
 
 | Offset | Name | Access | Description |
 |--------|------|--------|-------------|
 | `0x20` | Direction  | R/W | Bit N: `1` = output, `0` = input |
 | `0x24` | OutputData | R/W | Bit N: value driven when line N is an output |
-| `0x28` | Status     | RO  | `[7:0]` live input per line, `[15:8]` Done/ready per line |
+| `0x28` | Status     | RO  | `[7:0]` live input per line |
 
 > These three registers are a **demonstration** of the DIO capability, not the
-> intended use case — the real interface is the Aux DIO IO-Node in your custom
-> HDL. See Part 2 of the common [FlexRIO Digital IO](../../../docs/DigitalIO.md)
-> document.
+> intended use case â€” the real interface is the `aDio` bidirectional bus in your
+> custom HDL. See Part 2 of the common
+> [FlexRIO Digital IO](../../../docs/DigitalIO.md) document.
 
 ## FIFO registers (`0x3C`)
 
@@ -92,15 +93,15 @@ Both FIFOs carry a 32-bit signed (`I32`) element, one element per clock cycle.
 below the fixed-logic streams, growing downward from `kUserHdlDmaStartIndex`:
 
 ```
-kUserHdlDmaStartIndex = kNumberOfDmaChannels − 1 − kNumFixedLogicDmaStreams
-                      = 64 − 1 − 4 = 59
+kUserHdlDmaStartIndex = kNumberOfDmaChannels âˆ’ 1 âˆ’ kNumFixedLogicDmaStreams
+                      = 64 âˆ’ 1 âˆ’ 4 = 59
 ```
 
-- User conf 0 (Reader, H→T) → DMA stream `59`
-- User conf 1 (Writer, T→H) → DMA stream `58`
+- User conf 0 (Reader, Hâ†’T) â†’ DMA stream `59`
+- User conf 1 (Writer, Tâ†’H) â†’ DMA stream `58`
 
 (`kNumberOfDmaChannels` comes from `PkgCommIntConfiguration`;
-`kNumFixedLogicDmaStreams` from the generated `PkgNiHdlSettings` — `4` for
+`kNumFixedLogicDmaStreams` from the generated `PkgNiHdlSettings` â€” `4` for
 FlexRIO targets.)
 
 ### Using the Writer FIFO (Target-to-Host, DMA 58)

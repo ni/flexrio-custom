@@ -111,4 +111,25 @@ package PkgUserHdl is
   constant kReaderStrobeIdx    : natural := 7;  -- offset 88
   constant kReaderDataIdx      : natural := 8;  -- offset 92
 
+  ---------------------------------------------------------------------------
+  -- Digital IO (base-board DIO) register array (3 registers starting at 0x20)
+  ---------------------------------------------------------------------------
+  -- The base-board DIO bus (aBaseDio, kNumDioLines = 32 lines) is exposed to
+  -- the host as three registers. The carrier splits the inout bus into
+  -- separate input / output / output-enable vectors (aBaseDioIn/Out/OutEn);
+  -- this target has NO external direction handshake, so a per-line
+  -- output-enable directly controls the buffer:
+  --   0x20 Direction  (host R/W) bit N: 1 = output, 0 = input
+  --   0x24 OutputData (host R/W) bit N: value driven on line N when output
+  --   0x28 Status     (host RO)  [31:0] live input sample per line
+  -- Placed in the address gap between the demo array (ends 0x1C) and the FIFO
+  -- array (starts 0x3C), so it does not extend kMaxHdlRegOffset.
+  constant kDioRegsBaseAddress : natural := 16#20#;
+  constant kNumDioRegs  : natural := 3;
+  constant kNumDioLines : natural := 32;
+
+  constant kDioDirectionIdx  : natural := 0;  -- offset 0x20: host R/W direction
+  constant kDioOutputDataIdx : natural := 1;  -- offset 0x24: host R/W output data
+  constant kDioStatusIdx     : natural := 2;  -- offset 0x28: host RO input
+
 end PkgUserHdl;

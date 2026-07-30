@@ -52,11 +52,20 @@ architecture sim of tb_UserHdl is
   signal dReaderOutputStreamInterfaceToFifo : OutputStreamInterfaceToFifo_t;
   signal dReaderOutputStreamInterfaceFromFifo : OutputStreamInterfaceFromFifo_t;
 
+  -- Base-board DIO board model signals (32 lines). The carrier splits the
+  -- bidirectional bus into separate in/out/output-enable vectors, so the tb
+  -- models that buffer: the input reflects the driven output when the per-line
+  -- output enable is asserted.
+  signal bBaseDioIn    : std_logic_vector(31 downto 0);
+  signal bBaseDioOut   : std_logic_vector(31 downto 0);
+  signal bBaseDioOutEn : std_logic_vector(31 downto 0);
+
 begin
 
   TestCore : entity work.UserHdlTestCore
     generic map(
-      kSignature => x"7994BEEF"
+      kSignature => x"7994BEEF",
+      kNumDioLines => 32
     )
     port map(
       BusClk => BusClk,
@@ -145,9 +154,9 @@ begin
       aBaseI2cSdaOut => open,
       aBaseI2cSdaTri => open,
       aBaseConfigReset => open,
-      aBaseDioIn => (others => '0'),
-      aBaseDioOut => open,
-      aBaseDioOutEn => open,
+      aBaseDioIn => bBaseDioIn,
+      aBaseDioOut => bBaseDioOut,
+      aBaseDioOutEn => bBaseDioOutEn,
       aBaseExClk => '0',
       Qsfp0MgtRx_p => (others => '0'),
       Qsfp0MgtRx_n => (others => '0'),
@@ -169,5 +178,11 @@ begin
       SampleClk => '0',
       DeviceClk => '0'
     );
+
+  -- Base-board DIO buffer loopback model: the input reflects the driven output
+  -- whenever the per-line output enable is asserted; released lines read 0.
+  GenBaseDioLoopback : for i in 0 to 31 generate
+    bBaseDioIn(i) <= bBaseDioOut(i) when bBaseDioOutEn(i) = '1' else '0';
+  end generate GenBaseDioLoopback;
 
 end architecture sim;

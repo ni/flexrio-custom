@@ -52,11 +52,20 @@ architecture sim of tb_UserHdl is
   signal dReaderOutputStreamInterfaceToFifo : OutputStreamInterfaceToFifo_t;
   signal dReaderOutputStreamInterfaceFromFifo : OutputStreamInterfaceFromFifo_t;
 
+  -- Aux DIO board model signals (8 lines).
+  signal bAuxDioOutData   : std_logic_vector(7 downto 0);
+  signal bAuxDioInData    : std_logic_vector(7 downto 0);
+  signal bAuxDioOutEnable : std_logic_vector(7 downto 0);
+  signal bAuxDioDone      : std_logic_vector(7 downto 0) := (others => '0');
+  signal bAuxDioDirection : std_logic_vector(7 downto 0);
+  signal bAuxDioRequest   : std_logic_vector(7 downto 0);
+
 begin
 
   TestCore : entity work.UserHdlTestCore
     generic map(
-      kSignature => x"7986BEEF"
+      kSignature => x"7986BEEF",
+      kNumDioLines => 8
     )
     port map(
       BusClk => BusClk,
@@ -92,70 +101,71 @@ begin
       dReaderOutputStreamInterfaceFromFifo => dReaderOutputStreamInterfaceFromFifo,
 
       -- Board IO: not exercised in simulation; inputs tied off, outputs/inouts open.
-      aLvAuxDio0OutputData => open,
-      aLvAuxDio0InputData => '0',
-      aLvAuxDio0OutputEnable => open,
-      oClkaLvAuxDio0 => '0',
-      aoResetaLvAuxDio0 => '0',
-      oDoneaLvAuxDio0 => '0',
-      oDirectionaLvAuxDio0 => open,
-      oRequestaLvAuxDio0 => open,
-      aLvAuxDio1OutputData => open,
-      aLvAuxDio1InputData => '0',
-      aLvAuxDio1OutputEnable => open,
-      oClkaLvAuxDio1 => '0',
-      aoResetaLvAuxDio1 => '0',
-      oDoneaLvAuxDio1 => '0',
-      oDirectionaLvAuxDio1 => open,
-      oRequestaLvAuxDio1 => open,
-      aLvAuxDio2OutputData => open,
-      aLvAuxDio2InputData => '0',
-      aLvAuxDio2OutputEnable => open,
-      oClkaLvAuxDio2 => '0',
-      aoResetaLvAuxDio2 => '0',
-      oDoneaLvAuxDio2 => '0',
-      oDirectionaLvAuxDio2 => open,
-      oRequestaLvAuxDio2 => open,
-      aLvAuxDio3OutputData => open,
-      aLvAuxDio3InputData => '0',
-      aLvAuxDio3OutputEnable => open,
-      oClkaLvAuxDio3 => '0',
-      aoResetaLvAuxDio3 => '0',
-      oDoneaLvAuxDio3 => '0',
-      oDirectionaLvAuxDio3 => open,
-      oRequestaLvAuxDio3 => open,
-      aLvAuxDio4OutputData => open,
-      aLvAuxDio4InputData => '0',
-      aLvAuxDio4OutputEnable => open,
-      oClkaLvAuxDio4 => '0',
-      aoResetaLvAuxDio4 => '0',
-      oDoneaLvAuxDio4 => '0',
-      oDirectionaLvAuxDio4 => open,
-      oRequestaLvAuxDio4 => open,
-      aLvAuxDio5OutputData => open,
-      aLvAuxDio5InputData => '0',
-      aLvAuxDio5OutputEnable => open,
-      oClkaLvAuxDio5 => '0',
-      aoResetaLvAuxDio5 => '0',
-      oDoneaLvAuxDio5 => '0',
-      oDirectionaLvAuxDio5 => open,
-      oRequestaLvAuxDio5 => open,
-      aLvAuxDio6OutputData => open,
-      aLvAuxDio6InputData => '0',
-      aLvAuxDio6OutputEnable => open,
-      oClkaLvAuxDio6 => '0',
-      aoResetaLvAuxDio6 => '0',
-      oDoneaLvAuxDio6 => '0',
-      oDirectionaLvAuxDio6 => open,
-      oRequestaLvAuxDio6 => open,
-      aLvAuxDio7OutputData => open,
-      aLvAuxDio7InputData => '0',
-      aLvAuxDio7OutputEnable => open,
-      oClkaLvAuxDio7 => '0',
-      aoResetaLvAuxDio7 => '0',
-      oDoneaLvAuxDio7 => '0',
-      oDirectionaLvAuxDio7 => open,
-      oRequestaLvAuxDio7 => open,
+      -- Aux DIO: exercised in simulation via the board model below.
+      aLvAuxDio0OutputData => bAuxDioOutData(0),
+      aLvAuxDio0InputData => bAuxDioInData(0),
+      aLvAuxDio0OutputEnable => bAuxDioOutEnable(0),
+      oClkaLvAuxDio0 => BusClk,
+      aoResetaLvAuxDio0 => aDiagramReset,
+      oDoneaLvAuxDio0 => bAuxDioDone(0),
+      oDirectionaLvAuxDio0 => bAuxDioDirection(0),
+      oRequestaLvAuxDio0 => bAuxDioRequest(0),
+      aLvAuxDio1OutputData => bAuxDioOutData(1),
+      aLvAuxDio1InputData => bAuxDioInData(1),
+      aLvAuxDio1OutputEnable => bAuxDioOutEnable(1),
+      oClkaLvAuxDio1 => BusClk,
+      aoResetaLvAuxDio1 => aDiagramReset,
+      oDoneaLvAuxDio1 => bAuxDioDone(1),
+      oDirectionaLvAuxDio1 => bAuxDioDirection(1),
+      oRequestaLvAuxDio1 => bAuxDioRequest(1),
+      aLvAuxDio2OutputData => bAuxDioOutData(2),
+      aLvAuxDio2InputData => bAuxDioInData(2),
+      aLvAuxDio2OutputEnable => bAuxDioOutEnable(2),
+      oClkaLvAuxDio2 => BusClk,
+      aoResetaLvAuxDio2 => aDiagramReset,
+      oDoneaLvAuxDio2 => bAuxDioDone(2),
+      oDirectionaLvAuxDio2 => bAuxDioDirection(2),
+      oRequestaLvAuxDio2 => bAuxDioRequest(2),
+      aLvAuxDio3OutputData => bAuxDioOutData(3),
+      aLvAuxDio3InputData => bAuxDioInData(3),
+      aLvAuxDio3OutputEnable => bAuxDioOutEnable(3),
+      oClkaLvAuxDio3 => BusClk,
+      aoResetaLvAuxDio3 => aDiagramReset,
+      oDoneaLvAuxDio3 => bAuxDioDone(3),
+      oDirectionaLvAuxDio3 => bAuxDioDirection(3),
+      oRequestaLvAuxDio3 => bAuxDioRequest(3),
+      aLvAuxDio4OutputData => bAuxDioOutData(4),
+      aLvAuxDio4InputData => bAuxDioInData(4),
+      aLvAuxDio4OutputEnable => bAuxDioOutEnable(4),
+      oClkaLvAuxDio4 => BusClk,
+      aoResetaLvAuxDio4 => aDiagramReset,
+      oDoneaLvAuxDio4 => bAuxDioDone(4),
+      oDirectionaLvAuxDio4 => bAuxDioDirection(4),
+      oRequestaLvAuxDio4 => bAuxDioRequest(4),
+      aLvAuxDio5OutputData => bAuxDioOutData(5),
+      aLvAuxDio5InputData => bAuxDioInData(5),
+      aLvAuxDio5OutputEnable => bAuxDioOutEnable(5),
+      oClkaLvAuxDio5 => BusClk,
+      aoResetaLvAuxDio5 => aDiagramReset,
+      oDoneaLvAuxDio5 => bAuxDioDone(5),
+      oDirectionaLvAuxDio5 => bAuxDioDirection(5),
+      oRequestaLvAuxDio5 => bAuxDioRequest(5),
+      aLvAuxDio6OutputData => bAuxDioOutData(6),
+      aLvAuxDio6InputData => bAuxDioInData(6),
+      aLvAuxDio6OutputEnable => bAuxDioOutEnable(6),
+      oClkaLvAuxDio6 => BusClk,
+      aoResetaLvAuxDio6 => aDiagramReset,
+      oDoneaLvAuxDio6 => bAuxDioDone(6),
+      oDirectionaLvAuxDio6 => bAuxDioDirection(6),
+      oRequestaLvAuxDio6 => bAuxDioRequest(6),
+      aLvAuxDio7OutputData => bAuxDioOutData(7),
+      aLvAuxDio7InputData => bAuxDioInData(7),
+      aLvAuxDio7OutputEnable => bAuxDioOutEnable(7),
+      oClkaLvAuxDio7 => BusClk,
+      aoResetaLvAuxDio7 => aDiagramReset,
+      oDoneaLvAuxDio7 => bAuxDioDone(7),
+      oDirectionaLvAuxDio7 => bAuxDioDirection(7),
+      oRequestaLvAuxDio7 => bAuxDioRequest(7),
       AxiClk => '0',
       xDiagramAxiStreamFromClipTData => open,
       xDiagramAxiStreamFromClipTLast => open,
@@ -231,5 +241,37 @@ begin
       SocketClk80 => '0',
       sDioMgtRefClkFromFamPresent => '0'
     );
+
+  ---------------------------------------------------------------------------
+  -- Aux DIO board model
+  --   * Pin loopback (MacallanIoBuffers behaviour): the input reflects the
+  --     driven output whenever the FPGA output enable is asserted.
+  --   * Direction handshake (carrier FixedLogic AuxIoDirectionCtrl behaviour):
+  --     Done asserts a couple of BusClk cycles after Request is held high (the
+  --     Aux DIO bank is assumed enabled). Done is what gates the FPGA output
+  --     enable inside UserHdl, so without this model an output never drives.
+  ---------------------------------------------------------------------------
+  GenAuxDioModel : for i in 0 to 7 generate
+    -- Pin loopback
+    bAuxDioInData(i) <= bAuxDioOutData(i) when bAuxDioOutEnable(i) = '1' else '0';
+
+    -- Direction handshake (Done) model
+    DoneModel : process(BusClk)
+      variable vCount : natural := 0;
+    begin
+      if rising_edge(BusClk) then
+        if bAuxDioRequest(i) = '1' then
+          if vCount >= 2 then
+            bAuxDioDone(i) <= '1';
+          else
+            vCount := vCount + 1;
+          end if;
+        else
+          vCount := 0;
+          bAuxDioDone(i) <= '0';
+        end if;
+      end if;
+    end process DoneModel;
+  end generate GenAuxDioModel;
 
 end architecture sim;

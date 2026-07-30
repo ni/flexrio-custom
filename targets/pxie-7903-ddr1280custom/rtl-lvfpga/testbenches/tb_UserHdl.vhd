@@ -53,11 +53,18 @@ architecture sim of tb_UserHdl is
   signal dReaderOutputStreamInterfaceToFifo : OutputStreamInterfaceToFifo_t;
   signal dReaderOutputStreamInterfaceFromFifo : OutputStreamInterfaceFromFifo_t;
 
+  -- Base-board DIO bus model. aDio is a direct bidirectional bus: UserHdl
+  -- drives it when a line is an output and reads it back directly, so no
+  -- explicit loopback is needed. The weak pulldown resolves released (input)
+  -- lines to a defined level.
+  signal bAuxDio : std_logic_vector(7 downto 0);
+
 begin
 
   TestCore : entity work.UserHdlTestCore
     generic map(
-      kSignature => x"7903BEEF"
+      kSignature => x"7903BEEF",
+      kNumDioLines => 8
     )
     port map(
       BusClk => BusClk,
@@ -137,7 +144,7 @@ begin
       MgtPortRx_n => (others => '0'),
       MgtPortTx_p => open,
       MgtPortTx_n => open,
-      aDio => open,
+      aDio => bAuxDio,
       aLmkI2cSda => open,
       aLmkI2cScl => open,
       aLmk1Pdn_n => open,
@@ -158,5 +165,8 @@ begin
       aPortExpSda => open,
       aPortExpScl => open
     );
+
+  -- Weak pulldown on the base-board DIO bus (models the released-line level).
+  bAuxDio <= (others => 'L');
 
 end architecture sim;

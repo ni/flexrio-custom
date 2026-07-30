@@ -59,7 +59,11 @@ In Vivado, click "Generate Bitstream" in left-hand tools menu
 ### 7) Generate and install the custom LabVIEW FPGA Target (LabVIEW FPGA compile flow)
 > nihdl gen-target
 
+Close all LabVIEW instances before installing the target.
+
 > nihdl install-target
+
+After installing, (re)start LabVIEW so it picks up the new target — LabVIEW only scans for target plugins at startup.
 
 ### 8) Test the target in LabVIEW 
 Use the NI-RIO API to download and run the bitfile

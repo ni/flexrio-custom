@@ -19,9 +19,57 @@ Pre-release custom FlexRIO code for use with LabVIEW FPGA HDL Tools
 * You can communicate between the NI-RIO driver on a host PC and custom HDL directly using
     * Registers
     * DMA FIFOs
-    * **From a LabVIEW FPGA host VI, open the bitfile with _Open Dynamic Bitfile Reference_ — wire in the `.lvbitx` path and a matching FPGA VI Reference type refnum. The standard _Open FPGA VI Reference_ node does not work with these custom targets. See any target's `docs/HostInterfaces.md`.**
 * All of this is pre-release and not supported by NI
     * Use the [Issues](https://github.com/ni/flexrio-custom/issues) and [Discussions](https://github.com/ni/flexrio-custom/discussions) sections in this repository to collaborate with the developers and other lead users
+<br><br><br>
+
+# How You Customize a FlexRIO Board
+
+This section is the high-level map of *what you are actually customizing* and the **two ways** to do it. The step-by-step exercises live in [Getting Started](docs/GettingStarted.md) and the [CLIP Migration Hands-On Guide](docs/CLIPMigrationHandsOnGuide.md); read this first to decide which path you want.
+
+## Background: integrated IO and the socketed CLIP (the pre-HDL-workflow model)
+
+A FlexRIO device with **integrated IO** is a **baseboard + an IO module** built into one product. To make that device do anything, it needs HDL that knows how to run the integrated IO module (the high-speed serial link, the digital IO, etc.).
+
+Before the HDL workflow, that HDL was delivered as a **socketed CLIP** — a block of VHDL you dropped into a **CLIP socket** in a LabVIEW FPGA project. So:
+
+* **baseboard + IO module = integrated IO FlexRIO device**
+* **integrated IO device + socketed CLIP VHDL = working design**
+
+On top of the CLIP you wrote a **LabVIEW FPGA VI** that talked to the CLIP node, plus a **host VI** that talked to the FPGA. NI's *Getting Started FlexRIO Integrated IO* example generator produced exactly this vertical stack (socketed CLIP + FPGA VI + host VI) for each supported IO-module permutation.
+
+With that model you had two ways to change the behavior:
+
+* **Modify the CLIP VHDL** directly. This was rarely done and never fully documented — you had to read the CLIP source and its comments and rely on being an expert in the underlying bus.
+* **Leave the CLIP as-is and extend it in LabVIEW FPGA.** Most people did this: they took the example FPGA VI, studied its comments, and adapted the LabVIEW logic to their application.
+
+## What this repo gives you instead
+
+The new HDL workflow (`flexrio-custom` + [`labview-fpga-hdl-tools`](https://github.com/ni/labview-fpga-hdl-tools)) ships the pieces, not a pre-wired vertical example for every permutation:
+
+* **The baseboard top-level FPGA (HDL) file**, with a blank **`UserHdl`** entity where your custom HDL goes.
+* **The CLIPs as-is** — the same VHDL used by the socketed LabVIEW FPGA CLIP, delivered through [`flexrio-clips`](https://github.com/ni/flexrio-clips).
+* **One worked example** — [`pxie-7903aurora`](targets/pxie-7903aurora) — that instantiates the socketed Aurora CLIP directly in the top-level HDL, but still wires its LabVIEW-facing signals up to a LabVIEW FPGA VI *as if the CLIP were still in the socket*.
+
+## The two ways to customize
+
+### Option 1 — Migrate a socketed CLIP, keep the same LabVIEW interface
+
+Take an existing socketed CLIP and instantiate it in your top-level `UserHdl`, then reconnect its **LabVIEW-facing** ports so the design still exposes the same interface to a LabVIEW FPGA VI. The CLIP HDL moves out of the LabVIEW window and into the top-level HDL, but *the HDL-to-LabVIEW interface you had before is unchanged* — you keep writing your application in a LabVIEW FPGA VI.
+
+This is exactly what the Aurora example does. Follow the [CLIP Migration Hands-On Guide](docs/CLIPMigrationHandsOnGuide.md) (also walked through as Exercise 4 in [Getting Started](docs/GettingStarted.md)).
+
+**Use this when** you want the new HDL packaging/build flow but still want to do your application logic in LabVIEW FPGA.
+
+### Option 2 — Move your logic into HDL and talk to the host directly (the HDL-only workflow)
+
+Start from the same socketed CLIP HDL, but instead of re-exposing its LabVIEW ports, **build onto those ports inside `UserHdl` yourself**. Do in VHDL whatever you would previously have done in a LabVIEW FPGA VI, and communicate with the host using the HDL workflow's **host registers and DMA FIFOs** (from [`hdl-shared`](https://github.com/ni/hdl-shared)). No LabVIEW FPGA VI is required at all — you compile the bitfile in Vivado and talk to it from the NI-RIO driver on the host.
+
+This is the **primary use case** of `flexrio-custom`: customers who want the integrated IO business logic packaged so they can extend it **in VHDL**, not in LabVIEW. There is **no bespoke example of this yet** — it is the piece a domain/subject-matter expert fills in for a given IO module — but the CLIP source, the blank `UserHdl`, and the host register/FIFO interfaces are all here to build it on.
+
+**Use this when** you want an HDL-only design with no LabVIEW FPGA VI in the stack.
+
+> **How do I know what's inside the CLIP?** The CLIP VHDL is not formally documented — its behavior is described by the comments in the CLIP source itself, and interpreting it assumes familiarity with the underlying high-speed bus. See [Dependencies and File Management](docs/DependenciesAndFileManagement.md) for where the CLIP source lives and how it is pulled into a target, and [Digital IO](docs/DigitalIO.md) for the board IO interfaces routed into `UserHdl`.
 <br><br><br>
 
 # Supported Devices

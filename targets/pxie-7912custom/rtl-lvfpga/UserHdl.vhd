@@ -17,6 +17,8 @@
 --     - Writer FIFO (channel kUserDmaWriterIdx, FPGA-to-Host) with host push registers
 --     - Reader FIFO (channel kUserDmaReaderIdx, Host-to-FPGA) with host pop registers
 --     - FIFO start/stop, count, and state registers
+--     - Digital IO (Aux DIO) register interface: Direction, OutputData, and
+--       Status (input + Done) registers driving the 8 Aux DIO lines
 --
 --   The combined RegPortOut is presented as a single output so that the
 --   parent top-level only needs one OR/AND merge point for this block.
@@ -198,6 +200,29 @@ architecture rtl of UserHdl is
   signal bWriterFifoStopReq  : boolean := false;
   signal bReaderFifoStartReq : boolean := false;
   signal bReaderFifoStopReq  : boolean := false;
+
+  ---------------------------------------------------------------------------
+  -- Digital IO (Aux DIO) register + control signals
+  ---------------------------------------------------------------------------
+  signal bRegPortOutDioRegs : RegPortOut_t;
+
+  signal bDioRegFpgaHostWrite : BooleanVector(0 to kNumDioRegs-1);
+  signal bDioRegFpgaAck       : BooleanVector(0 to kNumDioRegs-1) := (others => false);
+  signal bDioRegFpgaWrite     : BooleanVector(0 to kNumDioRegs-1);
+  signal bDioRegFpgaDataIn    : Slv32Ary_t(0 to kNumDioRegs-1);
+  signal bDioRegFpgaDataOut   : Slv32Ary_t(0 to kNumDioRegs-1);
+
+  -- Per-line vectors (Aux DIO lines 0 .. kNumDioLines-1)
+  signal aDioInData    : std_logic_vector(kNumDioLines-1 downto 0);  -- async pin inputs
+  signal bDioDone      : std_logic_vector(kNumDioLines-1 downto 0);  -- Done from FixedLogic
+  signal bDioDirection : std_logic_vector(kNumDioLines-1 downto 0);  -- Direction register
+  signal bDioOutData   : std_logic_vector(kNumDioLines-1 downto 0);  -- OutputData register
+  signal bDioOutEnable : std_logic_vector(kNumDioLines-1 downto 0);  -- FPGA IOBUF enable
+
+  -- Input / status synchronizers (async pin inputs into the BusClk domain)
+  signal bDioInMeta   : std_logic_vector(kNumDioLines-1 downto 0) := (others => '0');
+  signal bDioInSync   : std_logic_vector(kNumDioLines-1 downto 0) := (others => '0');
+  signal bDioDoneSync : std_logic_vector(kNumDioLines-1 downto 0) := (others => '0');
 
 begin
 
@@ -486,14 +511,17 @@ begin
   ---------------------------------------------------------------------------
   bRegPortOut.Data      <= bRegPortOutCommonRegs.Data or
                            bRegPortOutDemoRegs.Data or
+                           bRegPortOutDioRegs.Data or
                            bRegPortOutFifoRegs.Data;
 
   bRegPortOut.DataValid <= bRegPortOutCommonRegs.DataValid or
                            bRegPortOutDemoRegs.DataValid or
+                           bRegPortOutDioRegs.DataValid or
                            bRegPortOutFifoRegs.DataValid;
 
   bRegPortOut.Ready     <= bRegPortOutCommonRegs.Ready and
                            bRegPortOutDemoRegs.Ready and
+                           bRegPortOutDioRegs.Ready and
                            bRegPortOutFifoRegs.Ready;
 
   ---------------------------------------------------------------------------
@@ -505,52 +533,132 @@ begin
   dReaderInputStreamInterfaceFromFifo  <= kInputStreamInterfaceFromFifoZero;
 
   ---------------------------------------------------------------------------
-  -- Board IO -- user-extendable placeholder
+  -- Digital IO (Aux DIO) -- host-controlled register interface
   ---------------------------------------------------------------------------
-  -- Because the LV Window has board IO disabled on this custom target, every
-  -- board IO interface that would normally connect to the LabVIEW diagram is
-  -- routed here instead. All outputs are driven to their inert defaults:
-  --   * aLvAuxDioNOutputEnable = 0 keeps each line tristated (high-Z), the safe
-  --     default -- UserHdl does not drive the physical pins.
-  --   * aLvAuxDioNOutputData / oDirectionaLvAuxDioN / oRequestaLvAuxDioN match
-  --     the LV Window's reset defaults.
-  --   * DioMgtTX_n / DioMgtTX_p are held at 0.
+  -- Because the LV Window has board IO disabled on this custom target, the 8
+  -- Aux DIO IO-Node interfaces are routed here. They are exposed to the host as
+  -- three registers (see PkgUserHdl and docs/digital-io.md):
+  --   0x20 Direction  (R/W)  bit N: 1 = output, 0 = input
+  --   0x24 OutputData (R/W)  bit N: value driven when line N is an output
+  --   0x28 Status     (RO)   [7:0] live input, [15:8] Done per line
+  ---------------------------------------------------------------------------
+  NiDioRegisterArray_inst : entity work.NiSharedHostRegisterArray
+    generic map(
+      kNumRegisters => kNumDioRegs,
+      kBaseAddress  => kDioRegsBaseAddress,
+      kDefault      => (0 to kNumDioRegs-1 => x"00000000"),
+      kReadOnly     => (kDioDirectionIdx  => false,
+                        kDioOutputDataIdx => false,
+                        kDioStatusIdx     => true),
+      kUseFpgaAck   => (0 to kNumDioRegs-1 => false),
+      kMaxHdlRegOffset => kMaxHdlRegOffset
+    )
+    port map(
+      BusClk         => BusClk,
+      aReset         => aBusReset,
+      bRegPortIn     => bRegPortIn,
+      bRegPortOut    => bRegPortOutDioRegs,
+      bFpgaHostWrite => bDioRegFpgaHostWrite,
+      bFpgaAck       => bDioRegFpgaAck,
+      bFpgaWrite     => bDioRegFpgaWrite,
+      bFpgaDataIn    => bDioRegFpgaDataIn,
+      bFpgaDataOut   => bDioRegFpgaDataOut
+    );
+
+  -- Host R/W register fields -> per-line control vectors
+  bDioDirection <= bDioRegFpgaDataOut(kDioDirectionIdx)(kNumDioLines-1 downto 0);
+  bDioOutData   <= bDioRegFpgaDataOut(kDioOutputDataIdx)(kNumDioLines-1 downto 0);
+
+  -- Aggregate the individually-named IO-Node input ports into vectors so all
+  -- lines can be handled uniformly by the generate block below.
+  aDioInData <= (0 => aLvAuxDio0InputData, 1 => aLvAuxDio1InputData,
+                 2 => aLvAuxDio2InputData, 3 => aLvAuxDio3InputData,
+                 4 => aLvAuxDio4InputData, 5 => aLvAuxDio5InputData,
+                 6 => aLvAuxDio6InputData, 7 => aLvAuxDio7InputData);
+
+  bDioDone <= (0 => oDoneaLvAuxDio0, 1 => oDoneaLvAuxDio1,
+               2 => oDoneaLvAuxDio2, 3 => oDoneaLvAuxDio3,
+               4 => oDoneaLvAuxDio4, 5 => oDoneaLvAuxDio5,
+               6 => oDoneaLvAuxDio6, 7 => oDoneaLvAuxDio7);
+
+  ---------------------------------------------------------------------------
+  -- Per-line Aux DIO direction/drive control (one slice per line).
   --
-  -- To use the board IO, replace these constant assignments with your own
-  -- custom logic. The matching input ports (aLvAuxDioNInputData, oDoneaLvAuxDioN,
-  -- the MGT receive/clock ports) are provided for that logic.
-  aLvAuxDio0OutputData   <= '0';
-  aLvAuxDio0OutputEnable <= '0';
-  oDirectionaLvAuxDio0   <= '0';
+  -- Direction handshake (carrier FixedLogic AuxIoDirectionCtrl):
+  --   * oRequest is held high so the requested direction is always applied.
+  --   * oDirection = Direction bit (1 = external buffer drives OUT, 0 = input).
+  --   * FixedLogic returns Done once the external level translator has switched
+  --     and the Aux DIO bank has been enabled by the board firmware.
+  --
+  -- FPGA pin buffer (MacallanIoBuffers):
+  --   * The FPGA IOBUF output enable is asserted only after Done for an output
+  --     line, so the FPGA never fights the external buffer while it is still
+  --     switching (or while the bank is disabled).
+  ---------------------------------------------------------------------------
+  GenDioLines : for i in 0 to kNumDioLines-1 generate
+    bDioOutEnable(i) <= bDioDirection(i) and bDioDoneSync(i);
+  end generate GenDioLines;
+
+  -- Two-flop synchronizer for the asynchronous input pins, plus a register on
+  -- Done (already BusClk-domain) to align timing before publishing status.
+  DioStatusSyncx : process(BusClk)
+  begin
+    if rising_edge(BusClk) then
+      bDioInMeta   <= aDioInData;
+      bDioInSync   <= bDioInMeta;
+      bDioDoneSync <= bDioDone;
+    end if;
+  end process DioStatusSyncx;
+
+  -- Publish live input data and Done status into the read-only Status register.
+  DioStatusRegMap : process(bDioInSync, bDioDoneSync)
+    variable vStatus : std_logic_vector(31 downto 0);
+  begin
+    vStatus := (others => '0');
+    vStatus(kNumDioLines-1 downto 0)              := bDioInSync;    -- [7:0]  live input
+    vStatus(2*kNumDioLines-1 downto kNumDioLines) := bDioDoneSync;  -- [15:8] Done status
+
+    bDioRegFpgaWrite  <= (others => false);
+    bDioRegFpgaDataIn <= (others => (others => '0'));
+    bDioRegFpgaWrite(kDioStatusIdx)  <= true;
+    bDioRegFpgaDataIn(kDioStatusIdx) <= vStatus;
+  end process DioStatusRegMap;
+
+  -- Fan the per-line vectors back out to the individually-named IO-Node ports.
+  aLvAuxDio0OutputData   <= bDioOutData(0);
+  aLvAuxDio0OutputEnable <= bDioOutEnable(0);
+  oDirectionaLvAuxDio0   <= bDioDirection(0);
   oRequestaLvAuxDio0     <= '1';
-  aLvAuxDio1OutputData   <= '0';
-  aLvAuxDio1OutputEnable <= '0';
-  oDirectionaLvAuxDio1   <= '0';
+  aLvAuxDio1OutputData   <= bDioOutData(1);
+  aLvAuxDio1OutputEnable <= bDioOutEnable(1);
+  oDirectionaLvAuxDio1   <= bDioDirection(1);
   oRequestaLvAuxDio1     <= '1';
-  aLvAuxDio2OutputData   <= '0';
-  aLvAuxDio2OutputEnable <= '0';
-  oDirectionaLvAuxDio2   <= '0';
+  aLvAuxDio2OutputData   <= bDioOutData(2);
+  aLvAuxDio2OutputEnable <= bDioOutEnable(2);
+  oDirectionaLvAuxDio2   <= bDioDirection(2);
   oRequestaLvAuxDio2     <= '1';
-  aLvAuxDio3OutputData   <= '0';
-  aLvAuxDio3OutputEnable <= '0';
-  oDirectionaLvAuxDio3   <= '0';
+  aLvAuxDio3OutputData   <= bDioOutData(3);
+  aLvAuxDio3OutputEnable <= bDioOutEnable(3);
+  oDirectionaLvAuxDio3   <= bDioDirection(3);
   oRequestaLvAuxDio3     <= '1';
-  aLvAuxDio4OutputData   <= '0';
-  aLvAuxDio4OutputEnable <= '0';
-  oDirectionaLvAuxDio4   <= '0';
+  aLvAuxDio4OutputData   <= bDioOutData(4);
+  aLvAuxDio4OutputEnable <= bDioOutEnable(4);
+  oDirectionaLvAuxDio4   <= bDioDirection(4);
   oRequestaLvAuxDio4     <= '1';
-  aLvAuxDio5OutputData   <= '0';
-  aLvAuxDio5OutputEnable <= '0';
-  oDirectionaLvAuxDio5   <= '0';
+  aLvAuxDio5OutputData   <= bDioOutData(5);
+  aLvAuxDio5OutputEnable <= bDioOutEnable(5);
+  oDirectionaLvAuxDio5   <= bDioDirection(5);
   oRequestaLvAuxDio5     <= '1';
-  aLvAuxDio6OutputData   <= '0';
-  aLvAuxDio6OutputEnable <= '0';
-  oDirectionaLvAuxDio6   <= '0';
+  aLvAuxDio6OutputData   <= bDioOutData(6);
+  aLvAuxDio6OutputEnable <= bDioOutEnable(6);
+  oDirectionaLvAuxDio6   <= bDioDirection(6);
   oRequestaLvAuxDio6     <= '1';
-  aLvAuxDio7OutputData   <= '0';
-  aLvAuxDio7OutputEnable <= '0';
-  oDirectionaLvAuxDio7   <= '0';
+  aLvAuxDio7OutputData   <= bDioOutData(7);
+  aLvAuxDio7OutputEnable <= bDioOutEnable(7);
+  oDirectionaLvAuxDio7   <= bDioDirection(7);
   oRequestaLvAuxDio7     <= '1';
+
+  -- The Nanopitch MGT transmit pins are unused on this target.
   DioMgtTX_n <= (others => '0');
   DioMgtTX_p <= (others => '0');
 

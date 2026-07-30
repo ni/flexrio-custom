@@ -70,17 +70,19 @@ identified by two indices:
 - **DMA stream index** — position in the full 64-entry `kDmaFifoConfArray` used
   by the hardware and the host C API. Derived as
   `kUserHdlDmaStartIndex − user_conf_index` where
-  `kUserHdlDmaStartIndex = kNumberOfDmaChannels(64) − 1 − kNiFpgaFixedInputPorts(3) − kNiFpgaFixedOutputPorts(2) = 58`.
+  `kUserHdlDmaStartIndex = kNumberOfDmaChannels(64) − 1 − kNumFixedLogicDmaStreams(4) = 59`.
+  `kNumFixedLogicDmaStreams` (4 for FlexRIO targets) comes from the generated
+  `PkgNiHdlSettings.vhd`.
 
-| Pair | Width (bits) | Signed | FxpType | Host data type | H→T conf | H→T DMA | T→H conf | T→H DMA |
-|------|--------------|--------|---------|----------------|----------|---------|----------|---------|
-| 0 | 32 | yes | no  | I32                         |  0 | 58 |  1 | 57 |
-| 1 | 16 | no  | no  | U16                         |  2 | 56 |  3 | 55 |
-| 2 | 8  | yes | no  | I8                          |  4 | 54 |  5 | 53 |
-| 3 | 8  | no  | no  | U8 (BOOLEAN in driver test) |  6 | 52 |  7 | 51 |
-| 4 | 64 | no  | no  | U64                         |  8 | 50 |  9 | 49 |
-| 5 | 64 | yes | no  | I64 (SGL in driver test)    | 10 | 48 | 11 | 47 |
-| 6 | 64 | yes | yes | FXP (64-bit fixed-point signed) | 12 | 46 | 13 | 45 |
+| Pair | Width (bits) | Signed | Host data type | H→T conf | H→T DMA | T→H conf | T→H DMA |
+|------|--------------|--------|----------------|----------|---------|----------|---------|
+| 0 | 32 | yes | I32                          |  0 | 59 |  1 | 58 |
+| 1 | 16 | no  | U16                          |  2 | 57 |  3 | 56 |
+| 2 | 8  | yes | I8                           |  4 | 55 |  5 | 54 |
+| 3 | 8  | no  | Boolean (maps to U8)         |  6 | 53 |  7 | 52 |
+| 4 | 64 | no  | U64                          |  8 | 51 |  9 | 50 |
+| 5 | 64 | no  | SGL (single-precision float) | 10 | 49 | 11 | 48 |
+| 6 | 64 | yes | I64                          | 12 | 47 | 13 | 46 |
 
 ### Full address map
 

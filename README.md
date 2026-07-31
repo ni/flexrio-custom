@@ -10,17 +10,105 @@ Pre-release custom FlexRIO code for use with LabVIEW FPGA HDL Tools
     * https://github.com/ni/flexrio-deps
     * https://github.com/ni/flexrio-clips
     * https://github.com/ni/hdl-shared
-    * See [Dependencies and File Management](docs/DependenciesAndFileManagement.md) for how a custom target is assembled from the base target and these dependencies, and what each file list is for
-* There are two **compile flows** for turning custom HDL into a bitfile (see the [LabVIEW FPGA HDL Tools Theory of Operation](https://github.com/ni/labview-fpga-hdl-tools/blob/main/docs/TheoryOfOperation.md) for the full story):
-    * **Vivado compile flow** – extend the design in HDL and compile the bitfile directly in Vivado, then communicate with it from the NI-RIO driver on a host PC (no LabVIEW required)
-    * **LabVIEW FPGA compile flow** – use HDL to make a custom LabVIEW FPGA target, then write a VI in LabVIEW FPGA and let it compile the bitfile using the standard LabVIEW FPGA bitfile-generation experience (LabVIEW FPGA runs Vivado under the hood)
-    * You can also author a top-level VI in LabVIEW FPGA, export it as a netlist, and bring it into the Vivado compile flow
-    * In short: in the **Vivado flow** you drive Vivado; in the **LabVIEW FPGA flow** LabVIEW FPGA drives Vivado for you
+* You can perform workflows for customizing LabVIEW FPGA targets with HDL
+    * Use HDL-only and Vivado to build a bitfile and communicate with it from the NI-RIO driver on a host PC
+    * Use HDL to make a custom LabVIEW FPGA target that can be extended in LabVIEW FPGA and use the standard LabVIEW FPGA bitfile generation workflow
+    * Use LabVIEW FPGA to make a top-level VI that is exported as a netlist and brought into your custom HDL to build in Vivado
 * You can communicate between the NI-RIO driver on a host PC and custom HDL directly using
     * Registers
     * DMA FIFOs
 * All of this is pre-release and not supported by NI
     * Use the [Issues](https://github.com/ni/flexrio-custom/issues) and [Discussions](https://github.com/ni/flexrio-custom/discussions) sections in this repository to collaborate with the developers and other lead users
+<br><br><br>
+
+# Supported Devices
+
+This is the support matrix for the custom HDL workflow, organized the same way FlexRIO
+modules are grouped in the LabVIEW **new FPGA target** dialog. For each device it shows
+how far the new workflow has come — from a complete worked example, to "you can build it
+yourself today," to "not available in the new workflow yet."
+
+**Status definitions**
+
+| Status | Meaning |
+| --- | --- |
+| ✅ **Supported** | A customizable custom target ships in this repo (for IO-module devices, a complete worked example) — clone it and build. |
+| 🟨 **Buildable (no example yet)** | The baseboard custom target **and** the IO-module CLIP are both available, but no bespoke example wires them together. Build it yourself by starting from the baseboard's custom target and following the [CLIP Migration Hands-On Guide](docs/CLIPMigrationHandsOnGuide.md). |
+| ⬜ **Not yet supported** | The custom target and/or CLIP is not yet available in the custom HDL workflow. |
+
+## FlexRIO Coprocessor Modules
+
+Coprocessor modules have no integrated IO module, so they need no IO-module CLIP. Each
+ships as a customizable custom target — start from its target folder. The **PXIe-7903**
+can additionally drive a digital frontend using the **Aurora** or **100 GbE** CLIPs.
+
+| Device | Status |
+| --- | --- |
+| PXIe-7903 | ✅ Supported — customizable target (Aurora frontend example `pxie-7903aurora`; 100 GbE CLIP available) |
+| PXIe-7903-DDR1280 | ✅ Supported — customizable target |
+| PXIe-7911 | ✅ Supported — customizable target |
+| PXIe-7912 | ✅ Supported — customizable target |
+| PXIe-7915 | ✅ Supported — customizable target |
+
+## FlexRIO FPGA Modules
+
+FPGA modules are baseboards with no integrated IO — you add your own IO in `UserHdl`.
+The supported ones ship as a customizable custom target; the rest are not yet supported
+(no custom target yet). The **PCIe-798x** rows are the PCIe form-factor (Garrison)
+equivalents of the Macallan modules.
+
+| Device | Status |
+| --- | --- |
+| PXIe-7981 | ✅ Supported — customizable target |
+| PXIe-7982 | ✅ Supported — customizable target |
+| PXIe-7985 | ✅ Supported — customizable target |
+| PXIe-7986 | ✅ Supported — customizable target |
+| PXIe-7994 | ✅ Supported — customizable target |
+| PXIe-7991 | ⬜ Not yet supported — no custom target yet |
+| PXIe-7992 | ⬜ Not yet supported — no custom target yet |
+| PXIe-7993 | ⬜ Not yet supported — no custom target yet |
+| PCIe-7981 | ⬜ Not yet supported — no custom target yet |
+| PCIe-7982 | ⬜ Not yet supported — no custom target yet |
+| PCIe-7985 | ⬜ Not yet supported — no custom target yet |
+
+## FlexRIO Digital Modules
+
+| Device | Baseboard | Status |
+| --- | --- | --- |
+| PXIe-6569 | PXIe-7991 / PXIe-7992 | ⬜ Not yet supported — CLIP available; baseboard target not yet in the workflow |
+
+## FlexRIO High-Speed Serial Modules
+
+| Device | Baseboard | Status |
+| --- | --- | --- |
+| PXIe-6593 (KU40) | PXIe-7982 | 🟨 Buildable — CLIP available, no example yet |
+| PXIe-6593 (KU60) | PXIe-7985 | 🟨 Buildable — CLIP available, no example yet |
+| PXIe-6594 | PXIe-7986 | 🟨 Buildable — CLIP available, no example yet |
+
+## FlexRIO Multifunction IO Modules
+
+| Device | Baseboard | Status |
+| --- | --- | --- |
+| PXIe-7890 | PXIe-7994 | 🟨 Buildable — CLIP available, no example yet |
+| PXIe-7891 | PXIe-7994 | 🟨 Buildable — CLIP available, no example yet |
+
+## FlexRIO FPD-Link Interface Modules
+
+| Device | Baseboard | Status |
+| --- | --- | --- |
+| PXIe-1486 / PXIe-1487 | PXIe-7993 | ⬜ Not yet supported — CLIP available; baseboard target not yet in the workflow |
+| PXIe-1488 / PXIe-1489 | PXIe-7993 | ⬜ Not yet supported — CLIP available; baseboard target not yet in the workflow |
+
+## FlexRIO Digitizer and Transceiver Modules
+
+These analog instrument modules run on the Macallan FPGA modules (PXIe-7981 / 7982 / 7985)
+and are customized through their socketed CLIP, just like the other IO modules.
+
+| Device | Baseboard | Status |
+| --- | --- | --- |
+| PXIe-5763 / PXIe-5764 | PXIe-7981 / 7982 / 7985 | 🟨 Buildable — CLIP available, no example yet |
+| PXIe-5785 / PXIe-5775 / PXIe-5745 | PXIe-7981 / 7982 / 7985 | 🟨 Buildable — CLIP available, no example yet |
+| PXIe-5774 | PXIe-7982 / 7985 | 🟨 Buildable — CLIP available, no example yet |
 <br><br><br>
 
 # How You Customize a FlexRIO Board
@@ -70,37 +158,6 @@ This is the **primary use case** of `flexrio-custom`: customers who want the int
 **Use this when** you want an HDL-only design with no LabVIEW FPGA VI in the stack.
 
 > **How do I know what's inside the CLIP?** The CLIP VHDL is not formally documented — its behavior is described by the comments in the CLIP source itself, and interpreting it assumes familiarity with the underlying high-speed bus. See [Dependencies and File Management](docs/DependenciesAndFileManagement.md) for where the CLIP source lives and how it is pulled into a target, and [Digital IO](docs/DigitalIO.md) for the board IO interfaces routed into `UserHdl`.
-<br><br><br>
-
-# Supported Devices
-
-## FlexRIO Co-Processor Modules
-
-| Device |
-| --- |
-| PXIe-7903 |
-| PXIe-7903-DDR1280 |
-| PXIe-7911 |
-| PXIe-7912 |
-| PXIe-7915 |
-
-## FlexRIO High-Speed Serial Modules
-
-| Device | Baseboard |
-| --- | --- |
-| PXIe-6593 KU35 | PXIe-7981 |
-| PXIe-6593 KU40 | PXIe-7982 |
-| PXIe-6593 KU60 | PXIe-7985 |
-| PXIe-6594 | PXIe-7986 |
-
-## FlexRIO Multifunction IO Modules
-
-| Device | Baseboard |
-| --- | --- |
-| PXIe-7890 | PXIe-7994 |
-| PXIe-7891 | PXIe-7994 |
-
-For the High-Speed Serial and Multifunction IO Modules, start with the Custom folder for the baseboard module.
 
 # Customizing IO Module Devices
 
@@ -115,7 +172,6 @@ Modules with integrated IO use an IO Module ID (also called Terminal Block ID or
 | PXIe-7911 | none |
 | PXIe-7912 | none |
 | PXIe-7915 | none |
-| PXIe-6593 KU35 | 0x109379F9 |
 | PXIe-6593 KU40 | 0x109379F9 |
 | PXIe-6593 KU60 | 0x109379F9 |
 | PXIe-6594 | 0x109379FC |
@@ -127,12 +183,10 @@ Follow these steps to setup your machine to use the LabVIEW FPGA HDL Tools with 
 
 ## Prerequisite Software
 Use NI Package Manager to install the following software:
-* LabVIEW 2023 (or newer) — see the LabVIEW version note below
+* LabVIEW 2023 (or newer)
 * LabVIEW FPGA 2023 (or newer)
 * LabVIEW FPGA Compilation tool for Vivado 2021.1
 * FlexRIO 2026 Q3 (or newer)
-
-**LabVIEW version depends on which compile flow you use.** LabVIEW **2023 or newer** is enough for the **Vivado compile flow** — author a VI, export a LabVIEW window netlist with `gen-window`, and compile in Vivado. The **LabVIEW FPGA compile flow** (build a custom LabVIEW FPGA target and compile the bitfile in LabVIEW FPGA) requires **LabVIEW 2026 or newer**. See [Window Netlist and Constraints → LabVIEW version support](https://github.com/ni/labview-fpga-hdl-tools/blob/main/docs/WindowNetlistAndConstraints.md#labview-version-support-2023-vs-2026) for the details.
 
 Install the following 3rd party software:
 * Install latest version Git  – https://git-scm.com/downloads
@@ -171,85 +225,8 @@ This creates a virtual environment, installs the correct version of the LabVIEW 
 This will download the dependencies specified in the dependencies.toml file found here:
 > C:\dev\github\flexrio-custom\dependencies.toml
 
-See [Dependencies and File Management](docs/DependenciesAndFileManagement.md) for what each dependency repo provides and how versions are managed.
-
 <br>
 <b> That's it!  Your computer is setup to use the LabVIEW FPGA HDL Tools to make custom FlexRIO FPGA devices</b>
-<br><br><br>
-
-# Managing Dependency Versions
-
-`nihdl install-deps` clones the dependency repositories listed in [`dependencies.toml`](dependencies.toml) at the repo root. Understanding how those repos are versioned — and what to do when you move to a newer version — keeps your custom target building across upgrades.
-
-## Versioning schemes
-
-The dependencies use two different versioning schemes:
-
-**Locked to NI product releases — calendar versioning** (e.g. `26.3.0` = 2026 Q3). Keep these three on the **same quarterly version**:
-- `ni/flexrio` — the base FlexRIO target support your custom target builds on
-- `ni/flexrio-deps` — the encrypted base-target dependencies
-- `ni/flexrio-clips` — the socketed CLIP HDL
-
-**Decoupled from NI product releases — semantic versioning** (e.g. `2.5.0`). These release independently whenever they change:
-- `ni/hdl-shared` — reusable host interfaces (registers, DMA FIFOs)
-- `ni/labview-fpga-hdl-tools` — the `nihdl` tools themselves (also pinned as a Python package)
-
-The flexrio-custom repo itself is calendar-versioned and tracks the FlexRIO quarterly release.
-
-## Specifying versions in `dependencies.toml`
-
-Use the `~=` ("compatible release") operator so you can pick up patch fixes without editing the file:
-
-```toml
-github_dependencies = [
-    "ni/flexrio~=26.3.0",
-    "ni/flexrio-deps~=26.3.0",
-    "ni/flexrio-clips~=26.3.0",
-    "ni/hdl-shared~=1.0.0",
-]
-```
-
-NI recommends keeping `flexrio`, `flexrio-deps`, and `flexrio-clips` on the **same** quarterly version — mixing quarters can produce interface mismatches between the base target and its deps.
-
-A checked-out release tag (or `main`) already pins a coherent stack in `dependencies.toml`, so **`nihdl install-deps` alone installs the right versions — no extra flags needed.** A `.dev0` pin (e.g. `ni/flexrio~=26.3.0.dev0`) automatically resolves to the latest matching pre-release (`.dev1`, `.dev2`, …), so a development stack installs the same way. `install-deps --pre --latest` is only a convenience for pulling the newest pre-releases of *every* dependency regardless of the pins, when you are iterating on a development branch — you should not need it for a released version or `main`.
-
-See [Dependencies and File Management](docs/DependenciesAndFileManagement.md) for what each repo provides and how the file lists tie them together.
-
-## Match the installed FlexRIO driver version
-
-Choose the **quarterly version** of `flexrio` / `flexrio-deps` (and therefore of flexrio-custom) to **match the FlexRIO driver installed on your machine**. For example, with FlexRIO 2026 Q3 installed, pin the deps to `~=26.3.0`.
-
-This matters because a custom target relies on pieces that ship with the **FlexRIO driver**, not with this repo:
-
-- **Common target-plugin files.** A custom LabVIEW FPGA target plugin depends on **common target-plugin files that the FlexRIO driver installs** — these are *not* provided by the GitHub custom device target plugin. So the version of the flexrio base-target support must match the installed FlexRIO driver version.
-- **Host driver API for FIFOs and registers.** flexrio-custom exposes **DMA FIFO** and **register** host APIs on the custom FPGA device. The host-side driver for those APIs is installed with the FlexRIO driver, so the versions must match to avoid incompatibility.
-
-Keeping flexrio-custom, its `flexrio` / `flexrio-deps` dependencies, and the installed FlexRIO driver all on the **same quarterly version** avoids these mismatches.
-
-## Upgrading to a newer base-target version
-
-When you bump `flexrio` / `flexrio-deps` in `dependencies.toml` and re-run `nihdl install-deps`:
-
-- **Referenced files update automatically.** A custom target references almost everything **in place** from the base target, so those files come along with the new version with no action from you.
-- **Forked files do NOT update automatically.** A custom target **copies and modifies** the base target's **top-level HDL file** — for example `SasquatchTopTemplate.vhd` (Sasquatch / Aurora) or `MacallanTop.vhd` (Macallan). Your copy keeps the old interface, so if NI changed the base top-level file, your fork can break. (See [Dependencies and File Management](docs/DependenciesAndFileManagement.md) for which files are forked vs. referenced.)
-
-### Reconciling a forked file after an upgrade
-
-**How you'll know something broke.** After `install-deps`, the target fails to build (`nihdl gen-vivado`, `gen-target`, `gen-modelsim`, or a compile) with errors on the forked top-level file — commonly missing or extra **generics** or **ports** on instantiations of the fixed logic, the window wrapper, `IoRefClkSelect`, or clock/reset constants.
-
-**How to find what changed — diff the OLD base against the NEW base.** Your fork has usually drifted far from the base target (you added your `UserHdl`, FIFOs, custom I/O, and so on), so:
-
-- **Do NOT** diff your **customized** file against the **new base** file — that diff is dominated by *your* customizations and it's hard to see NI's changes.
-- **DO** diff the **old base** version against the **new base** version of the *same* file. That isolates exactly what NI changed between the two releases — usually a small, focused diff.
-
-Two ways to get the two base versions:
-
-- **On GitHub (easiest):** compare the two tags on `ni/flexrio` and open the top-level file, e.g. `https://github.com/ni/flexrio/compare/26.1.0...26.2.0` (or view one version directly: `https://github.com/ni/flexrio/blob/26.1.0/targets/<base-target>/rtl-lvfpga/<Top>.vhd`).
-- **Locally:** before upgrading, save a copy of `deps/flexrio/targets/<base-target>/rtl-lvfpga/<Top>.vhd`, run `install-deps` on the new version, and diff the two copies with any diff tool.
-
-**Reconcile.** For each change in the old → new base diff, decide whether it affects the interface your fork depends on (generics, ports, constants, signal declarations, instantiations). If it does, apply the equivalent edit to your forked top-level file while **preserving your customizations**, then rebuild to confirm.
-
-> Today only the **top-level HDL file** is forked. If you fork additional base-target files, apply the same old → new base diff to each of them on every version bump.
 <br><br><br>
 
 # Getting Started
@@ -266,7 +243,7 @@ Step-by-step exercises for building bitfiles, customizing a target, and migratin
     * `targets` - FPGA target projects (one folder per supported device)
         * `common` - shared files used across the target projects
         * `pxie-7903custom` - example custom PXIe-7903 device (consider this to be the "Hello World" example)
-            * `nihdlsettings.py` - tool configuration (Python-based target settings; see [Dependencies and File Management](docs/DependenciesAndFileManagement.md))
+            * `nihdlsettings.py` - tool configuration (Python-based target settings)
             * `nisetup.bat` - runs the repo-root setup script to activate the Python environment
             * `lvFpgaTarget` - LabVIEW FPGA target plugin source files
             * `blankLvWindowNetlist` - placeholder LabVIEW window netlist content
@@ -276,7 +253,8 @@ Step-by-step exercises for building bitfiles, customizing a target, and migratin
             * `ModelSimProject` - ModelSim simulation project files (ignored in .gitignore)
             * `objects` - generated outputs from HDL tools (ignored in .gitignore)
             * `docs` - target-specific documentation and examples
-            * `vivadoprojectsources.txt` - source list used for Vivado project generation (the custom target's own sources, headed by the modified top-level VHDL file — see [Dependencies and File Management](docs/DependenciesAndFileManagement.md))
+            * `vivadoprojectsources.txt` - source list used for Vivado project generation
+            * `vivadoprojectexclude.txt` - files excluded from the generated Vivado project
             * `modelsimprojectsources.txt` - source list used for ModelSim project generation
         * `pxie-7903aurora` - example of migrating the Aurora CLIP to make a custom Aurora PXIe-7903 device
         * `pxie-7xxxCustom` - additional custom device examples

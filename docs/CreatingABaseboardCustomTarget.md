@@ -288,8 +288,24 @@ board's own base top, never from another board.
    kForceChannelEnable      => GetForceChannelEnable(kUserHdlDmaFifoConf, kUserHdlDmaStartIndex),
    ```
 
-6. **Use the HDL-pinned DIO voltage.** In the `FixedLogicWrapperx` generic map, change
-   `kAuxDioDefaultVoltageGeneric => kAuxDioDefaultVoltage` to `=> kAuxDioDefaultVoltageConst`.
+6. **(board-specific) Replace LabVIEW-generated `PkgLvFpgaConst` constants with HDL-defined values.**
+   A custom target's `PkgLvFpgaConst.vhd` comes from the blank window netlist (no CLIP configured), so
+   the constants LabVIEW normally generates from the CLIP are **not defined** there. Any base-top code
+   that references them fails elaboration with *"… is not declared"*. Replace each such reference with
+   an HDL constant or literal you define in the architecture:
+   - `kAuxDioDefaultVoltage` → the `kAuxDioDefaultVoltageConst : natural := 3300;` from step 4, used in
+     the `FixedLogicWrapperx` generic map (`kAuxDioDefaultVoltageGeneric => kAuxDioDefaultVoltageConst`).
+   - `kExpectedTbId` → an HDL constant set to the TbID of the IO frontend this target uses.
+   - `kEnableFamClockSync` / `kFamClockSrcSel` (used to derive the board-IO ref-clock enables
+     `kEnableIoRefClk10/100`) → define those enables as literals instead, e.g. to enable the 100 MHz IO
+     reference clock:
+     ```vhdl
+     constant kEnableIoRefClk10  : std_logic := '0';
+     constant kEnableIoRefClk100 : std_logic := '1';
+     ```
+   Which constants appear is board-specific — grep the base top for names sourced from `PkgLvFpgaConst`
+   and replace every one. This is a *runtime/elaboration* swap, not a parse-time one, so it only shows
+   up when you actually elaborate/synthesize.
 
 7. **Merge UserHdl into the register-port output.** Where the top OR-combines register-port results,
    add the UserHdl term:
@@ -352,9 +368,29 @@ board's own base top, never from another board.
 
 > **Tip for a new board in the same family:** run a 3-way merge to apply this recipe automatically —
 > `git merge-file <copy-of-board-base-top> <sibling-base-top> <sibling-custom-top>`. The board-agnostic
-> steps merge cleanly; the conflicts it reports are exactly the board-specific regions (steps 8, the
-> board-I/O names in 9, and the memory ports in 11), which you resolve against the new board's base
-> top.
+> steps merge cleanly; the conflicts it reports are the board-specific regions, which you resolve
+> against the new board's base top. **Watch out:** a merge only flags regions that differ *textually*
+> between the two base tops — differences that happen to align (e.g. a reg-port signal named differently
+> but in the same place) can merge silently wrong, so still walk the reconciliation list below.
+
+**Board-specific reconciliations (these differ per board and are the usual source of elaboration
+errors). Always resolve each against _this board's own base top / `TheWindow.vhd.mako`_, never another
+board's:**
+
+| Area | What differs | Recipe step |
+|------|--------------|-------------|
+| Memory interface | `du0Dram*`/`du1Dram*` (e.g. Garrison/PCIe) vs `dHmbDram*`/`dLlbDram*` (e.g. Macallan/PXIe) | 11 + the flat wrapper (Step 4) |
+| HMB / `Dram2DP` | present (HMB boards) vs absent (`du*Dram`-only boards have no `Dram2DP`; the step-7 reg-port merge then drops the `bRegPortOutDram2DP` term) | 7, 8 |
+| Host-interface entity | e.g. `G3UsHostInterface` + `kHmbInUse => false` (+ hides `dNiHmb*`) vs `G3UsHostInterfaceIsoPort` + `kHmbInUse => true` | 5 |
+| Reg-port topology | the host interface must drive the **muxed** `bRegPortIn`/`bRegPortOut`, not the raw `bLvWindowRegPort*` — verify the expanded port map, a merge won't flag it | 5, 7 |
+| Clock-source select | some boards instantiate `IoRefClkSelect`; others drive `stEnableIoRefClk10/100` statically (no `IoRefClkSelect`) | 6 |
+| `FixedLogicWrapper` generics | different generic/port set per board (TbID / DIO-voltage generics vs `stEnableIoRefClk*` ports) | 6 |
+| LabVIEW-generated constants | `kAuxDioDefaultVoltage`, `kExpectedTbId`, `kEnableFamClockSync`, `kFamClockSrcSel` — **not** in a custom target's `PkgLvFpgaConst`; replace with HDL constants/literals | 6 |
+| Board-I/O set | the `% if include_board_io:` ports routed to `UserHdl` — e.g. `DioMgt*` Aux-MGT present on some boards, absent on others | 9 |
+
+> **If you generate these files programmatically, write them as BOM-free UTF-8.** A UTF-8 byte-order
+> mark makes Vivado fail with *"syntax error near �"* at line 1. (PowerShell's `Out-File` /
+> `Set-Content -Encoding utf8` prepend a BOM — use a BOM-free writer instead.)
 
 ## 6. Step 4 — Author the window wrappers (Mako)
 
@@ -379,6 +415,14 @@ target — the flatten/unflatten body is boilerplate you reuse almost verbatim. 
 actually matters is that **every port on your wrapper matches the base `TheWindow.vhd.mako` exactly**;
 mismatched ports = elaboration failure. If elaboration complains, render the base `TheWindow.vhd.mako`
 with your target's flags and diff its port list against your wrapper.
+
+Because the flatten/unflatten body is board-agnostic, the only edits when adapting a sibling wrapper
+are the **board-specific port sections** — chiefly the memory interface and its clocks (e.g.
+`dHmbDram*`/`dLlbDram*` + `dHmbDmaClkSocket`/`dLlbDmaClkSocket` → `du0Dram*`/`du1Dram*` +
+`DramClkLvFpga` / `Dram0/1ClkSocket` / `Dram0/1ClkUser`), plus any board-specific pins (e.g.
+`aPxieDstar*`). Apply the **same** swap in all three places these ports appear: the wrapper **entity**,
+its internal `TheWindow` instantiation, and the **component declaration** in
+`PkgTheLvWindowFlatWrapper` — they must stay identical or the component won't bind.
 
 **Board I/O is off on a custom target.** `nihdlsettings.py` sets
 `config.set_include_board_io_on_lv_window(False)`, which renders both `TheWindow.vhd.mako` and your
@@ -496,3 +540,20 @@ That's intended. A custom target sets `set_include_board_io_on_lv_window(False)`
 **not** routed into the LabVIEW FPGA window (that flag is for using board I/O from CLIP / the VI
 diagram). On an HDL-customized target you consume it in the top HDL and wire it into `UserHdl` — see
 [Digital IO](DigitalIO.md).
+
+**Q: Elaboration fails with `… is not declared` for `kEnableFamClockSync`, `kFamClockSrcSel`,
+`kExpectedTbId`, or `kAuxDioDefaultVoltage`.**
+Those are LabVIEW-generated `PkgLvFpgaConst` constants that a custom target (blank window netlist, no
+CLIP) does not define. Replace each with an HDL-defined constant/literal in the top — see recipe
+step 6 (e.g. `kEnableIoRefClk10/100` become literals like `'0'`/`'1'`; `kExpectedTbId` becomes a
+constant holding your IO frontend's TbID).
+
+**Q: Elaboration fails with `… is not declared` for `bRegPortOutUserHdl` or `dWin*StreamInterface*`.**
+Those signals come from recipe steps 3–4; make sure they weren't dropped when editing the declaration
+block. `signal bRegPortOutUserHdl : RegPortOut_t;` and the four `dWin*StreamInterface*Fifo` arrays must
+be declared — they feed the reg-port merge, the `UserHdl` instantiation, `StreamRouting`, and the
+flatten glue.
+
+**Q: Vivado reports `syntax error near �` at line 1.**
+The file has a UTF-8 BOM. Save it as BOM-free UTF-8 — PowerShell's `Out-File` / `Set-Content -Encoding
+utf8` prepend a BOM, which Vivado can't parse.

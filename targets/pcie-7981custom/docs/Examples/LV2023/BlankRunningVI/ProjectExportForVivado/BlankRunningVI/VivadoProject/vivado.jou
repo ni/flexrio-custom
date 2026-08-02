@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2021.1 (64-bit)
+# SW Build 3247384 on Thu Jun 10 19:36:33 MDT 2021
+# IP Build 3246043 on Fri Jun 11 00:30:35 MDT 2021
+# Start of session at: Sat Aug  1 20:24:49 2026
+# Process ID: 40804
+# Current directory: C:/dev/github15-test/flexrio-custom/targets/pcie-7981custom/docs/Examples/LV2023/BlankRunningVI/ProjectExportForVivado/BlankRunningVI/VivadoProject
+# Command line: vivado.exe -mode batch -source C:\dev\github15-test\flexrio-custom\targets\pcie-7981custom\docs\Examples\LV2023\BlankRunningVI\ProjectExportForVivado\BlankRunningVI\NIProtectedFiles\ProjectSetup.tcl
+# Log file: C:/dev/github15-test/flexrio-custom/targets/pcie-7981custom/docs/Examples/LV2023/BlankRunningVI/ProjectExportForVivado/BlankRunningVI/VivadoProject/vivado.log
+# Journal file: C:/dev/github15-test/flexrio-custom/targets/pcie-7981custom/docs/Examples/LV2023/BlankRunningVI/ProjectExportForVivado/BlankRunningVI/VivadoProject\vivado.jou
+#-----------------------------------------------------------
+source {C:\dev\github15-test\flexrio-custom\targets\pcie-7981custom\docs\Examples\LV2023\BlankRunningVI\ProjectExportForVivado\BlankRunningVI\NIProtectedFiles\ProjectSetup.tcl}

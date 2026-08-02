@@ -1,0 +1,1 @@
+exec "..\\..\\..\\NIProtectedFiles\\CreateBitfile.bat"

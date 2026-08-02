@@ -1,0 +1,6 @@
+# Keep this .gitignore file when building user FlexRIO release
+# githubvisible=true
+/objects/
+/VivadoProject*/
+/ModelSimProject*/
+*.log

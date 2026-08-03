@@ -1272,11 +1272,6 @@ begin  -- architecture struct
       PllClk80                            => BusClk,                                    --in std_logic
       DlyRefClk                           => DlyRefClk,                                 --in std_logic
       PxieClk100                          => PxieClk100,                                --in std_logic
-      DramClkLvFpga                       => DramClkLvFpga,                             --in std_logic
-      Dram0ClkSocket                      => Dram0ClkUser,                              --in std_logic
-      Dram1ClkSocket                      => Dram1ClkUser,                              --in std_logic
-      Dram0ClkUser                        => Dram0ClkUser,                              --in std_logic
-      Dram1ClkUser                        => Dram1ClkUser,                              --in std_logic
       dHmbDmaClkSocket                    => DmaClk,                                    --in std_logic
       dLlbDmaClkSocket                    => DmaClk,                                    --in std_logic
 
@@ -1353,11 +1348,6 @@ begin  -- architecture struct
       -----------------------------------
       -- TARGET IO AND CLIP PORTS NOT USED
       -----------------------------------
-
-      -----------------------------------------------------------------------------
-      --Dram Interface
-      -----------------------------------------------------------------------------
-      aDramReady                          => aDramReady,                                --in std_logic
 
       -----------------------------------------------------------------------------
       --HMB Interface

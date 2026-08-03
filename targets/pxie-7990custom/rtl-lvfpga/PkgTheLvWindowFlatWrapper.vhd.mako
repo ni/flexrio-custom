@@ -97,11 +97,6 @@ package PkgTheLvWindowFlatWrapper is
       PllClk80 :  in std_logic;
       DlyRefClk :  in std_logic;
       PxieClk100 :  in std_logic;
-      DramClkLvFpga :  in std_logic;
-      Dram0ClkSocket :  in std_logic;
-      Dram1ClkSocket :  in std_logic;
-      Dram0ClkUser :  in std_logic;
-      Dram1ClkUser :  in std_logic;
       dHmbDmaClkSocket :  in std_logic;
       dLlbDmaClkSocket :  in std_logic;
 
@@ -235,44 +230,6 @@ package PkgTheLvWindowFlatWrapper is
       dtDevClkEn                      : out std_logic;
 
       -------------------------------------------------------------------------------------
-      -- Base IO
-      -------------------------------------------------------------------------------------
-
-      -- Base board I2C
-      aBaseI2cSclIn                   : in    std_logic;
-      aBaseI2cSclOut                  : out   std_logic;
-      aBaseI2cSclTri                  : out   std_logic;
-      aBaseI2cSdaIn                   : in    std_logic;
-      aBaseI2cSdaOut                  : out   std_logic;
-      aBaseI2cSdaTri                  : out   std_logic;
-
-      aBaseConfigReset                : out   std_logic;
-
-      -- Base board DIO
-      aBaseDioIn                      : in    std_logic_vector(31 downto 0);
-      aBaseDioOut                     : out   std_logic_vector(31 downto 0);
-      aBaseDioOutEn                   : out   std_logic_vector(31 downto 0);
-      aBaseExClk                      : in    std_logic;
-
-      -- MGTs for QSFP ports
-      Qsfp0MgtRx_p                    : in    std_logic_vector(3 downto 0);
-      Qsfp0MgtRx_n                    : in    std_logic_vector(3 downto 0);
-      Qsfp0MgtTx_p                    : out   std_logic_vector(3 downto 0);
-      Qsfp0MgtTx_n                    : out   std_logic_vector(3 downto 0);
-      Qsfp0MgtRefClk_p                : in    std_logic_vector(1 downto 0);
-      Qsfp0MgtRefClk_n                : in    std_logic_vector(1 downto 0);
-
-      Qsfp1MgtRx_p                    : in    std_logic_vector(3 downto 0);
-      Qsfp1MgtRx_n                    : in    std_logic_vector(3 downto 0);
-      Qsfp1MgtTx_p                    : out   std_logic_vector(3 downto 0);
-      Qsfp1MgtTx_n                    : out   std_logic_vector(3 downto 0);
-      Qsfp1MgtRefClk_p                : in    std_logic_vector(1 downto 0);
-      Qsfp1MgtRefClk_n                : in    std_logic_vector(1 downto 0);
-
-      Qsfp0SocketClk80                : in    std_logic;
-      Qsfp1SocketClk80                : in    std_logic;
-
-      -------------------------------------------------------------------------------------
       -- IoModule Socketed CLIP - IoModule physical interface
       -------------------------------------------------------------------------------------
       -- Configuration / Single-Ended
@@ -286,11 +243,6 @@ package PkgTheLvWindowFlatWrapper is
       SampleClk                       : in    std_logic;
       DeviceClk                       : in    std_logic;
   % endif
-
-      -----------------------------------------------------------------------------
-      --Dram Interface
-      -----------------------------------------------------------------------------
-      aDramReady : in std_logic;
 
       -----------------------------------------------------------------------------
       --HMB Interface

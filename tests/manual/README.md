@@ -148,6 +148,32 @@ the run:
 If a `--target` name matches nothing, the harness warns and lists the targets it
 actually found.
 
+## Aurora builds two VPEs
+
+The `pxie-7903aurora` target is special: it has **two** LabVIEW examples, and so
+two Vivado project exports (VPEs) — an *Aurora 2-port* example (`Aurora2port.xpr`)
+and a plain *Blank Running VI* example (`BlankRunningVI.xpr`). You need to
+generate both VPEs from LabVIEW before running the netlist sequences.
+
+Only the **Blank Running VI** window netlist is committed to GitHub — the Aurora
+2-port netlist is too large — so the harness treats the two examples
+differently:
+
+- In **every** mode (`compile-targets-use-shipping-window`,
+  `compile-targets-gen-shipping-window`, and any individual test), Aurora builds
+  **only** the Blank Running VI VPE, exactly like the other targets.
+- In **`compile-targets-gen-objects-window`** (and any run with
+  `--useobjectslvwindow`), Aurora is built **twice** — once with the Aurora
+  2-port VPE and once with the Blank Running VI VPE — since those netlists are
+  regenerated into the scratch `objects/` folder and never committed.
+
+Each Aurora build gets its own Vivado project folder
+(`VivadoProject_Aurora2port` / `VivadoProject_BlankRunningVI`), its own scratch
+netlist folder, and its own VPE export folder
+(`c:\temp\testVPE\PXIe-7903Aurora_<label>_VPE\...`) so the two builds never
+clobber each other. In the summary the two runs appear as
+`targets/pxie-7903aurora [Aurora2port]` and `[BlankRunningVI]`.
+
 ## Options reference
 
 These belong to `run_tests.py` itself (not to the underlying `nihdl`
@@ -203,11 +229,15 @@ in each target directory. That shared
 then applies test overrides for machine-independent paths:
 
 - The VPE project export (`.xpr`) path is always overridden to
-  `c:\temp\testVPE\<TargetName>_VPE\VivadoProject\<xpr>`.
+  `c:\temp\testVPE\<TargetName>_VPE\VivadoProject\<xpr>` (or
+  `<TargetName>_<label>_VPE\...` for a multi-VPE target such as Aurora; see
+  *Aurora builds two VPEs* above).
 - The window-netlist input/output folders follow the netlist mode described
   above, driven entirely by `nihdl`'s generic `--set KEY=VALUE` overrides
   (`lv_window_input`, `lv_window_output`) — no per-variant wrapper files and no
   environment variables.
+- Multi-VPE targets additionally get a per-VPE Vivado project folder via
+  `--set vivado_project=<name>` and select their VPE via `--set vpe=<key>`.
 
 The recognized `--set` keys and the override logic live in `apply_test_overrides`
 / `pre_all` inside `nihdlsettings.py`.

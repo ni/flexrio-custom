@@ -95,11 +95,6 @@ entity TheLvWindowFlatWrapper is
     PllClk80 :  in std_logic;
     DlyRefClk :  in std_logic;
     PxieClk100 :  in std_logic;
-    DramClkLvFpga :  in std_logic;
-    Dram0ClkSocket :  in std_logic;
-    Dram1ClkSocket :  in std_logic;
-    Dram0ClkUser :  in std_logic;
-    Dram1ClkUser :  in std_logic;
     dHmbDmaClkSocket :  in std_logic;
     dLlbDmaClkSocket :  in std_logic;
 
@@ -233,44 +228,6 @@ entity TheLvWindowFlatWrapper is
   dtDevClkEn                      : out std_logic;
 
     -------------------------------------------------------------------------------------
-    -- Base IO
-    -------------------------------------------------------------------------------------
-
-    -- Base board I2C
-  aBaseI2cSclIn                   : in    std_logic;
-  aBaseI2cSclOut                  : out   std_logic;
-  aBaseI2cSclTri                  : out   std_logic;
-  aBaseI2cSdaIn                   : in    std_logic;
-  aBaseI2cSdaOut                  : out   std_logic;
-  aBaseI2cSdaTri                  : out   std_logic;
-
-  aBaseConfigReset                : out   std_logic;
-
-    -- Base board DIO
-  aBaseDioIn                      : in    std_logic_vector(31 downto 0);
-  aBaseDioOut                     : out   std_logic_vector(31 downto 0);
-  aBaseDioOutEn                   : out   std_logic_vector(31 downto 0);
-  aBaseExClk                      : in    std_logic;
-
-    -- MGTs for QSFP ports
-  Qsfp0MgtRx_p                    : in    std_logic_vector(3 downto 0);
-  Qsfp0MgtRx_n                    : in    std_logic_vector(3 downto 0);
-  Qsfp0MgtTx_p                    : out   std_logic_vector(3 downto 0);
-  Qsfp0MgtTx_n                    : out   std_logic_vector(3 downto 0);
-  Qsfp0MgtRefClk_p                : in    std_logic_vector(1 downto 0);
-  Qsfp0MgtRefClk_n                : in    std_logic_vector(1 downto 0);
-
-  Qsfp1MgtRx_p                    : in    std_logic_vector(3 downto 0);
-  Qsfp1MgtRx_n                    : in    std_logic_vector(3 downto 0);
-  Qsfp1MgtTx_p                    : out   std_logic_vector(3 downto 0);
-  Qsfp1MgtTx_n                    : out   std_logic_vector(3 downto 0);
-  Qsfp1MgtRefClk_p                : in    std_logic_vector(1 downto 0);
-  Qsfp1MgtRefClk_n                : in    std_logic_vector(1 downto 0);
-
-  Qsfp0SocketClk80                : in    std_logic;
-  Qsfp1SocketClk80                : in    std_logic;
-
-    -------------------------------------------------------------------------------------
     -- IoModule Socketed CLIP - IoModule physical interface
     -------------------------------------------------------------------------------------
     -- Configuration / Single-Ended
@@ -284,11 +241,6 @@ entity TheLvWindowFlatWrapper is
   SampleClk                       : in    std_logic;
   DeviceClk                       : in    std_logic;
 % endif
-
-    -----------------------------------------------------------------------------
-    --Dram Interface
-    -----------------------------------------------------------------------------
-    aDramReady : in std_logic;
 
     -----------------------------------------------------------------------------
     --HMB Interface
@@ -511,11 +463,6 @@ begin
       PllClk80 => PllClk80,
       DlyRefClk => DlyRefClk,
       PxieClk100 => PxieClk100,
-      DramClkLvFpga => DramClkLvFpga,
-      Dram0ClkSocket => Dram0ClkSocket,
-      Dram1ClkSocket => Dram1ClkSocket,
-      Dram0ClkUser => Dram0ClkUser,
-      Dram1ClkUser => Dram1ClkUser,
       dHmbDmaClkSocket => dHmbDmaClkSocket,
       dLlbDmaClkSocket => dLlbDmaClkSocket,
 
@@ -649,44 +596,6 @@ begin
   dtDevClkEn => dtDevClkEn,
 
       -------------------------------------------------------------------------------------
-      -- Base IO
-      -------------------------------------------------------------------------------------
-
-      -- Base board I2C
-  aBaseI2cSclIn => aBaseI2cSclIn,
-  aBaseI2cSclOut => aBaseI2cSclOut,
-  aBaseI2cSclTri => aBaseI2cSclTri,
-  aBaseI2cSdaIn => aBaseI2cSdaIn,
-  aBaseI2cSdaOut => aBaseI2cSdaOut,
-  aBaseI2cSdaTri => aBaseI2cSdaTri,
-
-  aBaseConfigReset => aBaseConfigReset,
-
-      -- Base board DIO
-  aBaseDioIn => aBaseDioIn,
-  aBaseDioOut => aBaseDioOut,
-  aBaseDioOutEn => aBaseDioOutEn,
-  aBaseExClk => aBaseExClk,
-
-      -- MGTs for QSFP ports
-  Qsfp0MgtRx_p => Qsfp0MgtRx_p,
-  Qsfp0MgtRx_n => Qsfp0MgtRx_n,
-  Qsfp0MgtTx_p => Qsfp0MgtTx_p,
-  Qsfp0MgtTx_n => Qsfp0MgtTx_n,
-  Qsfp0MgtRefClk_p => Qsfp0MgtRefClk_p,
-  Qsfp0MgtRefClk_n => Qsfp0MgtRefClk_n,
-
-  Qsfp1MgtRx_p => Qsfp1MgtRx_p,
-  Qsfp1MgtRx_n => Qsfp1MgtRx_n,
-  Qsfp1MgtTx_p => Qsfp1MgtTx_p,
-  Qsfp1MgtTx_n => Qsfp1MgtTx_n,
-  Qsfp1MgtRefClk_p => Qsfp1MgtRefClk_p,
-  Qsfp1MgtRefClk_n => Qsfp1MgtRefClk_n,
-
-  Qsfp0SocketClk80 => Qsfp0SocketClk80,
-  Qsfp1SocketClk80 => Qsfp1SocketClk80,
-
-      -------------------------------------------------------------------------------------
       -- IoModule Socketed CLIP - IoModule physical interface
       -------------------------------------------------------------------------------------
       -- Configuration / Single-Ended
@@ -700,11 +609,6 @@ begin
   SampleClk => SampleClk,
   DeviceClk => DeviceClk,
   % endif
-
-      -----------------------------------------------------------------------------
-      --Dram Interface
-      -----------------------------------------------------------------------------
-      aDramReady => aDramReady,
 
       -----------------------------------------------------------------------------
       --HMB Interface

@@ -175,16 +175,16 @@
          </Process>
       </ProcessPropertyList>
       <SpeedGrade>-2</SpeedGrade>
-      <Top>MacallanTop</Top>
+      <Top>GarrisonTop</Top>
       <UseBinaryConfiguration>TRUE</UseBinaryConfiguration>
    </FpgaCompilation>
    <NiFpga>
       <ControlAndIndicatorNamesAndTypes></ControlAndIndicatorNamesAndTypes>
       <RunWhenLoaded>false</RunWhenLoaded>
       <signatures>
-         <fpgaSignature>yXuA6RZFYJGe8FofBZVA3w==</fpgaSignature>
-         <guidSignature>MmgMVFj4EH//j4nRVbtxQg==</guidSignature>
-         <namesSignature>31YAC/Hi6XrbB/CInzyVwg==</namesSignature>
+         <fpgaSignature>LvQhajNSp1qQTh2N0nXPaQ==</fpgaSignature>
+         <guidSignature>jYdaZRBqW2JcduFPNhg4uA==</guidSignature>
+         <namesSignature>smpZWwlOvVf793ghQkrcSA==</namesSignature>
       </signatures>
       <version>1</version>
       <VivadoProjectExport>true</VivadoProjectExport>
@@ -203,9 +203,9 @@
 		<BuildSpecVersion />
 		<BuildSpecDescription />
 	</Documentation>
-	<SignatureRegister>C97B80E9164560919EF05A1F059540DF</SignatureRegister>
-	<SignatureGuids>32680C5458F8107FFF8F89D155BB7142</SignatureGuids>
-	<SignatureNames>DF56000BF1E2E97ADB07F0889F3C95C2</SignatureNames>
+	<SignatureRegister>2EF4216A3352A75A904E1D8DD275CF69</SignatureRegister>
+	<SignatureGuids>8D875A65106A5B625C76E14F361838B8</SignatureGuids>
+	<SignatureNames>B26A595B094EBD57FBF77821424ADC48</SignatureNames>
 	<TimeStamp></TimeStamp>
 	<CompilationStatus></CompilationStatus>
 	<BitstreamVersion>2</BitstreamVersion>
@@ -384,7 +384,7 @@
 		</Icon>
 	</VI>
 	<Project>
-		<TargetClass>PXIe-7985Custom</TargetClass>
+		<TargetClass>PCIe-7985Custom</TargetClass>
 		<AutoRunWhenDownloaded>false</AutoRunWhenDownloaded>
 		<CompilationResultsTree>
 <CompilationResults>
@@ -410,7 +410,7 @@
       <RoutingAliases>
          <Count>0</Count>
       </RoutingAliases>
-      <Target>PXIe-7985R</Target>
+      <Target>PCIe-7985R</Target>
    </TargetSpecificData>
 </CompilationResults> </CompilationResultsTree>
 		<MultipleUserClocks>false</MultipleUserClocks>
@@ -420,4 +420,4 @@
 	<BitstreamMD5></BitstreamMD5>
 	<Bitstream></Bitstream>
 </Bitfile>
-</BitfileContents><ProcessedClockData><Clock><DerivedClock>false</DerivedClock><NominalFrequency>80000000.000</NominalFrequency><TimeSpecName>TimingEnginex/TimingStage1x/ReliableClkPllx/inst/mmcme3_adv_inst/CLKOUT1</TimeSpecName><SignalName/><Alias>80 MHz Clock</Alias><ClockName>PllClk80</ClockName></Clock><Clock><DerivedClock>false</DerivedClock><NominalFrequency>100000000.000</NominalFrequency><TimeSpecName>PxieClk100_p</TimeSpecName><SignalName/><Alias>PXIe_Clk100</Alias><ClockName>PxieClk100</ClockName></Clock><Clock><DerivedClock>false</DerivedClock><NominalFrequency>250000000.000</NominalFrequency><TimeSpecName>TS_DmaClk</TimeSpecName><SignalName/><Alias>DmaClk (Used by non-diagram components)</Alias><ClockName>DmaClk</ClockName></Clock><Clock><DerivedClock>false</DerivedClock><NominalFrequency>80000000.000</NominalFrequency><TimeSpecName>TS_BusClk</TimeSpecName><SignalName/><Alias>BusClk (Used by non-diagram components)</Alias><ClockName>BusClk</ClockName></Clock><Clock><DerivedClock>false</DerivedClock><NominalFrequency>100000000.000</NominalFrequency><TimeSpecName>TS_ReliableClkIn</TimeSpecName><SignalName/><Alias>ReliableClkIn (Used by non-diagram components)</Alias><ClockName>ReliableClkIn</ClockName></Clock><Clock><DerivedClock>false</DerivedClock><NominalFrequency>267000000.000</NominalFrequency><TimeSpecName>TS_Dram0ClkSocket</TimeSpecName><SignalName/><Alias>Dram0ClkSocket (Used by non-diagram components)</Alias><ClockName>Dram0ClkSocket</ClockName></Clock><Clock><DerivedClock>false</DerivedClock><NominalFrequency>267000000.000</NominalFrequency><TimeSpecName>TS_Dram1ClkSocket</TimeSpecName><SignalName/><Alias>Dram1ClkSocket (Used by non-diagram components)</Alias><ClockName>Dram1ClkSocket</ClockName></Clock><Clock><DerivedClock>false</DerivedClock><NominalFrequency>267000000.000</NominalFrequency><TimeSpecName>TS_Dram0ClkUser</TimeSpecName><SignalName/><Alias>Dram0ClkUser (Used by non-diagram components)</Alias><ClockName>Dram0ClkUser</ClockName></Clock><Clock><DerivedClock>false</DerivedClock><NominalFrequency>267000000.000</NominalFrequency><TimeSpecName>TS_Dram1ClkUser</TimeSpecName><SignalName/><Alias>Dram1ClkUser (Used by non-diagram components)</Alias><ClockName>Dram1ClkUser</ClockName></Clock><Clock><DerivedClock>false</DerivedClock><NominalFrequency>250000000.000</NominalFrequency><TimeSpecName>TS_dHmbDmaClkSocket</TimeSpecName><SignalName/><Alias>dHmbDmaClkSocket (Used by non-diagram components)</Alias><ClockName>dHmbDmaClkSocket</ClockName></Clock><Clock><DerivedClock>false</DerivedClock><NominalFrequency>250000000.000</NominalFrequency><TimeSpecName>TS_dLlbDmaClkSocket</TimeSpecName><SignalName/><Alias>dLlbDmaClkSocket (Used by non-diagram components)</Alias><ClockName>dLlbDmaClkSocket</ClockName></Clock></ProcessedClockData><DocumentationInfo><Documentation><BuildSpecVersion>1.0.0.0</BuildSpecVersion><BuildSpecDescription/></Documentation></DocumentationInfo></CodeGenerationResults.lvtxt>
+</BitfileContents><ProcessedClockData><Clock><DerivedClock>false</DerivedClock><NominalFrequency>80000000.000</NominalFrequency><TimeSpecName>TimingEnginex/TimingStage1x/ReliableClkPllx/inst/mmcme3_adv_inst/CLKOUT1</TimeSpecName><SignalName/><Alias>80 MHz Clock</Alias><ClockName>PllClk80</ClockName></Clock><Clock><DerivedClock>false</DerivedClock><NominalFrequency>100000000.000</NominalFrequency><TimeSpecName>PxieClk100_p</TimeSpecName><SignalName/><Alias>PXIe_Clk100</Alias><ClockName>PxieClk100</ClockName></Clock><Clock><DerivedClock>false</DerivedClock><NominalFrequency>250000000.000</NominalFrequency><TimeSpecName>TS_DmaClk</TimeSpecName><SignalName/><Alias>DmaClk (Used by non-diagram components)</Alias><ClockName>DmaClk</ClockName></Clock><Clock><DerivedClock>false</DerivedClock><NominalFrequency>80000000.000</NominalFrequency><TimeSpecName>TS_BusClk</TimeSpecName><SignalName/><Alias>BusClk (Used by non-diagram components)</Alias><ClockName>BusClk</ClockName></Clock><Clock><DerivedClock>false</DerivedClock><NominalFrequency>100000000.000</NominalFrequency><TimeSpecName>TS_ReliableClkIn</TimeSpecName><SignalName/><Alias>ReliableClkIn (Used by non-diagram components)</Alias><ClockName>ReliableClkIn</ClockName></Clock><Clock><DerivedClock>false</DerivedClock><NominalFrequency>267000000.000</NominalFrequency><TimeSpecName>TS_Dram0ClkSocket</TimeSpecName><SignalName/><Alias>Dram0ClkSocket (Used by non-diagram components)</Alias><ClockName>Dram0ClkSocket</ClockName></Clock><Clock><DerivedClock>false</DerivedClock><NominalFrequency>267000000.000</NominalFrequency><TimeSpecName>TS_Dram1ClkSocket</TimeSpecName><SignalName/><Alias>Dram1ClkSocket (Used by non-diagram components)</Alias><ClockName>Dram1ClkSocket</ClockName></Clock><Clock><DerivedClock>false</DerivedClock><NominalFrequency>267000000.000</NominalFrequency><TimeSpecName>TS_Dram0ClkUser</TimeSpecName><SignalName/><Alias>Dram0ClkUser (Used by non-diagram components)</Alias><ClockName>Dram0ClkUser</ClockName></Clock><Clock><DerivedClock>false</DerivedClock><NominalFrequency>267000000.000</NominalFrequency><TimeSpecName>TS_Dram1ClkUser</TimeSpecName><SignalName/><Alias>Dram1ClkUser (Used by non-diagram components)</Alias><ClockName>Dram1ClkUser</ClockName></Clock></ProcessedClockData><DocumentationInfo><Documentation><BuildSpecVersion>1.0.0.0</BuildSpecVersion><BuildSpecDescription/></Documentation></DocumentationInfo></CodeGenerationResults.lvtxt>

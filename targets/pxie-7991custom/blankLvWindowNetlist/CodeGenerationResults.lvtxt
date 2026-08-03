@@ -12,9 +12,9 @@
       <DeviceCategory>FlexRIO FPGA Modules</DeviceCategory>
       <DeviceFamily>kintexu</DeviceFamily>
       <DeviceFamilyForLabVIEW>KintexUltraScaleLike</DeviceFamilyForLabVIEW>
-      <FPGADevice>xcku060</FPGADevice>
+      <FPGADevice>xcku035</FPGADevice>
       <Package>ffva1156</Package>
-      <PartNumber>xcku060-ffva1156-2-e</PartNumber>
+      <PartNumber>xcku035-ffva1156-2-e</PartNumber>
       <ProcessPropertyList>
          <Process name="Synthesize - Vivado">
             <CommandArguments>
@@ -175,26 +175,26 @@
          </Process>
       </ProcessPropertyList>
       <SpeedGrade>-2</SpeedGrade>
-      <Top>BTracePlusTop</Top>
+      <Top>BTraceTop</Top>
       <UseBinaryConfiguration>TRUE</UseBinaryConfiguration>
    </FpgaCompilation>
    <NiFpga>
       <ControlAndIndicatorNamesAndTypes></ControlAndIndicatorNamesAndTypes>
       <RunWhenLoaded>false</RunWhenLoaded>
       <signatures>
-         <fpgaSignature>IzIeeCwhIJ5inJYWgR85xw==</fpgaSignature>
-         <guidSignature>fVXr9e3ABZ0fqfZEwnaobQ==</guidSignature>
-         <namesSignature>gilGfoxLojwoTOnTiyO14A==</namesSignature>
+         <fpgaSignature>z9EZKUpMsR4T7SOidRPQlQ==</fpgaSignature>
+         <guidSignature>KLdxkCivkK92K5DFxFqG4A==</guidSignature>
+         <namesSignature>5/C5aZ10rD/8/NWZEE4e7w==</namesSignature>
       </signatures>
       <version>1</version>
       <VivadoProjectExport>true</VivadoProjectExport>
    </NiFpga>
    <ResourceList>
-      <Slices>41460</Slices>
-      <Luts>331680</Luts>
-      <FlipFlops>663360</FlipFlops>
-      <BRam>1080</BRam>
-      <DSP48E>2760</DSP48E>
+      <Slices>25391</Slices>
+      <Luts>203128</Luts>
+      <FlipFlops>406256</FlipFlops>
+      <BRam>540</BRam>
+      <DSP48E>1700</DSP48E>
    </ResourceList>
 </CodeGenerationScratchPad><CompilerVersion><DisplayString>Xilinx Vivado 2021.1 (64-bit)</DisplayString><Compiler>Xilinx Vivado</Compiler><Bits>64bit</Bits><MajorVersion>2021</MajorVersion><MinorVersion>1</MinorVersion></CompilerVersion><EstimateResources>false</EstimateResources><StepList><Step>Generate Xilinx IP</Step><Step>Synthesize - Vivado</Step><Step>Optimize Logic</Step><Step>Place</Step><Step>Optimize Timing</Step><Step>Route</Step><Step>Post-Route Optimize Timing</Step><Step>Generate Programming File</Step></StepList><MergedIdenticalDerivedClocks>true</MergedIdenticalDerivedClocks><BitfileContents><?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <Bitfile>
@@ -203,9 +203,9 @@
 		<BuildSpecVersion />
 		<BuildSpecDescription />
 	</Documentation>
-	<SignatureRegister>23321E782C21209E629C9616811F39C7</SignatureRegister>
-	<SignatureGuids>7D55EBF5EDC0059D1FA9F644C276A86D</SignatureGuids>
-	<SignatureNames>8229467E8C4BA23C284CE9D38B23B5E0</SignatureNames>
+	<SignatureRegister>CFD119294A4CB11E13ED23A27513D095</SignatureRegister>
+	<SignatureGuids>28B7719028AF90AF762B90C5C45A86E0</SignatureGuids>
+	<SignatureNames>E7F0B9699D74AC3FFCFCD599104E1EEF</SignatureNames>
 	<TimeStamp></TimeStamp>
 	<CompilationStatus></CompilationStatus>
 	<BitstreamVersion>2</BitstreamVersion>
@@ -384,7 +384,7 @@
 		</Icon>
 	</VI>
 	<Project>
-		<TargetClass>PXIe-7994Custom</TargetClass>
+		<TargetClass>PXIe-7991Custom</TargetClass>
 		<AutoRunWhenDownloaded>false</AutoRunWhenDownloaded>
 		<CompilationResultsTree>
 <CompilationResults>
@@ -410,7 +410,7 @@
       <RoutingAliases>
          <Count>0</Count>
       </RoutingAliases>
-      <Target>PXIe-7994R</Target>
+      <Target>PXIe-7991R</Target>
    </TargetSpecificData>
 </CompilationResults> </CompilationResultsTree>
 		<MultipleUserClocks>false</MultipleUserClocks>

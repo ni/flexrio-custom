@@ -175,16 +175,16 @@
          </Process>
       </ProcessPropertyList>
       <SpeedGrade>-2</SpeedGrade>
-      <Top>BTracePlusTop</Top>
+      <Top>BTraceTop</Top>
       <UseBinaryConfiguration>TRUE</UseBinaryConfiguration>
    </FpgaCompilation>
    <NiFpga>
       <ControlAndIndicatorNamesAndTypes></ControlAndIndicatorNamesAndTypes>
       <RunWhenLoaded>false</RunWhenLoaded>
       <signatures>
-         <fpgaSignature>IzIeeCwhIJ5inJYWgR85xw==</fpgaSignature>
-         <guidSignature>fVXr9e3ABZ0fqfZEwnaobQ==</guidSignature>
-         <namesSignature>gilGfoxLojwoTOnTiyO14A==</namesSignature>
+         <fpgaSignature>9Dy3AorvmvmVvU+9PP2dVw==</fpgaSignature>
+         <guidSignature>b/Ditl1Y1dzKNzJsMYxkIA==</guidSignature>
+         <namesSignature>a/47bxClC6SbFz91EVRO+g==</namesSignature>
       </signatures>
       <version>1</version>
       <VivadoProjectExport>true</VivadoProjectExport>
@@ -203,9 +203,9 @@
 		<BuildSpecVersion />
 		<BuildSpecDescription />
 	</Documentation>
-	<SignatureRegister>23321E782C21209E629C9616811F39C7</SignatureRegister>
-	<SignatureGuids>7D55EBF5EDC0059D1FA9F644C276A86D</SignatureGuids>
-	<SignatureNames>8229467E8C4BA23C284CE9D38B23B5E0</SignatureNames>
+	<SignatureRegister>F43CB7028AEF9AF995BD4FBD3CFD9D57</SignatureRegister>
+	<SignatureGuids>6FF0E2B65D58D5DCCA37326C318C6420</SignatureGuids>
+	<SignatureNames>6BFE3B6F10A50BA49B173F7511544EFA</SignatureNames>
 	<TimeStamp></TimeStamp>
 	<CompilationStatus></CompilationStatus>
 	<BitstreamVersion>2</BitstreamVersion>
@@ -384,7 +384,7 @@
 		</Icon>
 	</VI>
 	<Project>
-		<TargetClass>PXIe-7994Custom</TargetClass>
+		<TargetClass>PXIe-7992Custom</TargetClass>
 		<AutoRunWhenDownloaded>false</AutoRunWhenDownloaded>
 		<CompilationResultsTree>
 <CompilationResults>
@@ -410,7 +410,7 @@
       <RoutingAliases>
          <Count>0</Count>
       </RoutingAliases>
-      <Target>PXIe-7994R</Target>
+      <Target>PXIe-7992R</Target>
    </TargetSpecificData>
 </CompilationResults> </CompilationResultsTree>
 		<MultipleUserClocks>false</MultipleUserClocks>

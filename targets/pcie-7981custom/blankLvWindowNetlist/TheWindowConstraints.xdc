@@ -11,6 +11,7 @@
  
 #niFpga_Keep
 
+set RoutingClipInstanceRestore [current_instance .]
 current_instance TheLvWindowWrapper/TheLvWindow/theCLIPs/Routing_CLIP0/RegisteredRouting_1
 #########################################################################################
 ## Clock Crossing
@@ -161,6 +162,7 @@ set_false_path -through $gpiopins
 set TriggerClipSyncPulseSrc [get_cells SyncPulse.aSourceSyncPulseInt_reg]
 set TriggerClipSyncPulseDest [get_cells SyncPulse.sSyncPulseCap_ms_reg]
 current_instance
+current_instance $RoutingClipInstanceRestore
 
 
 #niFpga_EndKeep

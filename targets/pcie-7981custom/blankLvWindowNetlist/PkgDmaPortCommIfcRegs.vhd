@@ -1,3 +1,4 @@
+-- © 2012 National Instruments Corporation.
 -------------------------------------------------------------------------------
 --
 -- File: PkgDmaPortCommIfcRegs.vhd
@@ -19,15 +20,6 @@
 --   individual fields are set here.
 --
 -------------------------------------------------------------------------------
---*****************************************************************************
--- Some DMA files in this repo have been forked/duplicated into the hw-nicores AzDo git repository.
---
--- Before changing this file or any of its upstream/downstream dependencies, read the following:
---
---      CommInterfaces/DmaPort/README_DMA_FILES_FORK.md
---
---*****************************************************************************
-
 
 library ieee;
   use ieee.std_logic_1164.all;

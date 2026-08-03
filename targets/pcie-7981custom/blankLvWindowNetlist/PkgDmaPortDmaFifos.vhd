@@ -1,3 +1,4 @@
+-- © 2012 National Instruments Corporation.
 -------------------------------------------------------------------------------
 --
 -- File: PkgDmaPortDmaFifos.vhd
@@ -21,15 +22,6 @@
 -- + New element "FlushReq" is added to the record InputStreamInterfaceFromFifo_t.
 -- + Flatten and UnFlatten functions for the record are updated accordingly in PkgDmaPortDmaFifosFlatTypes.vhd
 -------------------------------------------------------------------------------
---*****************************************************************************
--- Some DMA files in this repo have been forked/duplicated into the hw-nicores AzDo git repository.
---
--- Before changing this file or any of its upstream/downstream dependencies, read the following:
---
---      CommInterfaces/DmaPort/README_DMA_FILES_FORK.md
---
---*****************************************************************************
-
 
 library IEEE;
   use IEEE.std_logic_1164.all;
@@ -52,7 +44,7 @@ Package PkgDmaPortDmaFifos is
   function GetFifoDepths(ChannelConfig: DmaChannelConfArray_t)
     return DmaChannelConfArray_t;
 
-  type FifoDataWidthArray_t is array (natural range <>) of integer;
+  type FifoDataWidthArray_t is array (0 to kNumberOfDmaChannels-1) of integer;
 
   function GetFifoDataWidth(FifoConfig: DmaChannelConfArray_t)
     return FifoDataWidthArray_t;
@@ -161,9 +153,9 @@ Package PkgDmaPortDmaFifos is
     --                  has not yet crossed the clock domain.  When WritesDisabled is
     --                  true, the FIFO count can no longer change as the result of
     --                  a write.
-    
-    FlushRequest : boolean;
-    
+	
+	FlushRequest : boolean;
+	
     WritesDisabled : boolean;
 
     -- WriteDetected : Indicates whenever a write to fifo happens.
@@ -184,7 +176,7 @@ Package PkgDmaPortDmaFifos is
     StartStreamRequest => false,
     StopStreamRequest => false,
     StopStreamWithFlushRequest => false,
-    FlushRequest => false,
+	FlushRequest => false,
     WritesDisabled => true,
     WriteDetected => false,
     StateInDefaultClkDomain => to_StreamStateValue(Unlinked));
@@ -388,7 +380,6 @@ package body PkgDmaPortDmaFifos is
       -- An output channel needs to subtract 6 from the FIFO depth since it has a
       -- small 6 element deep FIFO on the output to overcome RAM read latency.
       if ChannelConfig(i).Mode = NiFpgaPeerToPeerWriter or
-         ChannelConfig(i).Mode = NiFpgaMemoryBufferWriter or      
          ChannelConfig(i).Mode = NiFpgaTargetToHost then
         ReturnVal(i).FifoDepth :=
           FifoDepthInDataBusWidthWords(ChannelConfig(i).FifoDepth, SampleSize);
@@ -407,11 +398,11 @@ package body PkgDmaPortDmaFifos is
   function GetFifoDataWidth(FifoConfig: DmaChannelConfArray_t)
     return FifoDataWidthArray_t is
 
-    variable ReturnVal : FifoDataWidthArray_t(FifoConfig'range);
+    variable ReturnVal : FifoDataWidthArray_t;
 
   begin
 
-    for i in FifoConfig'range loop
+    for i in 0 to kNumberOfDmaChannels-1 loop
       ReturnVal(i) := FifoConfig(i).FifoWidth*FifoConfig(i).ElementsPerClockCycle;
     end loop;
 
@@ -446,7 +437,7 @@ package body PkgDmaPortDmaFifos is
     RetVal := RetVal + 1;                                   -- StartStreamRequest
     RetVal := RetVal + 1;                                   -- StopStreamRequest
     RetVal := RetVal + 1;                                   -- StopStreamWithFlushRequest
-    RetVal := RetVal + 1;                                   -- FlushReq
+	RetVal := RetVal + 1;									-- FlushReq
     RetVal := RetVal + 1;                                   -- WritesDisabled
     RetVal := RetVal + 1;                                   -- WritesDetected
     RetVal := RetVal + var.StateInDefaultClkDomain'length;  -- StateInDefaultClkDomain

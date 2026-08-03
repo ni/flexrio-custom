@@ -668,21 +668,7 @@ architecture struct of BlackadderTopTemplate is
 
   signal bLvWindowRegPortOut: RegPortOut_t;
 
-  signal dInputStreamInterfaceFromFifo: InputStreamInterfaceFromFifoArray_t(Larger(kNumberOfDmaChannels,1)-1 downto 0);
-  signal dInputStreamInterfaceToFifo: InputStreamInterfaceToFifoArray_t(Larger(kNumberOfDmaChannels,1)-1 downto 0);
-
   signal bIrqToInterface: IrqToInterfaceArray_t(Larger(kNumberOfIrqs,1)-1 downto 0);
-
-  signal dNiFpgaMasterReadDataToMasterArray: NiFpgaMasterReadDataToMasterArray_t(Larger(kNumberOfMasterPorts,1)-1 downto 0);
-  signal dNiFpgaMasterReadRequestFromMasterArray: NiFpgaMasterReadRequestFromMasterArray_t(Larger(kNumberOfMasterPorts,1)-1 downto 0);
-  signal dNiFpgaMasterReadRequestToMasterArray: NiFpgaMasterReadRequestToMasterArray_t(Larger(kNumberOfMasterPorts,1)-1 downto 0);
-  signal dNiFpgaMasterWriteDataFromMasterArray: NiFpgaMasterWriteDataFromMasterArray_t(Larger(kNumberOfMasterPorts,1)-1 downto 0);
-  signal dNiFpgaMasterWriteDataToMasterArray: NiFpgaMasterWriteDataToMasterArray_t(Larger(kNumberOfMasterPorts,1)-1 downto 0);
-  signal dNiFpgaMasterWriteRequestFromMasterArray: NiFpgaMasterWriteRequestFromMasterArray_t(Larger(kNumberOfMasterPorts,1)-1 downto 0);
-  signal dNiFpgaMasterWriteRequestToMasterArray: NiFpgaMasterWriteRequestToMasterArray_t(Larger(kNumberOfMasterPorts,1)-1 downto 0);
-  signal dNiFpgaMasterWriteStatusToMasterArray: NiFpgaMasterWriteStatusToMasterArray_t(Larger(kNumberOfMasterPorts,1)-1 downto 0);
-  signal dOutputStreamInterfaceFromFifo: OutputStreamInterfaceFromFifoArray_t(Larger(kNumberOfDmaChannels,1)-1 downto 0);
-  signal dOutputStreamInterfaceToFifo: OutputStreamInterfaceToFifoArray_t(Larger(kNumberOfDmaChannels,1)-1 downto 0);
 
   -- This constant specifies the size of each memory buffer which (2^kSizeOfMemBuffers)
   -- In this case, it is 2^22= 4MB
@@ -1336,34 +1322,6 @@ begin  -- architecture struct
       dvTdcAssert                     => dvTdcAssert,
       dtTdcAssert                     => dtTdcAssert,
       dtDevClkEn                      => dtDevClkEn,
-      -- Base IO
-      aBaseI2cSclIn                   => aI2cSclIn(kBaseBoardI2cIndex),
-      aBaseI2cSclOut                  => aI2cSclOut(kBaseBoardI2cIndex),
-      aBaseI2cSclTri                  => aI2cSclTri(kBaseBoardI2cIndex),
-      aBaseI2cSdaIn                   => aI2cSdaIn(kBaseBoardI2cIndex),
-      aBaseI2cSdaOut                  => aI2cSdaOut(kBaseBoardI2cIndex),
-      aBaseI2cSdaTri                  => aI2cSdaTri(kBaseBoardI2cIndex),
-      aBaseConfigReset                => aBaseConfigReset,
-      aBaseDioIn                      => aBaseDioIn,
-      aBaseDioOut                     => aBaseDioOut,
-      aBaseDioOutEn                   => aBaseDioOutEn,
-      aBaseExClk                      => aBaseExClk,
-      -- MGTs for QSFP ports (top-level MGT lanes are commented out on this
-      -- base design; stub the data lanes and connect only the ref clocks).
-      Qsfp0MgtRx_p                    => (others => '0'),
-      Qsfp0MgtRx_n                    => (others => '0'),
-      Qsfp0MgtTx_p                    => open,
-      Qsfp0MgtTx_n                    => open,
-      Qsfp0MgtRefClk_p                => MgtRefClk_p(3 downto 2),
-      Qsfp0MgtRefClk_n                => MgtRefClk_n(3 downto 2),
-      Qsfp1MgtRx_p                    => (others => '0'),
-      Qsfp1MgtRx_n                    => (others => '0'),
-      Qsfp1MgtTx_p                    => open,
-      Qsfp1MgtTx_n                    => open,
-      Qsfp1MgtRefClk_p                => MgtRefClk_p(1 downto 0),
-      Qsfp1MgtRefClk_n                => MgtRefClk_n(1 downto 0),
-      Qsfp0SocketClk80                => BusClk,
-      Qsfp1SocketClk80                => BusClk,
       -- IoModule Socketed CLIP physical interface
       aSeGpio                         => aSeGpio,
       aDiffGpio_p                     => aDiffGpio_p,
@@ -1424,7 +1382,7 @@ begin  -- architecture struct
     generic map (
       kSizeOfMemBuffers   => kSizeOfMemBuffers,
       kMaxNumOfMemBuffers => kMaxNumOfMemBuffers,
-      kDmaChannelNum      => to_unsigned(kHmbDmaChannelNum, 7),
+      kDmaChannelNum      => to_unsigned(kHmbDmaChannelNum, 6),
       kHmbInUse           => work.PkgLvFpgaConst.kInsertHostMemoryBufferMig,  -- in  boolean := true
       kLlbInUse           => work.PkgLvFpgaConst.kInsertLowLatencyBufferMig,  -- in  boolean := true
       kDefaultBaggage     => SetField(0, 16#00#, kNiDmaBaggageWidth),

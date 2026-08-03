@@ -414,7 +414,21 @@ and [Generated VHDL](https://github.com/ni/labview-fpga-hdl-tools/blob/main/docs
 target — the flatten/unflatten body is boilerplate you reuse almost verbatim. The one thing that
 actually matters is that **every port on your wrapper matches the base `TheWindow.vhd.mako` exactly**;
 mismatched ports = elaboration failure. If elaboration complains, render the base `TheWindow.vhd.mako`
-with your target's flags and diff its port list against your wrapper.
+with your target's flags and diff its port list against your wrapper — and diff it against **all three**
+places a port name appears: the wrapper **entity**, the **component declaration** in
+`PkgTheLvWindowFlatWrapper`, and the **internal `TheWindow` instantiation's port-map formals**. A stray
+formal in the internal port map fails the same way (`formal <name> is not declared`) even when the
+entity and component agree, so verify the port map separately. A quick check is to compare port-name
+sets both **with and without** `include_board_io` so the board-I/O blocks stay port-compatible too
+(see below).
+
+> **A top-level port tied `open` is *not* a window port — don't plumb it into the wrapper.** Some
+> signals appear on the base *top* entity but are intentionally left unconnected there (e.g. an
+> `--vhook_h aDramReady open` directive with `aDramReady : out std_logic;` on the top). These belong to
+> the **top**, not to `TheWindow`, so they must **not** be added to the flat wrapper's entity, component
+> declaration, or internal `TheWindow` port map. Adding one produces `formal <name> is not declared`
+> plus a cascade of `<other> has no actual or default value` as named association breaks. When in doubt,
+> the wrapper's port set is defined solely by the base `TheWindow.vhd.mako` — never by the top's entity.
 
 Because the flatten/unflatten body is board-agnostic, the only edits when adapting a sibling wrapper
 are the **board-specific port sections** — chiefly the memory interface and its clocks (e.g.
@@ -553,6 +567,18 @@ Those signals come from recipe steps 3–4; make sure they weren't dropped when 
 block. `signal bRegPortOutUserHdl : RegPortOut_t;` and the four `dWin*StreamInterface*Fifo` arrays must
 be declared — they feed the reg-port merge, the `UserHdl` instantiation, `StreamRouting`, and the
 flatten glue.
+
+**Q: Elaboration fails with `formal <name> is not declared` (e.g. `aDramReady`, a DRAM clock, or a
+board-I/O pin) on the flat wrapper, often followed by `<other> has no actual or default value`.**
+A port was added to the flat wrapper that isn't on *this board's* base `TheWindow.vhd.mako`. Two common
+causes: (1) the wrapper was copied from a sibling whose window boundary differs (e.g. a DRAM-socket
+board's `Dram*Clk*` clocks, or a different `include_board_io` set — base I2C/DIO/QSFP MGT — that this
+board doesn't have); or (2) a top-level port that the base *top* leaves `open`
+(`--vhook_h <name> open`) was mistaken for a window port and plumbed through. Render this board's base
+`TheWindow.vhd.mako` and diff its port names against the wrapper **entity, component declaration, and
+internal `TheWindow` port map**; delete any port not in the base window. Note the first undeclared
+formal breaks named association, which is what triggers the `has no actual` cascade — fix the undeclared
+port and the cascade clears.
 
 **Q: Vivado reports `syntax error near �` at line 1.**
 The file has a UTF-8 BOM. Save it as BOM-free UTF-8 — PowerShell's `Out-File` / `Set-Content -Encoding

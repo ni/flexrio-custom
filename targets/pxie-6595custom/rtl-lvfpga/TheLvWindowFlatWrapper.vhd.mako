@@ -217,9 +217,7 @@ entity TheLvWindowFlatWrapper is
     ----------------------------------------
     PxieClk100Trigger : in std_logic;
     pIntSync100Trigger : in std_logic;
-    dTdcAssert : out std_logic;
     dDevClkEn : in std_logic;
-    sTdcDeassert : out std_logic;
     aIntClk10Trigger : in std_logic;
     --ID Signals from Routing CLIP
     bRoutingClipPresent : out std_logic;
@@ -614,9 +612,7 @@ begin
       ----------------------------------------
       PxieClk100Trigger => PxieClk100Trigger,
       pIntSync100Trigger => pIntSync100Trigger,
-      dTdcAssert => dTdcAssert,
       dDevClkEn => dDevClkEn,
-      sTdcDeassert => sTdcDeassert,
       aIntClk10Trigger => aIntClk10Trigger,
       --ID Signals from Routing CLIP
       bRoutingClipPresent => bRoutingClipPresent,

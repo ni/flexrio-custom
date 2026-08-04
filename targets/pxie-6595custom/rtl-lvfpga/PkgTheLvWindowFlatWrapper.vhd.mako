@@ -219,9 +219,7 @@ package PkgTheLvWindowFlatWrapper is
       ----------------------------------------
       PxieClk100Trigger : in std_logic;
       pIntSync100Trigger : in std_logic;
-      dTdcAssert : out std_logic;
       dDevClkEn : in std_logic;
-      sTdcDeassert : out std_logic;
       aIntClk10Trigger : in std_logic;
       --ID Signals from Routing CLIP
       bRoutingClipPresent : out std_logic;

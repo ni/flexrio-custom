@@ -63,7 +63,7 @@ def pre_all(context):
 
     # --- Custom LabVIEW FPGA Target Settings ---
     config.set_lv_target_name("PXIe-6595Custom")
-    config.set_lv_target_guid("5ec520e2-bb96-4c2f-8e8d-454bd46b0eb4")
+    config.set_lv_target_guid("ad261d5c-4852-489a-851b-e3ebc6a16679")
     config.set_lv_target_install_folder("C:/Program Files/NI/LVAddons/flexrioii/1/Targets/NI/FPGA/RIO/79XXR")
     config.set_lv_target_menus_folder("../../deps/flexrio/targets/common/lvFpgaTarget/targetpluginmenus")
     config.set_lv_target_info_ini(f"{base_deps}/lvFpgaTarget/TargetInfo.ini")

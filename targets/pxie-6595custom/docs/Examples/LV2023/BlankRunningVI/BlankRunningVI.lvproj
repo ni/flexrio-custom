@@ -13,21 +13,14 @@
 		<Property Name="specify.custom.address" Type="Bool">false</Property>
 		<Item Name="FPGA Target" Type="FPGA Target">
 			<Property Name="AutoRun" Type="Bool">false</Property>
-			<Property Name="configString.guid" Type="Str">{0090A43D-9FDE-47D6-9C75-7608EF79C510}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination21;0;ReadMethodType=bool{0AE8996E-360C-44CB-A838-87AC5336C2D9}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source18;0;WriteMethodType=bool{0F94D809-D581-4EBF-A806-7C2ADAD5C1ED}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source12;0;WriteMethodType=bool{103044A8-2894-487B-9EFD-8C288AC8D61E}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source16;0;WriteMethodType=bool{14BF1B01-5730-4948-81AF-15D2D4394A6D}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source27;0;WriteMethodType=bool{15028763-D49E-414C-B691-DEE6ABF378B9}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination15;0;ReadMethodType=bool{22EC3446-41B3-4BC3-9DB1-17CFA8CE36EB}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination6;0;ReadMethodType=bool{24DBA4AE-F0BC-411C-90F0-3B8E24123845}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source25;0;WriteMethodType=bool{25A08FF3-638D-4A9A-83C1-B0DE1073697D}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination20;0;ReadMethodType=bool{307AD4FE-5A1E-41FD-92A0-AF1D610A5F5E}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/aDestinationSyncPulse;0;ReadMethodType=bool{349220EF-E264-4CC2-AF88-4585416DA94F}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination19;0;ReadMethodType=bool{352E7104-B1C5-4E83-9659-E935FD4486C0}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination27;0;ReadMethodType=bool{37AF4C63-8BC8-4559-9E20-71024F08AA25}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination14;0;ReadMethodType=bool{3B136EE6-C00D-4F68-ADA6-860AD1ED0726}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination3;0;ReadMethodType=bool{3B6B906F-372C-4CFF-96AD-5BE8580605A5}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination10;0;ReadMethodType=bool{3E9C5563-1D24-4F3E-99DC-D79DB6118F14}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination13;0;ReadMethodType=bool{3F7A61AB-170C-4E9D-9560-60D6F9941DD8}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source29;0;WriteMethodType=bool{3FD0BC7D-4220-4B75-BA20-7094556A64DF}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source7;0;WriteMethodType=bool{3FFFCCC5-4E93-4EBC-A5DF-D894CA92CF13}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source28;0;WriteMethodType=bool{45A3C1F6-DC38-4E94-A4B4-1C247B37E2C9}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source1;0;WriteMethodType=bool{461DB13D-0164-43F8-849C-A59DD6818C46}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source14;0;WriteMethodType=bool{47610D01-0A7E-47B3-B354-8124E6BB5397}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source22;0;WriteMethodType=bool{4F565DB0-495B-4FC4-B2B2-B41178A33B02}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination11;0;ReadMethodType=bool{52213DB3-8354-4858-97B0-3182E229FEA1}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source21;0;WriteMethodType=bool{543F2B49-8134-4808-9A25-556EF617BE97}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source24;0;WriteMethodType=bool{589810B1-A1E9-4AED-BB6F-BF76B35DC38A}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source10;0;WriteMethodType=bool{5A5D45BF-B067-4BB5-A686-9F51B12005E6}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source5;0;WriteMethodType=bool{5ED12DCC-B4AC-423E-8200-DDEA7216EAFC}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination18;0;ReadMethodType=bool{604BD234-9481-4384-8574-5A9A2DE6E7A4}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination23;0;ReadMethodType=bool{622A7E0C-2604-4F48-9A05-CF0F359048AA}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination17;0;ReadMethodType=bool{6D8D8988-9829-401A-A53F-F41B6BE0765E}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source30;0;WriteMethodType=bool{6F736106-ED71-4438-B852-74C9882111FA}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source3;0;WriteMethodType=bool{7483A9C1-D185-4C77-877D-3E1DAD176E8D}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination30;0;ReadMethodType=bool{7541F544-E029-49B5-8AC7-6607E1AB1A94}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination12;0;ReadMethodType=bool{769D8BFD-EBCA-48A7-A567-2E5234366599}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source2;0;WriteMethodType=bool{7CBEC37D-B4F1-4768-A05E-2F66A0F37683}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination0;0;ReadMethodType=bool{7DA6EF95-3BA6-4EA5-9762-8F01AC0A73A1}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source6;0;WriteMethodType=bool{87BFA54B-45EC-4594-A0D5-B5467DA4B639}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination28;0;ReadMethodType=bool{8C5C34AD-F1D9-4994-8981-21D2724CD3C9}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source9;0;WriteMethodType=bool{8FCEB1D3-A5FE-445F-8455-3DEA767F11E3}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source31;0;WriteMethodType=bool{91C569C1-3DC2-42F7-A8D0-427ACC7188E6}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source20;0;WriteMethodType=bool{93AF14E6-B2AB-4C29-8EB8-4B0B6C7ACBE9}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination2;0;ReadMethodType=bool{93CDA3C2-EA27-4936-9268-48D92C6EE63E}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source13;0;WriteMethodType=bool{97B81562-659E-4861-AEB8-C297053EE91C}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source15;0;WriteMethodType=bool{9DB3B670-530F-4282-8868-E4A7BF7C53CA}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination16;0;ReadMethodType=bool{9DDBF002-A5F7-4AA7-9722-AE6941F4C789}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source0;0;WriteMethodType=bool{9E5A4D72-8298-40E7-9852-0F665DE06902}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination5;0;ReadMethodType=bool{9F25EF5E-2A8B-4A35-93A9-6487C790708D}NumberOfSyncRegistersForReadInProject=0;resource=/Routing/SignalList/TClk;0;ReadMethodType=bool{A0BEDC8E-F08C-4F50-AADA-654C6F835891}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination7;0;ReadMethodType=bool{A263949E-830C-48FE-8FFB-87884CD11DBE}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination1;0;ReadMethodType=bool{A8B30530-521D-41E8-B346-B28F66B2DDB1}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source4;0;WriteMethodType=bool{A9DA8D58-9E14-4C3F-BEAF-1E1D10EF02B1}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination9;0;ReadMethodType=bool{AD5337F7-5186-4DFB-90CE-5E07A092C352}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination26;0;ReadMethodType=bool{AF65F367-AE93-4402-8E52-B1570B5C2CEC}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source26;0;WriteMethodType=bool{B43868F5-A1D8-46F5-B021-9CC540D94365}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Clip Identity;0;ReadMethodType=
-&lt;Type&gt;
-   &lt;FXP&gt;
-      &lt;IntegerWordLength&gt;8&lt;/IntegerWordLength&gt;
-      &lt;Unsigned&gt;true&lt;/Unsigned&gt;
-      &lt;WordLength&gt;8&lt;/WordLength&gt;
-   &lt;/FXP&gt;
-&lt;/Type&gt;{C0131ED0-C3FD-4E13-A1E4-37469B8E9565}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination25;0;ReadMethodType=bool{C2AA1EC5-40C7-4B46-9A78-8126AF0EE7A6}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination29;0;ReadMethodType=bool{C6F244C1-65CA-435F-92F2-2A475E92677B}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source17;0;WriteMethodType=bool{C9C200E4-11B8-4035-BDFE-B85240376BC9}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination31;0;ReadMethodType=bool{CE5A2424-AD4C-41D1-8EFB-4B4EC9920350}ResourceName=80 MHz Clock;TopSignalConnect=PllClk80;ClockSignalName=PllClk80;MinFreq=80000000.000000;MaxFreq=80000000.000000;VariableFreq=0;NomFreq=80000000.000000;PeakPeriodJitter=250.000000;MinDutyCycle=50.000000;MaxDutyCycle=50.000000;Accuracy=100.000000;RunTime=0;SpreadSpectrum=0;GenericDataHash=D41D8CD98F00B204E9800998ECF8427E;{D39F5373-07B1-4B7E-A1BF-9F0120B9E3BB}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination24;0;ReadMethodType=bool{DB162B53-289E-495F-A800-D48793B97585}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source11;0;WriteMethodType=bool{E5A8E5BA-834C-4502-9D3B-75FDB286B49E}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination8;0;ReadMethodType=bool{E6747976-A666-43FE-ADD2-F6C413AB27A2}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source8;0;WriteMethodType=bool{E776AB94-0D2A-4DD3-A5B7-C009C20E8A38}ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=PxieClk100;MinFreq=100000000.000000;MaxFreq=100000000.000000;VariableFreq=0;NomFreq=100000000.000000;PeakPeriodJitter=250.000000;MinDutyCycle=50.000000;MaxDutyCycle=50.000000;Accuracy=100.000000;RunTime=0;SpreadSpectrum=0;GenericDataHash=D41D8CD98F00B204E9800998ECF8427E;{EB635B88-DD28-4190-8FA7-338915F1AF25}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source23;0;WriteMethodType=bool{ECC4214E-AC58-4029-B4B2-C1B4059B2DBD}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Diagram Identity;0;WriteMethodType=
+			<Property Name="configString.guid" Type="Str">{012D4135-B4FF-4B2A-8404-DFECDBDD6FE9}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination4;0;ReadMethodType=bool{0264D84A-C3EE-40C8-B236-0E36E35925B7}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination21;0;ReadMethodType=bool{12FB68DD-E99B-49C2-ACB3-D995EE929433}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination11;0;ReadMethodType=bool{156DA2D1-7F9A-4D87-85A8-95475D456172}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination3;0;ReadMethodType=bool{17B0A109-E491-4B67-A18A-ECA2B93FB380}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source14;0;WriteMethodType=bool{192EEC3B-17D3-4B30-BD10-D37393A17B83}ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=PxieClk100;MinFreq=100000000.000000;MaxFreq=100000000.000000;VariableFreq=0;NomFreq=100000000.000000;PeakPeriodJitter=250.000000;MinDutyCycle=50.000000;MaxDutyCycle=50.000000;Accuracy=100.000000;RunTime=0;SpreadSpectrum=0;GenericDataHash=D41D8CD98F00B204E9800998ECF8427E;{2027C652-6761-47D3-8F96-5F0E927C10F9}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source7;0;WriteMethodType=bool{204CBDF1-6013-4B43-B50A-4CF1527B2151}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source0;0;WriteMethodType=bool{2EFD4B97-0120-4837-B0DC-C42702575E71}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination25;0;ReadMethodType=bool{312A4003-881A-4BE3-92FC-6EF1713BE8DA}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination17;0;ReadMethodType=bool{3938D6A4-AC66-47F6-AA77-4FC21488B6F1}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source8;0;WriteMethodType=bool{3B0CE856-CAA4-45F3-9963-15C884652490}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination18;0;ReadMethodType=bool{3B34D66D-79E6-4FBE-B668-42FDF684DB37}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source10;0;WriteMethodType=bool{3D0B95C8-EF28-4D2A-A342-49ACFAA3EB89}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination14;0;ReadMethodType=bool{415B829E-62AA-4875-B62E-CDE50522098F}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source1;0;WriteMethodType=bool{41EDCE21-CCA8-4109-A8D0-A8021A9B10BF}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Diagram Identity;0;WriteMethodType=
 &lt;Type&gt;
    &lt;FXP&gt;
       &lt;IntegerWordLength&gt;32&lt;/IntegerWordLength&gt;
       &lt;Unsigned&gt;true&lt;/Unsigned&gt;
       &lt;WordLength&gt;32&lt;/WordLength&gt;
    &lt;/FXP&gt;
-&lt;/Type&gt;{F0A78267-8E02-4AF7-882A-5CB5844C7DDE}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source19;0;WriteMethodType=bool{F173E57D-8566-4EE3-BF6E-F55CD4DEC7D8}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination4;0;ReadMethodType=bool{F3C8C2D6-08E4-4AC9-9E0D-5ED3B1DFEAAE}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination22;0;ReadMethodType=bool{FD014F86-040E-4293-9FBA-E70A4CAAB694}3119caa9fb9c07750e2167f77fb302628298ed925847f77d6ec59ffab0a8d1c5bab5a154394ad692ad9b023f717ed6c7e431b6cba9e372579bb96db7e798fc97&lt;Array&gt;
+&lt;/Type&gt;{426A9919-6784-4C90-8634-4513DF938B26}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination16;0;ReadMethodType=bool{42AAB913-EF2F-4686-B5F0-115E8EF7E605}3119caa9fb9c07750e2167f77fb302628298ed925847f77d6ec59ffab0a8d1c5bab5a154394ad692ad9b023f717ed6c7e431b6cba9e372579bb96db7e798fc97&lt;Array&gt;
 &lt;Name&gt;Generics&lt;/Name&gt;
 &lt;Dimsize&gt;0&lt;/Dimsize&gt;
 &lt;Cluster&gt;
@@ -161,7 +154,14 @@
 &lt;/Cluster&gt;
 &lt;/Cluster&gt;
 &lt;/Array&gt;
-PXIe-7986Custom/PllClk80/falsefalseFPGA_EXECUTION_MODEFPGA_TARGETFPGA_TARGET_CLASSPXIE_7986CUSTOMFPGA_TARGET_FAMILYKINTEXUPTARGET_TYPEFPGA</Property>
+{4374B93E-D177-4DE4-B649-79247742EAC2}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source6;0;WriteMethodType=bool{43873D0D-ED51-4BEB-8264-1B1DC28AC05F}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source17;0;WriteMethodType=bool{4C9C3412-5137-4B20-AE17-FF1F2A58AC09}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source2;0;WriteMethodType=bool{4F9F7C3E-70B4-466A-A3BB-F45B5BDC8ADB}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source23;0;WriteMethodType=bool{4FB5BC84-5780-4F89-84EC-821A5E3F2279}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination29;0;ReadMethodType=bool{54D0222A-7307-48FB-AD52-255E4385E6F1}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination2;0;ReadMethodType=bool{57C98763-022F-4903-BCCA-56F16746FC31}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source27;0;WriteMethodType=bool{5B436BAD-0DD4-4417-8F39-896659626ADD}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source9;0;WriteMethodType=bool{5CDED735-94EC-4287-909F-B77BB32946F0}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source30;0;WriteMethodType=bool{5D80BA8F-F790-42AA-8C82-F17C9951F43B}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source25;0;WriteMethodType=bool{5DD05EB2-93DA-46C5-B211-2BE89240C75D}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source28;0;WriteMethodType=bool{649B1557-EAA5-4D1E-AA92-D47DE44C92C8}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source16;0;WriteMethodType=bool{665DAEE5-C9DC-4F37-ADE6-7CD640DE3955}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination23;0;ReadMethodType=bool{66C5F83C-F575-44B2-A5BC-13160D8BE1ED}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination7;0;ReadMethodType=bool{68EEC90F-6393-4D98-9C84-1E0A151AF86E}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source26;0;WriteMethodType=bool{6A9E5586-844B-4A1F-9A34-01523D8ABF14}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination5;0;ReadMethodType=bool{6B095DB9-F5D7-473E-8DF3-E673EE358722}NumberOfSyncRegistersForReadInProject=0;resource=/Routing/SignalList/TClk;0;ReadMethodType=bool{6B9553DB-EAE0-451A-8505-E66B81A1BA65}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination20;0;ReadMethodType=bool{70B635B2-ED15-4F7B-8C17-86AB7F427F77}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination19;0;ReadMethodType=bool{75285272-B875-4AFE-B15A-3BCD8B7DBC69}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination12;0;ReadMethodType=bool{7C3F2B48-B0AA-460F-8314-187F0333003D}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination28;0;ReadMethodType=bool{7D06B588-5DC3-4678-9034-9BEFD4D7090A}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination13;0;ReadMethodType=bool{7D512393-5A07-46F7-BD42-B851B80B5D83}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source3;0;WriteMethodType=bool{7EA27FFB-00ED-4DE4-AD40-3C7327DCD721}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination31;0;ReadMethodType=bool{83365F7C-F4FE-4B1B-B213-11F38C698B96}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source21;0;WriteMethodType=bool{86BFCCF2-C139-4928-BA77-AD1DE3C4C9DF}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source12;0;WriteMethodType=bool{888B6E54-769D-4071-9685-CA8D94D5D143}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/aDestinationSyncPulse;0;ReadMethodType=bool{8BB76BF2-F936-4545-96C0-072DEF9D97B8}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination10;0;ReadMethodType=bool{939B3FE0-E85F-44C1-929F-8AD6E147BA74}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination24;0;ReadMethodType=bool{94276795-0304-48F4-B505-A80C85B036C0}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source31;0;WriteMethodType=bool{97345F57-D45D-4A94-83DD-D1721E0C395D}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination26;0;ReadMethodType=bool{98C5F325-20FF-498E-BA55-22E9903E18DE}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source20;0;WriteMethodType=bool{A01911B6-D414-42E5-AEEC-4E4C89418463}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination1;0;ReadMethodType=bool{A60C2467-127D-4CF2-97AA-A3D942A9451A}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source13;0;WriteMethodType=bool{AA8375D7-7CA1-46E0-9C10-45CFB6EB05E9}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source19;0;WriteMethodType=bool{AC48A2C8-0434-4DE2-B3CC-378E5FB8151A}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source15;0;WriteMethodType=bool{B08F08E9-3921-49A1-A8B9-6755AB5F2927}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination30;0;ReadMethodType=bool{B48C5B5C-4762-40C2-BAF4-C605B3CE4262}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source22;0;WriteMethodType=bool{C03BE818-DC4D-4AC0-AF7A-41CD2D3505A1}ResourceName=80 MHz Clock;TopSignalConnect=PllClk80;ClockSignalName=PllClk80;MinFreq=80000000.000000;MaxFreq=80000000.000000;VariableFreq=0;NomFreq=80000000.000000;PeakPeriodJitter=250.000000;MinDutyCycle=50.000000;MaxDutyCycle=50.000000;Accuracy=100.000000;RunTime=0;SpreadSpectrum=0;GenericDataHash=D41D8CD98F00B204E9800998ECF8427E;{C1F24AE8-154B-4C50-BB5B-9B113BD2B261}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Clip Identity;0;ReadMethodType=
+&lt;Type&gt;
+   &lt;FXP&gt;
+      &lt;IntegerWordLength&gt;8&lt;/IntegerWordLength&gt;
+      &lt;Unsigned&gt;true&lt;/Unsigned&gt;
+      &lt;WordLength&gt;8&lt;/WordLength&gt;
+   &lt;/FXP&gt;
+&lt;/Type&gt;{C2BD71CD-594D-4DD0-94F3-3EB1A9DF8130}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source5;0;WriteMethodType=bool{C5AFBD5B-2F9C-4D08-BD13-5F67599A76B9}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination15;0;ReadMethodType=bool{D1794724-C71A-426B-A712-B4F4F57BC6EA}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination8;0;ReadMethodType=bool{D4BFC86C-8406-4CA7-84EE-7D9858FA610B}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination22;0;ReadMethodType=bool{D567BD2D-A4AF-48F6-A58D-290CA555C2DC}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination0;0;ReadMethodType=bool{D86FE25D-4C86-4100-AFC2-589800569F4D}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source11;0;WriteMethodType=bool{D9FE9C3B-9611-4D31-BBE7-D26FAEE568EE}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source29;0;WriteMethodType=bool{DB15D9D9-F995-4810-B64A-0526744712E5}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source4;0;WriteMethodType=bool{DD50A2E2-6235-4584-A956-57147057B6E6}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination6;0;ReadMethodType=bool{DE387FDD-7E66-464A-B31E-835EDE75C602}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source24;0;WriteMethodType=bool{F2CDE742-BEF6-4D33-81B4-364E1C2BFFFA}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination9;0;ReadMethodType=bool{F7320C00-C9C6-43E7-A374-DE4D3F553013}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination27;0;ReadMethodType=bool{F84AC5A9-5AA3-4B93-BBEA-6DF55929B814}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source18;0;WriteMethodType=boolPXIe-6595Custom/PllClk80/falsefalseFPGA_EXECUTION_MODEFPGA_TARGETFPGA_TARGET_CLASSPXIE_6595CUSTOMFPGA_TARGET_FAMILYKINTEXUPTARGET_TYPEFPGA</Property>
 			<Property Name="configString.name" Type="Str">80 MHz ClockResourceName=80 MHz Clock;TopSignalConnect=PllClk80;ClockSignalName=PllClk80;MinFreq=80000000.000000;MaxFreq=80000000.000000;VariableFreq=0;NomFreq=80000000.000000;PeakPeriodJitter=250.000000;MinDutyCycle=50.000000;MaxDutyCycle=50.000000;Accuracy=100.000000;RunTime=0;SpreadSpectrum=0;GenericDataHash=D41D8CD98F00B204E9800998ECF8427E;aDestinationSyncPulseNumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/aDestinationSyncPulse;0;ReadMethodType=boolClip IdentityNumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Clip Identity;0;ReadMethodType=
 &lt;Type&gt;
    &lt;FXP&gt;
@@ -310,7 +310,7 @@ PXIe-7986Custom/PllClk80/falsefalseFPGA_EXECUTION_MODEFPGA_TARGETFPGA_TARGET_CLA
 &lt;/Cluster&gt;
 &lt;/Cluster&gt;
 &lt;/Array&gt;
-PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=PxieClk100;MinFreq=100000000.000000;MaxFreq=100000000.000000;VariableFreq=0;NomFreq=100000000.000000;PeakPeriodJitter=250.000000;MinDutyCycle=50.000000;MaxDutyCycle=50.000000;Accuracy=100.000000;RunTime=0;SpreadSpectrum=0;GenericDataHash=D41D8CD98F00B204E9800998ECF8427E;PXIe-7986Custom/PllClk80/falsefalseFPGA_EXECUTION_MODEFPGA_TARGETFPGA_TARGET_CLASSPXIE_7986CUSTOMFPGA_TARGET_FAMILYKINTEXUPTARGET_TYPEFPGASource0ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source0;0;WriteMethodType=boolSource10ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source10;0;WriteMethodType=boolSource11ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source11;0;WriteMethodType=boolSource12ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source12;0;WriteMethodType=boolSource13ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source13;0;WriteMethodType=boolSource14ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source14;0;WriteMethodType=boolSource15ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source15;0;WriteMethodType=boolSource16ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source16;0;WriteMethodType=boolSource17ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source17;0;WriteMethodType=boolSource18ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source18;0;WriteMethodType=boolSource19ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source19;0;WriteMethodType=boolSource1ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source1;0;WriteMethodType=boolSource20ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source20;0;WriteMethodType=boolSource21ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source21;0;WriteMethodType=boolSource22ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source22;0;WriteMethodType=boolSource23ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source23;0;WriteMethodType=boolSource24ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source24;0;WriteMethodType=boolSource25ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source25;0;WriteMethodType=boolSource26ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source26;0;WriteMethodType=boolSource27ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source27;0;WriteMethodType=boolSource28ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source28;0;WriteMethodType=boolSource29ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source29;0;WriteMethodType=boolSource2ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source2;0;WriteMethodType=boolSource30ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source30;0;WriteMethodType=boolSource31ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source31;0;WriteMethodType=boolSource3ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source3;0;WriteMethodType=boolSource4ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source4;0;WriteMethodType=boolSource5ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source5;0;WriteMethodType=boolSource6ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source6;0;WriteMethodType=boolSource7ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source7;0;WriteMethodType=boolSource8ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source8;0;WriteMethodType=boolSource9ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source9;0;WriteMethodType=boolTClkNumberOfSyncRegistersForReadInProject=0;resource=/Routing/SignalList/TClk;0;ReadMethodType=bool</Property>
+PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=PxieClk100;MinFreq=100000000.000000;MaxFreq=100000000.000000;VariableFreq=0;NomFreq=100000000.000000;PeakPeriodJitter=250.000000;MinDutyCycle=50.000000;MaxDutyCycle=50.000000;Accuracy=100.000000;RunTime=0;SpreadSpectrum=0;GenericDataHash=D41D8CD98F00B204E9800998ECF8427E;PXIe-6595Custom/PllClk80/falsefalseFPGA_EXECUTION_MODEFPGA_TARGETFPGA_TARGET_CLASSPXIE_6595CUSTOMFPGA_TARGET_FAMILYKINTEXUPTARGET_TYPEFPGASource0ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source0;0;WriteMethodType=boolSource10ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source10;0;WriteMethodType=boolSource11ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source11;0;WriteMethodType=boolSource12ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source12;0;WriteMethodType=boolSource13ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source13;0;WriteMethodType=boolSource14ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source14;0;WriteMethodType=boolSource15ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source15;0;WriteMethodType=boolSource16ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source16;0;WriteMethodType=boolSource17ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source17;0;WriteMethodType=boolSource18ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source18;0;WriteMethodType=boolSource19ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source19;0;WriteMethodType=boolSource1ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source1;0;WriteMethodType=boolSource20ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source20;0;WriteMethodType=boolSource21ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source21;0;WriteMethodType=boolSource22ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source22;0;WriteMethodType=boolSource23ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source23;0;WriteMethodType=boolSource24ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source24;0;WriteMethodType=boolSource25ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source25;0;WriteMethodType=boolSource26ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source26;0;WriteMethodType=boolSource27ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source27;0;WriteMethodType=boolSource28ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source28;0;WriteMethodType=boolSource29ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source29;0;WriteMethodType=boolSource2ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source2;0;WriteMethodType=boolSource30ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source30;0;WriteMethodType=boolSource31ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source31;0;WriteMethodType=boolSource3ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source3;0;WriteMethodType=boolSource4ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source4;0;WriteMethodType=boolSource5ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source5;0;WriteMethodType=boolSource6ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source6;0;WriteMethodType=boolSource7ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source7;0;WriteMethodType=boolSource8ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source8;0;WriteMethodType=boolSource9ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source9;0;WriteMethodType=boolTClkNumberOfSyncRegistersForReadInProject=0;resource=/Routing/SignalList/TClk;0;ReadMethodType=bool</Property>
 			<Property Name="NI.LV.FPGA.CLIPDeclarations[0].Category" Type="Str">RoutingSocketType1v1</Property>
 			<Property Name="NI.LV.FPGA.CLIPDeclarations[0].InvalidPath" Type="Str"></Property>
 			<Property Name="NI.LV.FPGA.CLIPDeclarations[0].Name" Type="Str">Host Control v1</Property>
@@ -1449,14 +1449,14 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
       </CLIPDeclaration>
    </CLIPDeclarationCategory>
 </CLIPDeclarationSet></Property>
-			<Property Name="NI.LV.FPGA.CompileConfigString" Type="Str">PXIe-7986Custom/PllClk80/falsefalseFPGA_EXECUTION_MODEFPGA_TARGETFPGA_TARGET_CLASSPXIE_7986CUSTOMFPGA_TARGET_FAMILYKINTEXUPTARGET_TYPEFPGA</Property>
+			<Property Name="NI.LV.FPGA.CompileConfigString" Type="Str">PXIe-6595Custom/PllClk80/falsefalseFPGA_EXECUTION_MODEFPGA_TARGETFPGA_TARGET_CLASSPXIE_6595CUSTOMFPGA_TARGET_FAMILYKINTEXUPTARGET_TYPEFPGA</Property>
 			<Property Name="NI.LV.FPGA.Version" Type="Int">6</Property>
 			<Property Name="Resource Name" Type="Str"></Property>
-			<Property Name="Target Class" Type="Str">PXIe-7986Custom</Property>
+			<Property Name="Target Class" Type="Str">PXIe-6595Custom</Property>
 			<Property Name="Top-Level Timing Source" Type="Str">80 MHz Clock</Property>
 			<Property Name="Top-Level Timing Source Is Default" Type="Bool">true</Property>
 			<Item Name="80 MHz Clock" Type="FPGA Base Clock">
-				<Property Name="FPGA.PersistentID" Type="Str">{CE5A2424-AD4C-41D1-8EFB-4B4EC9920350}</Property>
+				<Property Name="FPGA.PersistentID" Type="Str">{C03BE818-DC4D-4AC0-AF7A-41CD2D3505A1}</Property>
 				<Property Name="NI.LV.FPGA.BaseTSConfig" Type="Str">ResourceName=80 MHz Clock;TopSignalConnect=PllClk80;ClockSignalName=PllClk80;MinFreq=80000000.000000;MaxFreq=80000000.000000;VariableFreq=0;NomFreq=80000000.000000;PeakPeriodJitter=250.000000;MinDutyCycle=50.000000;MaxDutyCycle=50.000000;Accuracy=100.000000;RunTime=0;SpreadSpectrum=0;GenericDataHash=D41D8CD98F00B204E9800998ECF8427E;</Property>
 				<Property Name="NI.LV.FPGA.BaseTSConfig.Accuracy" Type="Dbl">100</Property>
 				<Property Name="NI.LV.FPGA.BaseTSConfig.ClockSignalName" Type="Str">PllClk80</Property>
@@ -1474,21 +1474,14 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
 				<Property Name="NI.LV.FPGA.Version" Type="Int">5</Property>
 			</Item>
 			<Item Name="BlankRunningVI.vi" Type="VI" URL="../BlankRunningVI.vi">
-				<Property Name="configString.guid" Type="Str">{0090A43D-9FDE-47D6-9C75-7608EF79C510}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination21;0;ReadMethodType=bool{0AE8996E-360C-44CB-A838-87AC5336C2D9}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source18;0;WriteMethodType=bool{0F94D809-D581-4EBF-A806-7C2ADAD5C1ED}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source12;0;WriteMethodType=bool{103044A8-2894-487B-9EFD-8C288AC8D61E}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source16;0;WriteMethodType=bool{14BF1B01-5730-4948-81AF-15D2D4394A6D}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source27;0;WriteMethodType=bool{15028763-D49E-414C-B691-DEE6ABF378B9}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination15;0;ReadMethodType=bool{22EC3446-41B3-4BC3-9DB1-17CFA8CE36EB}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination6;0;ReadMethodType=bool{24DBA4AE-F0BC-411C-90F0-3B8E24123845}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source25;0;WriteMethodType=bool{25A08FF3-638D-4A9A-83C1-B0DE1073697D}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination20;0;ReadMethodType=bool{307AD4FE-5A1E-41FD-92A0-AF1D610A5F5E}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/aDestinationSyncPulse;0;ReadMethodType=bool{349220EF-E264-4CC2-AF88-4585416DA94F}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination19;0;ReadMethodType=bool{352E7104-B1C5-4E83-9659-E935FD4486C0}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination27;0;ReadMethodType=bool{37AF4C63-8BC8-4559-9E20-71024F08AA25}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination14;0;ReadMethodType=bool{3B136EE6-C00D-4F68-ADA6-860AD1ED0726}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination3;0;ReadMethodType=bool{3B6B906F-372C-4CFF-96AD-5BE8580605A5}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination10;0;ReadMethodType=bool{3E9C5563-1D24-4F3E-99DC-D79DB6118F14}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination13;0;ReadMethodType=bool{3F7A61AB-170C-4E9D-9560-60D6F9941DD8}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source29;0;WriteMethodType=bool{3FD0BC7D-4220-4B75-BA20-7094556A64DF}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source7;0;WriteMethodType=bool{3FFFCCC5-4E93-4EBC-A5DF-D894CA92CF13}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source28;0;WriteMethodType=bool{45A3C1F6-DC38-4E94-A4B4-1C247B37E2C9}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source1;0;WriteMethodType=bool{461DB13D-0164-43F8-849C-A59DD6818C46}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source14;0;WriteMethodType=bool{47610D01-0A7E-47B3-B354-8124E6BB5397}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source22;0;WriteMethodType=bool{4F565DB0-495B-4FC4-B2B2-B41178A33B02}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination11;0;ReadMethodType=bool{52213DB3-8354-4858-97B0-3182E229FEA1}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source21;0;WriteMethodType=bool{543F2B49-8134-4808-9A25-556EF617BE97}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source24;0;WriteMethodType=bool{589810B1-A1E9-4AED-BB6F-BF76B35DC38A}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source10;0;WriteMethodType=bool{5A5D45BF-B067-4BB5-A686-9F51B12005E6}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source5;0;WriteMethodType=bool{5ED12DCC-B4AC-423E-8200-DDEA7216EAFC}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination18;0;ReadMethodType=bool{604BD234-9481-4384-8574-5A9A2DE6E7A4}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination23;0;ReadMethodType=bool{622A7E0C-2604-4F48-9A05-CF0F359048AA}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination17;0;ReadMethodType=bool{6D8D8988-9829-401A-A53F-F41B6BE0765E}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source30;0;WriteMethodType=bool{6F736106-ED71-4438-B852-74C9882111FA}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source3;0;WriteMethodType=bool{7483A9C1-D185-4C77-877D-3E1DAD176E8D}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination30;0;ReadMethodType=bool{7541F544-E029-49B5-8AC7-6607E1AB1A94}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination12;0;ReadMethodType=bool{769D8BFD-EBCA-48A7-A567-2E5234366599}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source2;0;WriteMethodType=bool{7CBEC37D-B4F1-4768-A05E-2F66A0F37683}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination0;0;ReadMethodType=bool{7DA6EF95-3BA6-4EA5-9762-8F01AC0A73A1}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source6;0;WriteMethodType=bool{87BFA54B-45EC-4594-A0D5-B5467DA4B639}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination28;0;ReadMethodType=bool{8C5C34AD-F1D9-4994-8981-21D2724CD3C9}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source9;0;WriteMethodType=bool{8FCEB1D3-A5FE-445F-8455-3DEA767F11E3}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source31;0;WriteMethodType=bool{91C569C1-3DC2-42F7-A8D0-427ACC7188E6}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source20;0;WriteMethodType=bool{93AF14E6-B2AB-4C29-8EB8-4B0B6C7ACBE9}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination2;0;ReadMethodType=bool{93CDA3C2-EA27-4936-9268-48D92C6EE63E}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source13;0;WriteMethodType=bool{97B81562-659E-4861-AEB8-C297053EE91C}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source15;0;WriteMethodType=bool{9DB3B670-530F-4282-8868-E4A7BF7C53CA}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination16;0;ReadMethodType=bool{9DDBF002-A5F7-4AA7-9722-AE6941F4C789}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source0;0;WriteMethodType=bool{9E5A4D72-8298-40E7-9852-0F665DE06902}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination5;0;ReadMethodType=bool{9F25EF5E-2A8B-4A35-93A9-6487C790708D}NumberOfSyncRegistersForReadInProject=0;resource=/Routing/SignalList/TClk;0;ReadMethodType=bool{A0BEDC8E-F08C-4F50-AADA-654C6F835891}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination7;0;ReadMethodType=bool{A263949E-830C-48FE-8FFB-87884CD11DBE}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination1;0;ReadMethodType=bool{A8B30530-521D-41E8-B346-B28F66B2DDB1}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source4;0;WriteMethodType=bool{A9DA8D58-9E14-4C3F-BEAF-1E1D10EF02B1}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination9;0;ReadMethodType=bool{AD5337F7-5186-4DFB-90CE-5E07A092C352}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination26;0;ReadMethodType=bool{AF65F367-AE93-4402-8E52-B1570B5C2CEC}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source26;0;WriteMethodType=bool{B43868F5-A1D8-46F5-B021-9CC540D94365}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Clip Identity;0;ReadMethodType=
-&lt;Type&gt;
-   &lt;FXP&gt;
-      &lt;IntegerWordLength&gt;8&lt;/IntegerWordLength&gt;
-      &lt;Unsigned&gt;true&lt;/Unsigned&gt;
-      &lt;WordLength&gt;8&lt;/WordLength&gt;
-   &lt;/FXP&gt;
-&lt;/Type&gt;{C0131ED0-C3FD-4E13-A1E4-37469B8E9565}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination25;0;ReadMethodType=bool{C2AA1EC5-40C7-4B46-9A78-8126AF0EE7A6}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination29;0;ReadMethodType=bool{C6F244C1-65CA-435F-92F2-2A475E92677B}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source17;0;WriteMethodType=bool{C9C200E4-11B8-4035-BDFE-B85240376BC9}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination31;0;ReadMethodType=bool{CE5A2424-AD4C-41D1-8EFB-4B4EC9920350}ResourceName=80 MHz Clock;TopSignalConnect=PllClk80;ClockSignalName=PllClk80;MinFreq=80000000.000000;MaxFreq=80000000.000000;VariableFreq=0;NomFreq=80000000.000000;PeakPeriodJitter=250.000000;MinDutyCycle=50.000000;MaxDutyCycle=50.000000;Accuracy=100.000000;RunTime=0;SpreadSpectrum=0;GenericDataHash=D41D8CD98F00B204E9800998ECF8427E;{D39F5373-07B1-4B7E-A1BF-9F0120B9E3BB}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination24;0;ReadMethodType=bool{DB162B53-289E-495F-A800-D48793B97585}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source11;0;WriteMethodType=bool{E5A8E5BA-834C-4502-9D3B-75FDB286B49E}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination8;0;ReadMethodType=bool{E6747976-A666-43FE-ADD2-F6C413AB27A2}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source8;0;WriteMethodType=bool{E776AB94-0D2A-4DD3-A5B7-C009C20E8A38}ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=PxieClk100;MinFreq=100000000.000000;MaxFreq=100000000.000000;VariableFreq=0;NomFreq=100000000.000000;PeakPeriodJitter=250.000000;MinDutyCycle=50.000000;MaxDutyCycle=50.000000;Accuracy=100.000000;RunTime=0;SpreadSpectrum=0;GenericDataHash=D41D8CD98F00B204E9800998ECF8427E;{EB635B88-DD28-4190-8FA7-338915F1AF25}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source23;0;WriteMethodType=bool{ECC4214E-AC58-4029-B4B2-C1B4059B2DBD}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Diagram Identity;0;WriteMethodType=
+				<Property Name="configString.guid" Type="Str">{012D4135-B4FF-4B2A-8404-DFECDBDD6FE9}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination4;0;ReadMethodType=bool{0264D84A-C3EE-40C8-B236-0E36E35925B7}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination21;0;ReadMethodType=bool{12FB68DD-E99B-49C2-ACB3-D995EE929433}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination11;0;ReadMethodType=bool{156DA2D1-7F9A-4D87-85A8-95475D456172}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination3;0;ReadMethodType=bool{17B0A109-E491-4B67-A18A-ECA2B93FB380}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source14;0;WriteMethodType=bool{192EEC3B-17D3-4B30-BD10-D37393A17B83}ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=PxieClk100;MinFreq=100000000.000000;MaxFreq=100000000.000000;VariableFreq=0;NomFreq=100000000.000000;PeakPeriodJitter=250.000000;MinDutyCycle=50.000000;MaxDutyCycle=50.000000;Accuracy=100.000000;RunTime=0;SpreadSpectrum=0;GenericDataHash=D41D8CD98F00B204E9800998ECF8427E;{2027C652-6761-47D3-8F96-5F0E927C10F9}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source7;0;WriteMethodType=bool{204CBDF1-6013-4B43-B50A-4CF1527B2151}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source0;0;WriteMethodType=bool{2EFD4B97-0120-4837-B0DC-C42702575E71}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination25;0;ReadMethodType=bool{312A4003-881A-4BE3-92FC-6EF1713BE8DA}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination17;0;ReadMethodType=bool{3938D6A4-AC66-47F6-AA77-4FC21488B6F1}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source8;0;WriteMethodType=bool{3B0CE856-CAA4-45F3-9963-15C884652490}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination18;0;ReadMethodType=bool{3B34D66D-79E6-4FBE-B668-42FDF684DB37}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source10;0;WriteMethodType=bool{3D0B95C8-EF28-4D2A-A342-49ACFAA3EB89}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination14;0;ReadMethodType=bool{415B829E-62AA-4875-B62E-CDE50522098F}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source1;0;WriteMethodType=bool{41EDCE21-CCA8-4109-A8D0-A8021A9B10BF}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Diagram Identity;0;WriteMethodType=
 &lt;Type&gt;
    &lt;FXP&gt;
       &lt;IntegerWordLength&gt;32&lt;/IntegerWordLength&gt;
       &lt;Unsigned&gt;true&lt;/Unsigned&gt;
       &lt;WordLength&gt;32&lt;/WordLength&gt;
    &lt;/FXP&gt;
-&lt;/Type&gt;{F0A78267-8E02-4AF7-882A-5CB5844C7DDE}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source19;0;WriteMethodType=bool{F173E57D-8566-4EE3-BF6E-F55CD4DEC7D8}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination4;0;ReadMethodType=bool{F3C8C2D6-08E4-4AC9-9E0D-5ED3B1DFEAAE}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination22;0;ReadMethodType=bool{FD014F86-040E-4293-9FBA-E70A4CAAB694}3119caa9fb9c07750e2167f77fb302628298ed925847f77d6ec59ffab0a8d1c5bab5a154394ad692ad9b023f717ed6c7e431b6cba9e372579bb96db7e798fc97&lt;Array&gt;
+&lt;/Type&gt;{426A9919-6784-4C90-8634-4513DF938B26}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination16;0;ReadMethodType=bool{42AAB913-EF2F-4686-B5F0-115E8EF7E605}3119caa9fb9c07750e2167f77fb302628298ed925847f77d6ec59ffab0a8d1c5bab5a154394ad692ad9b023f717ed6c7e431b6cba9e372579bb96db7e798fc97&lt;Array&gt;
 &lt;Name&gt;Generics&lt;/Name&gt;
 &lt;Dimsize&gt;0&lt;/Dimsize&gt;
 &lt;Cluster&gt;
@@ -1622,7 +1615,14 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
 &lt;/Cluster&gt;
 &lt;/Cluster&gt;
 &lt;/Array&gt;
-PXIe-7986Custom/PllClk80/falsefalseFPGA_EXECUTION_MODEFPGA_TARGETFPGA_TARGET_CLASSPXIE_7986CUSTOMFPGA_TARGET_FAMILYKINTEXUPTARGET_TYPEFPGA</Property>
+{4374B93E-D177-4DE4-B649-79247742EAC2}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source6;0;WriteMethodType=bool{43873D0D-ED51-4BEB-8264-1B1DC28AC05F}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source17;0;WriteMethodType=bool{4C9C3412-5137-4B20-AE17-FF1F2A58AC09}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source2;0;WriteMethodType=bool{4F9F7C3E-70B4-466A-A3BB-F45B5BDC8ADB}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source23;0;WriteMethodType=bool{4FB5BC84-5780-4F89-84EC-821A5E3F2279}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination29;0;ReadMethodType=bool{54D0222A-7307-48FB-AD52-255E4385E6F1}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination2;0;ReadMethodType=bool{57C98763-022F-4903-BCCA-56F16746FC31}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source27;0;WriteMethodType=bool{5B436BAD-0DD4-4417-8F39-896659626ADD}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source9;0;WriteMethodType=bool{5CDED735-94EC-4287-909F-B77BB32946F0}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source30;0;WriteMethodType=bool{5D80BA8F-F790-42AA-8C82-F17C9951F43B}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source25;0;WriteMethodType=bool{5DD05EB2-93DA-46C5-B211-2BE89240C75D}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source28;0;WriteMethodType=bool{649B1557-EAA5-4D1E-AA92-D47DE44C92C8}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source16;0;WriteMethodType=bool{665DAEE5-C9DC-4F37-ADE6-7CD640DE3955}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination23;0;ReadMethodType=bool{66C5F83C-F575-44B2-A5BC-13160D8BE1ED}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination7;0;ReadMethodType=bool{68EEC90F-6393-4D98-9C84-1E0A151AF86E}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source26;0;WriteMethodType=bool{6A9E5586-844B-4A1F-9A34-01523D8ABF14}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination5;0;ReadMethodType=bool{6B095DB9-F5D7-473E-8DF3-E673EE358722}NumberOfSyncRegistersForReadInProject=0;resource=/Routing/SignalList/TClk;0;ReadMethodType=bool{6B9553DB-EAE0-451A-8505-E66B81A1BA65}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination20;0;ReadMethodType=bool{70B635B2-ED15-4F7B-8C17-86AB7F427F77}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination19;0;ReadMethodType=bool{75285272-B875-4AFE-B15A-3BCD8B7DBC69}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination12;0;ReadMethodType=bool{7C3F2B48-B0AA-460F-8314-187F0333003D}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination28;0;ReadMethodType=bool{7D06B588-5DC3-4678-9034-9BEFD4D7090A}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination13;0;ReadMethodType=bool{7D512393-5A07-46F7-BD42-B851B80B5D83}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source3;0;WriteMethodType=bool{7EA27FFB-00ED-4DE4-AD40-3C7327DCD721}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination31;0;ReadMethodType=bool{83365F7C-F4FE-4B1B-B213-11F38C698B96}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source21;0;WriteMethodType=bool{86BFCCF2-C139-4928-BA77-AD1DE3C4C9DF}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source12;0;WriteMethodType=bool{888B6E54-769D-4071-9685-CA8D94D5D143}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/aDestinationSyncPulse;0;ReadMethodType=bool{8BB76BF2-F936-4545-96C0-072DEF9D97B8}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination10;0;ReadMethodType=bool{939B3FE0-E85F-44C1-929F-8AD6E147BA74}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination24;0;ReadMethodType=bool{94276795-0304-48F4-B505-A80C85B036C0}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source31;0;WriteMethodType=bool{97345F57-D45D-4A94-83DD-D1721E0C395D}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination26;0;ReadMethodType=bool{98C5F325-20FF-498E-BA55-22E9903E18DE}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source20;0;WriteMethodType=bool{A01911B6-D414-42E5-AEEC-4E4C89418463}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination1;0;ReadMethodType=bool{A60C2467-127D-4CF2-97AA-A3D942A9451A}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source13;0;WriteMethodType=bool{AA8375D7-7CA1-46E0-9C10-45CFB6EB05E9}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source19;0;WriteMethodType=bool{AC48A2C8-0434-4DE2-B3CC-378E5FB8151A}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source15;0;WriteMethodType=bool{B08F08E9-3921-49A1-A8B9-6755AB5F2927}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination30;0;ReadMethodType=bool{B48C5B5C-4762-40C2-BAF4-C605B3CE4262}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source22;0;WriteMethodType=bool{C03BE818-DC4D-4AC0-AF7A-41CD2D3505A1}ResourceName=80 MHz Clock;TopSignalConnect=PllClk80;ClockSignalName=PllClk80;MinFreq=80000000.000000;MaxFreq=80000000.000000;VariableFreq=0;NomFreq=80000000.000000;PeakPeriodJitter=250.000000;MinDutyCycle=50.000000;MaxDutyCycle=50.000000;Accuracy=100.000000;RunTime=0;SpreadSpectrum=0;GenericDataHash=D41D8CD98F00B204E9800998ECF8427E;{C1F24AE8-154B-4C50-BB5B-9B113BD2B261}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Clip Identity;0;ReadMethodType=
+&lt;Type&gt;
+   &lt;FXP&gt;
+      &lt;IntegerWordLength&gt;8&lt;/IntegerWordLength&gt;
+      &lt;Unsigned&gt;true&lt;/Unsigned&gt;
+      &lt;WordLength&gt;8&lt;/WordLength&gt;
+   &lt;/FXP&gt;
+&lt;/Type&gt;{C2BD71CD-594D-4DD0-94F3-3EB1A9DF8130}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source5;0;WriteMethodType=bool{C5AFBD5B-2F9C-4D08-BD13-5F67599A76B9}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination15;0;ReadMethodType=bool{D1794724-C71A-426B-A712-B4F4F57BC6EA}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination8;0;ReadMethodType=bool{D4BFC86C-8406-4CA7-84EE-7D9858FA610B}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination22;0;ReadMethodType=bool{D567BD2D-A4AF-48F6-A58D-290CA555C2DC}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination0;0;ReadMethodType=bool{D86FE25D-4C86-4100-AFC2-589800569F4D}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source11;0;WriteMethodType=bool{D9FE9C3B-9611-4D31-BBE7-D26FAEE568EE}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source29;0;WriteMethodType=bool{DB15D9D9-F995-4810-B64A-0526744712E5}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source4;0;WriteMethodType=bool{DD50A2E2-6235-4584-A956-57147057B6E6}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination6;0;ReadMethodType=bool{DE387FDD-7E66-464A-B31E-835EDE75C602}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source24;0;WriteMethodType=bool{F2CDE742-BEF6-4D33-81B4-364E1C2BFFFA}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination9;0;ReadMethodType=bool{F7320C00-C9C6-43E7-A374-DE4D3F553013}NumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Destination27;0;ReadMethodType=bool{F84AC5A9-5AA3-4B93-BBEA-6DF55929B814}ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source18;0;WriteMethodType=boolPXIe-6595Custom/PllClk80/falsefalseFPGA_EXECUTION_MODEFPGA_TARGETFPGA_TARGET_CLASSPXIE_6595CUSTOMFPGA_TARGET_FAMILYKINTEXUPTARGET_TYPEFPGA</Property>
 				<Property Name="configString.name" Type="Str">80 MHz ClockResourceName=80 MHz Clock;TopSignalConnect=PllClk80;ClockSignalName=PllClk80;MinFreq=80000000.000000;MaxFreq=80000000.000000;VariableFreq=0;NomFreq=80000000.000000;PeakPeriodJitter=250.000000;MinDutyCycle=50.000000;MaxDutyCycle=50.000000;Accuracy=100.000000;RunTime=0;SpreadSpectrum=0;GenericDataHash=D41D8CD98F00B204E9800998ECF8427E;aDestinationSyncPulseNumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/aDestinationSyncPulse;0;ReadMethodType=boolClip IdentityNumberOfSyncRegistersForReadInProject=Auto;resource=/Routing/SignalList/Clip Identity;0;ReadMethodType=
 &lt;Type&gt;
    &lt;FXP&gt;
@@ -1771,10 +1771,10 @@ PXIe-7986Custom/PllClk80/falsefalseFPGA_EXECUTION_MODEFPGA_TARGETFPGA_TARGET_CLA
 &lt;/Cluster&gt;
 &lt;/Cluster&gt;
 &lt;/Array&gt;
-PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=PxieClk100;MinFreq=100000000.000000;MaxFreq=100000000.000000;VariableFreq=0;NomFreq=100000000.000000;PeakPeriodJitter=250.000000;MinDutyCycle=50.000000;MaxDutyCycle=50.000000;Accuracy=100.000000;RunTime=0;SpreadSpectrum=0;GenericDataHash=D41D8CD98F00B204E9800998ECF8427E;PXIe-7986Custom/PllClk80/falsefalseFPGA_EXECUTION_MODEFPGA_TARGETFPGA_TARGET_CLASSPXIE_7986CUSTOMFPGA_TARGET_FAMILYKINTEXUPTARGET_TYPEFPGASource0ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source0;0;WriteMethodType=boolSource10ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source10;0;WriteMethodType=boolSource11ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source11;0;WriteMethodType=boolSource12ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source12;0;WriteMethodType=boolSource13ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source13;0;WriteMethodType=boolSource14ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source14;0;WriteMethodType=boolSource15ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source15;0;WriteMethodType=boolSource16ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source16;0;WriteMethodType=boolSource17ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source17;0;WriteMethodType=boolSource18ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source18;0;WriteMethodType=boolSource19ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source19;0;WriteMethodType=boolSource1ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source1;0;WriteMethodType=boolSource20ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source20;0;WriteMethodType=boolSource21ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source21;0;WriteMethodType=boolSource22ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source22;0;WriteMethodType=boolSource23ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source23;0;WriteMethodType=boolSource24ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source24;0;WriteMethodType=boolSource25ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source25;0;WriteMethodType=boolSource26ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source26;0;WriteMethodType=boolSource27ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source27;0;WriteMethodType=boolSource28ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source28;0;WriteMethodType=boolSource29ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source29;0;WriteMethodType=boolSource2ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source2;0;WriteMethodType=boolSource30ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source30;0;WriteMethodType=boolSource31ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source31;0;WriteMethodType=boolSource3ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source3;0;WriteMethodType=boolSource4ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source4;0;WriteMethodType=boolSource5ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source5;0;WriteMethodType=boolSource6ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source6;0;WriteMethodType=boolSource7ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source7;0;WriteMethodType=boolSource8ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source8;0;WriteMethodType=boolSource9ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source9;0;WriteMethodType=boolTClkNumberOfSyncRegistersForReadInProject=0;resource=/Routing/SignalList/TClk;0;ReadMethodType=bool</Property>
+PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=PxieClk100;MinFreq=100000000.000000;MaxFreq=100000000.000000;VariableFreq=0;NomFreq=100000000.000000;PeakPeriodJitter=250.000000;MinDutyCycle=50.000000;MaxDutyCycle=50.000000;Accuracy=100.000000;RunTime=0;SpreadSpectrum=0;GenericDataHash=D41D8CD98F00B204E9800998ECF8427E;PXIe-6595Custom/PllClk80/falsefalseFPGA_EXECUTION_MODEFPGA_TARGETFPGA_TARGET_CLASSPXIE_6595CUSTOMFPGA_TARGET_FAMILYKINTEXUPTARGET_TYPEFPGASource0ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source0;0;WriteMethodType=boolSource10ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source10;0;WriteMethodType=boolSource11ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source11;0;WriteMethodType=boolSource12ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source12;0;WriteMethodType=boolSource13ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source13;0;WriteMethodType=boolSource14ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source14;0;WriteMethodType=boolSource15ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source15;0;WriteMethodType=boolSource16ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source16;0;WriteMethodType=boolSource17ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source17;0;WriteMethodType=boolSource18ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source18;0;WriteMethodType=boolSource19ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source19;0;WriteMethodType=boolSource1ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source1;0;WriteMethodType=boolSource20ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source20;0;WriteMethodType=boolSource21ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source21;0;WriteMethodType=boolSource22ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source22;0;WriteMethodType=boolSource23ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source23;0;WriteMethodType=boolSource24ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source24;0;WriteMethodType=boolSource25ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source25;0;WriteMethodType=boolSource26ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source26;0;WriteMethodType=boolSource27ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source27;0;WriteMethodType=boolSource28ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source28;0;WriteMethodType=boolSource29ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source29;0;WriteMethodType=boolSource2ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source2;0;WriteMethodType=boolSource30ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source30;0;WriteMethodType=boolSource31ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source31;0;WriteMethodType=boolSource3ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source3;0;WriteMethodType=boolSource4ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source4;0;WriteMethodType=boolSource5ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source5;0;WriteMethodType=boolSource6ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source6;0;WriteMethodType=boolSource7ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source7;0;WriteMethodType=boolSource8ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source8;0;WriteMethodType=boolSource9ArbitrationForOutputData=NeverArbitrate;NumberOfSyncRegistersForOutputData=1;resource=/Routing/SignalList/Source9;0;WriteMethodType=boolTClkNumberOfSyncRegistersForReadInProject=0;resource=/Routing/SignalList/TClk;0;ReadMethodType=bool</Property>
 			</Item>
 			<Item Name="DRAM Bank 0" Type="FPGA Component Level IP">
-				<Property Name="FPGA.PersistentID" Type="Str">{FD014F86-040E-4293-9FBA-E70A4CAAB694}</Property>
+				<Property Name="FPGA.PersistentID" Type="Str">{42AAB913-EF2F-4686-B5F0-115E8EF7E605}</Property>
 				<Property Name="NI.LV.CLIP.DeclarationCategory" Type="Str"></Property>
 				<Property Name="NI.LV.CLIP.SocketedCLIP" Type="Bool">true</Property>
 				<Property Name="NI.LV.CLIP.SocketSelection" Type="Str">FlexRIO-DRAMTypeE-Bank0</Property>
@@ -1942,7 +1942,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
 				<Property Name="NI.SortType" Type="Int">0</Property>
 			</Item>
 			<Item Name="PXIe_Clk100" Type="FPGA Base Clock">
-				<Property Name="FPGA.PersistentID" Type="Str">{E776AB94-0D2A-4DD3-A5B7-C009C20E8A38}</Property>
+				<Property Name="FPGA.PersistentID" Type="Str">{192EEC3B-17D3-4B30-BD10-D37393A17B83}</Property>
 				<Property Name="NI.LV.FPGA.BaseTSConfig" Type="Str">ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=PxieClk100;MinFreq=100000000.000000;MaxFreq=100000000.000000;VariableFreq=0;NomFreq=100000000.000000;PeakPeriodJitter=250.000000;MinDutyCycle=50.000000;MaxDutyCycle=50.000000;Accuracy=100.000000;RunTime=0;SpreadSpectrum=0;GenericDataHash=D41D8CD98F00B204E9800998ECF8427E;</Property>
 				<Property Name="NI.LV.FPGA.BaseTSConfig.Accuracy" Type="Dbl">100</Property>
 				<Property Name="NI.LV.FPGA.BaseTSConfig.ClockSignalName" Type="Str">PxieClk100</Property>
@@ -2000,7 +2000,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{307AD4FE-5A1E-41FD-92A0-AF1D610A5F5E}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{888B6E54-769D-4071-9685-CA8D94D5D143}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Clip Identity" Type="Elemental IO">
@@ -2013,7 +2013,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{B43868F5-A1D8-46F5-B021-9CC540D94365}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{C1F24AE8-154B-4C50-BB5B-9B113BD2B261}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination0" Type="Elemental IO">
@@ -2026,7 +2026,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{7CBEC37D-B4F1-4768-A05E-2F66A0F37683}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{D567BD2D-A4AF-48F6-A58D-290CA555C2DC}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination1" Type="Elemental IO">
@@ -2039,7 +2039,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{A263949E-830C-48FE-8FFB-87884CD11DBE}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{A01911B6-D414-42E5-AEEC-4E4C89418463}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination2" Type="Elemental IO">
@@ -2052,7 +2052,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{93AF14E6-B2AB-4C29-8EB8-4B0B6C7ACBE9}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{54D0222A-7307-48FB-AD52-255E4385E6F1}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination3" Type="Elemental IO">
@@ -2065,7 +2065,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{3B136EE6-C00D-4F68-ADA6-860AD1ED0726}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{156DA2D1-7F9A-4D87-85A8-95475D456172}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination4" Type="Elemental IO">
@@ -2078,7 +2078,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{F173E57D-8566-4EE3-BF6E-F55CD4DEC7D8}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{012D4135-B4FF-4B2A-8404-DFECDBDD6FE9}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination5" Type="Elemental IO">
@@ -2091,7 +2091,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{9E5A4D72-8298-40E7-9852-0F665DE06902}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{6A9E5586-844B-4A1F-9A34-01523D8ABF14}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination6" Type="Elemental IO">
@@ -2104,7 +2104,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{22EC3446-41B3-4BC3-9DB1-17CFA8CE36EB}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{DD50A2E2-6235-4584-A956-57147057B6E6}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination7" Type="Elemental IO">
@@ -2117,7 +2117,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{A0BEDC8E-F08C-4F50-AADA-654C6F835891}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{66C5F83C-F575-44B2-A5BC-13160D8BE1ED}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination8" Type="Elemental IO">
@@ -2130,7 +2130,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{E5A8E5BA-834C-4502-9D3B-75FDB286B49E}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{D1794724-C71A-426B-A712-B4F4F57BC6EA}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination9" Type="Elemental IO">
@@ -2143,7 +2143,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{A9DA8D58-9E14-4C3F-BEAF-1E1D10EF02B1}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{F2CDE742-BEF6-4D33-81B4-364E1C2BFFFA}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination10" Type="Elemental IO">
@@ -2156,7 +2156,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{3B6B906F-372C-4CFF-96AD-5BE8580605A5}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{8BB76BF2-F936-4545-96C0-072DEF9D97B8}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination11" Type="Elemental IO">
@@ -2169,7 +2169,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{4F565DB0-495B-4FC4-B2B2-B41178A33B02}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{12FB68DD-E99B-49C2-ACB3-D995EE929433}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination12" Type="Elemental IO">
@@ -2182,7 +2182,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{7541F544-E029-49B5-8AC7-6607E1AB1A94}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{75285272-B875-4AFE-B15A-3BCD8B7DBC69}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination13" Type="Elemental IO">
@@ -2195,7 +2195,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{3E9C5563-1D24-4F3E-99DC-D79DB6118F14}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{7D06B588-5DC3-4678-9034-9BEFD4D7090A}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination14" Type="Elemental IO">
@@ -2208,7 +2208,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{37AF4C63-8BC8-4559-9E20-71024F08AA25}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{3D0B95C8-EF28-4D2A-A342-49ACFAA3EB89}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination15" Type="Elemental IO">
@@ -2221,7 +2221,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{15028763-D49E-414C-B691-DEE6ABF378B9}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{C5AFBD5B-2F9C-4D08-BD13-5F67599A76B9}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination16" Type="Elemental IO">
@@ -2234,7 +2234,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{9DB3B670-530F-4282-8868-E4A7BF7C53CA}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{426A9919-6784-4C90-8634-4513DF938B26}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination17" Type="Elemental IO">
@@ -2247,7 +2247,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{622A7E0C-2604-4F48-9A05-CF0F359048AA}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{312A4003-881A-4BE3-92FC-6EF1713BE8DA}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination18" Type="Elemental IO">
@@ -2260,7 +2260,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{5ED12DCC-B4AC-423E-8200-DDEA7216EAFC}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{3B0CE856-CAA4-45F3-9963-15C884652490}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination19" Type="Elemental IO">
@@ -2273,7 +2273,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{349220EF-E264-4CC2-AF88-4585416DA94F}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{70B635B2-ED15-4F7B-8C17-86AB7F427F77}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination20" Type="Elemental IO">
@@ -2286,7 +2286,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{25A08FF3-638D-4A9A-83C1-B0DE1073697D}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{6B9553DB-EAE0-451A-8505-E66B81A1BA65}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination21" Type="Elemental IO">
@@ -2299,7 +2299,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{0090A43D-9FDE-47D6-9C75-7608EF79C510}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{0264D84A-C3EE-40C8-B236-0E36E35925B7}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination22" Type="Elemental IO">
@@ -2312,7 +2312,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{F3C8C2D6-08E4-4AC9-9E0D-5ED3B1DFEAAE}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{D4BFC86C-8406-4CA7-84EE-7D9858FA610B}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination23" Type="Elemental IO">
@@ -2325,7 +2325,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{604BD234-9481-4384-8574-5A9A2DE6E7A4}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{665DAEE5-C9DC-4F37-ADE6-7CD640DE3955}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination24" Type="Elemental IO">
@@ -2338,7 +2338,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{D39F5373-07B1-4B7E-A1BF-9F0120B9E3BB}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{939B3FE0-E85F-44C1-929F-8AD6E147BA74}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination25" Type="Elemental IO">
@@ -2351,7 +2351,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{C0131ED0-C3FD-4E13-A1E4-37469B8E9565}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{2EFD4B97-0120-4837-B0DC-C42702575E71}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination26" Type="Elemental IO">
@@ -2364,7 +2364,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{AD5337F7-5186-4DFB-90CE-5E07A092C352}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{97345F57-D45D-4A94-83DD-D1721E0C395D}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination27" Type="Elemental IO">
@@ -2377,7 +2377,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{352E7104-B1C5-4E83-9659-E935FD4486C0}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{F7320C00-C9C6-43E7-A374-DE4D3F553013}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination28" Type="Elemental IO">
@@ -2390,7 +2390,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{87BFA54B-45EC-4594-A0D5-B5467DA4B639}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{7C3F2B48-B0AA-460F-8314-187F0333003D}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination29" Type="Elemental IO">
@@ -2403,7 +2403,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{C2AA1EC5-40C7-4B46-9A78-8126AF0EE7A6}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{4FB5BC84-5780-4F89-84EC-821A5E3F2279}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination30" Type="Elemental IO">
@@ -2416,7 +2416,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{7483A9C1-D185-4C77-877D-3E1DAD176E8D}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{B08F08E9-3921-49A1-A8B9-6755AB5F2927}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Destination31" Type="Elemental IO">
@@ -2429,7 +2429,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{C9C200E4-11B8-4035-BDFE-B85240376BC9}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{7EA27FFB-00ED-4DE4-AD40-3C7327DCD721}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Diagram Identity" Type="Elemental IO">
@@ -2445,7 +2445,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{ECC4214E-AC58-4029-B4B2-C1B4059B2DBD}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{41EDCE21-CCA8-4109-A8D0-A8021A9B10BF}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source0" Type="Elemental IO">
@@ -2461,7 +2461,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{9DDBF002-A5F7-4AA7-9722-AE6941F4C789}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{204CBDF1-6013-4B43-B50A-4CF1527B2151}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source1" Type="Elemental IO">
@@ -2477,7 +2477,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{45A3C1F6-DC38-4E94-A4B4-1C247B37E2C9}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{415B829E-62AA-4875-B62E-CDE50522098F}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source2" Type="Elemental IO">
@@ -2493,7 +2493,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{769D8BFD-EBCA-48A7-A567-2E5234366599}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{4C9C3412-5137-4B20-AE17-FF1F2A58AC09}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source3" Type="Elemental IO">
@@ -2509,7 +2509,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{6F736106-ED71-4438-B852-74C9882111FA}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{7D512393-5A07-46F7-BD42-B851B80B5D83}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source4" Type="Elemental IO">
@@ -2525,7 +2525,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{A8B30530-521D-41E8-B346-B28F66B2DDB1}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{DB15D9D9-F995-4810-B64A-0526744712E5}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source5" Type="Elemental IO">
@@ -2541,7 +2541,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{5A5D45BF-B067-4BB5-A686-9F51B12005E6}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{C2BD71CD-594D-4DD0-94F3-3EB1A9DF8130}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source6" Type="Elemental IO">
@@ -2557,7 +2557,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{7DA6EF95-3BA6-4EA5-9762-8F01AC0A73A1}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{4374B93E-D177-4DE4-B649-79247742EAC2}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source7" Type="Elemental IO">
@@ -2573,7 +2573,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{3FD0BC7D-4220-4B75-BA20-7094556A64DF}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{2027C652-6761-47D3-8F96-5F0E927C10F9}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source8" Type="Elemental IO">
@@ -2589,7 +2589,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{E6747976-A666-43FE-ADD2-F6C413AB27A2}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{3938D6A4-AC66-47F6-AA77-4FC21488B6F1}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source9" Type="Elemental IO">
@@ -2605,7 +2605,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{8C5C34AD-F1D9-4994-8981-21D2724CD3C9}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{5B436BAD-0DD4-4417-8F39-896659626ADD}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source10" Type="Elemental IO">
@@ -2621,7 +2621,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{589810B1-A1E9-4AED-BB6F-BF76B35DC38A}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{3B34D66D-79E6-4FBE-B668-42FDF684DB37}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source11" Type="Elemental IO">
@@ -2637,7 +2637,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{DB162B53-289E-495F-A800-D48793B97585}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{D86FE25D-4C86-4100-AFC2-589800569F4D}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source12" Type="Elemental IO">
@@ -2653,7 +2653,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{0F94D809-D581-4EBF-A806-7C2ADAD5C1ED}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{86BFCCF2-C139-4928-BA77-AD1DE3C4C9DF}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source13" Type="Elemental IO">
@@ -2669,7 +2669,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{93CDA3C2-EA27-4936-9268-48D92C6EE63E}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{A60C2467-127D-4CF2-97AA-A3D942A9451A}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source14" Type="Elemental IO">
@@ -2685,7 +2685,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{461DB13D-0164-43F8-849C-A59DD6818C46}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{17B0A109-E491-4B67-A18A-ECA2B93FB380}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source15" Type="Elemental IO">
@@ -2701,7 +2701,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{97B81562-659E-4861-AEB8-C297053EE91C}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{AC48A2C8-0434-4DE2-B3CC-378E5FB8151A}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source16" Type="Elemental IO">
@@ -2717,7 +2717,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{103044A8-2894-487B-9EFD-8C288AC8D61E}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{649B1557-EAA5-4D1E-AA92-D47DE44C92C8}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source17" Type="Elemental IO">
@@ -2733,7 +2733,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{C6F244C1-65CA-435F-92F2-2A475E92677B}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{43873D0D-ED51-4BEB-8264-1B1DC28AC05F}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source18" Type="Elemental IO">
@@ -2749,7 +2749,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{0AE8996E-360C-44CB-A838-87AC5336C2D9}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{F84AC5A9-5AA3-4B93-BBEA-6DF55929B814}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source19" Type="Elemental IO">
@@ -2765,7 +2765,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{F0A78267-8E02-4AF7-882A-5CB5844C7DDE}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{AA8375D7-7CA1-46E0-9C10-45CFB6EB05E9}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source20" Type="Elemental IO">
@@ -2781,7 +2781,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{91C569C1-3DC2-42F7-A8D0-427ACC7188E6}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{98C5F325-20FF-498E-BA55-22E9903E18DE}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source21" Type="Elemental IO">
@@ -2797,7 +2797,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{52213DB3-8354-4858-97B0-3182E229FEA1}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{83365F7C-F4FE-4B1B-B213-11F38C698B96}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source22" Type="Elemental IO">
@@ -2813,7 +2813,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{47610D01-0A7E-47B3-B354-8124E6BB5397}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{B48C5B5C-4762-40C2-BAF4-C605B3CE4262}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source23" Type="Elemental IO">
@@ -2829,7 +2829,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{EB635B88-DD28-4190-8FA7-338915F1AF25}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{4F9F7C3E-70B4-466A-A3BB-F45B5BDC8ADB}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source24" Type="Elemental IO">
@@ -2845,7 +2845,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{543F2B49-8134-4808-9A25-556EF617BE97}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{DE387FDD-7E66-464A-B31E-835EDE75C602}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source25" Type="Elemental IO">
@@ -2861,7 +2861,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{24DBA4AE-F0BC-411C-90F0-3B8E24123845}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{5D80BA8F-F790-42AA-8C82-F17C9951F43B}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source26" Type="Elemental IO">
@@ -2877,7 +2877,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{AF65F367-AE93-4402-8E52-B1570B5C2CEC}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{68EEC90F-6393-4D98-9C84-1E0A151AF86E}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source27" Type="Elemental IO">
@@ -2893,7 +2893,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{14BF1B01-5730-4948-81AF-15D2D4394A6D}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{57C98763-022F-4903-BCCA-56F16746FC31}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source28" Type="Elemental IO">
@@ -2909,7 +2909,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{3FFFCCC5-4E93-4EBC-A5DF-D894CA92CF13}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{5DD05EB2-93DA-46C5-B211-2BE89240C75D}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source29" Type="Elemental IO">
@@ -2925,7 +2925,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{3F7A61AB-170C-4E9D-9560-60D6F9941DD8}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{D9FE9C3B-9611-4D31-BBE7-D26FAEE568EE}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source30" Type="Elemental IO">
@@ -2941,7 +2941,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{6D8D8988-9829-401A-A53F-F41B6BE0765E}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{5CDED735-94EC-4287-909F-B77BB32946F0}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="Source31" Type="Elemental IO">
@@ -2957,7 +2957,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{8FCEB1D3-A5FE-445F-8455-3DEA767F11E3}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{94276795-0304-48F4-B505-A80C85B036C0}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 				<Item Name="TClk" Type="Elemental IO">
@@ -2970,7 +2970,7 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
    </Attribute>
 </AttributeSet>
 </Property>
-					<Property Name="FPGA.PersistentID" Type="Str">{9F25EF5E-2A8B-4A35-93A9-6487C790708D}</Property>
+					<Property Name="FPGA.PersistentID" Type="Str">{6B095DB9-F5D7-473E-8DF3-E673EE358722}</Property>
 					<Property Name="NI.LV.EIO.Physical" Type="Bool">true</Property>
 				</Item>
 			</Item>
@@ -3003,9 +3003,9 @@ PXIe_Clk100ResourceName=PXIe_Clk100;TopSignalConnect=PxieClk100;ClockSignalName=
 					<Property Name="Comp.Xilinx.SynthGoal" Type="Str">speed</Property>
 					<Property Name="Comp.Xilinx.UseRecommended" Type="Bool">true</Property>
 					<Property Name="DefaultBuildSpec" Type="Bool">false</Property>
-					<Property Name="DestinationDirectory" Type="Path">/C/Temp/testVPE/PXIe-7986Custom_VPE</Property>
+					<Property Name="DestinationDirectory" Type="Path">/C/Temp/testVPE/PXIe-6595Custom_VPE</Property>
 					<Property Name="IsVivadoProjectExport" Type="Bool">true</Property>
-					<Property Name="ProjectPath" Type="Path">/C/dev/github/flexrio-custom/targets/pxie-7985custom/docs/Examples/LV2023/BlankRunningVI/BlankRunningVI.lvproj</Property>
+					<Property Name="ProjectPath" Type="Path">/C/dev/github30-test/flexrio-custom/targets/pxie-6595custom/docs/Examples/LV2023/BlankRunningVI/BlankRunningVI.lvproj</Property>
 					<Property Name="RelativePath" Type="Bool">false</Property>
 					<Property Name="RunWhenLoaded" Type="Bool">false</Property>
 					<Property Name="TargetName" Type="Str">FPGA Target</Property>

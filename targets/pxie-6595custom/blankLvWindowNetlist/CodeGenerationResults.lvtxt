@@ -9,12 +9,12 @@
    <DerivedClockSourcePinList></DerivedClockSourcePinList>
    <FpgaCompilation>
       <Architecture>rtl</Architecture>
-      <DeviceCategory>FlexRIO FPGA Modules</DeviceCategory>
+      <DeviceCategory>FlexRIO High-Speed Serial Modules</DeviceCategory>
       <DeviceFamily>kintexup</DeviceFamily>
       <DeviceFamilyForLabVIEW>KintexUltraScalePlusLike</DeviceFamilyForLabVIEW>
       <FPGADevice>xcku15p</FPGADevice>
       <Package>ffve1517</Package>
-      <PartNumber>xcku15p-ffve1517-2-e</PartNumber>
+      <PartNumber>xcku15p-ffve1517-3-e</PartNumber>
       <ProcessPropertyList>
          <Process name="Synthesize - Vivado">
             <CommandArguments>
@@ -174,17 +174,17 @@
             </PropertyList>
          </Process>
       </ProcessPropertyList>
-      <SpeedGrade>-2</SpeedGrade>
-      <Top>AppletonTop</Top>
+      <SpeedGrade>-3</SpeedGrade>
+      <Top>CorubaTop</Top>
       <UseBinaryConfiguration>TRUE</UseBinaryConfiguration>
    </FpgaCompilation>
    <NiFpga>
       <ControlAndIndicatorNamesAndTypes></ControlAndIndicatorNamesAndTypes>
       <RunWhenLoaded>false</RunWhenLoaded>
       <signatures>
-         <fpgaSignature>ZtFWE+51HH+M6wdqSSoeQg==</fpgaSignature>
-         <guidSignature>LutwykOXOXxJSqpxwCunVw==</guidSignature>
-         <namesSignature>zcEZvxV/9KWARALevu+zEw==</namesSignature>
+         <fpgaSignature>o+6fjkfgGwZ6xQUXlThq+Q==</fpgaSignature>
+         <guidSignature>6pay4q7g7HIuZDANGvWiqg==</guidSignature>
+         <namesSignature>pZSp0xqSi7JuE0E9d1X+oA==</namesSignature>
       </signatures>
       <version>1</version>
       <VivadoProjectExport>true</VivadoProjectExport>
@@ -204,9 +204,9 @@
 		<BuildSpecVersion />
 		<BuildSpecDescription />
 	</Documentation>
-	<SignatureRegister>66D15613EE751C7F8CEB076A492A1E42</SignatureRegister>
-	<SignatureGuids>2EEB70CA4397397C494AAA71C02BA757</SignatureGuids>
-	<SignatureNames>CDC119BF157FF4A5804402DEBEEFB313</SignatureNames>
+	<SignatureRegister>A3EE9F8E47E01B067AC5051795386AF9</SignatureRegister>
+	<SignatureGuids>EA96B2E2AEE0EC722E64300D1AF5A2AA</SignatureGuids>
+	<SignatureNames>A594A9D31A928BB26E13413D7755FEA0</SignatureNames>
 	<TimeStamp></TimeStamp>
 	<CompilationStatus></CompilationStatus>
 	<BitstreamVersion>2</BitstreamVersion>
@@ -385,7 +385,7 @@
 		</Icon>
 	</VI>
 	<Project>
-		<TargetClass>PXIe-7986Custom</TargetClass>
+		<TargetClass>PXIe-6595Custom</TargetClass>
 		<AutoRunWhenDownloaded>false</AutoRunWhenDownloaded>
 		<CompilationResultsTree>
 <CompilationResults>
@@ -407,11 +407,11 @@
       <version>1</version>
    </NiFpga>
    <TargetSpecificData>
-      <IOModuleID>0xFFFFFFFF</IOModuleID>
+      <IOModuleID>0x10937A7C</IOModuleID>
       <RoutingAliases>
          <Count>0</Count>
       </RoutingAliases>
-      <Target>PXIe-7986R</Target>
+      <Target>PXIe-6595R</Target>
    </TargetSpecificData>
 </CompilationResults> </CompilationResultsTree>
 		<MultipleUserClocks>false</MultipleUserClocks>

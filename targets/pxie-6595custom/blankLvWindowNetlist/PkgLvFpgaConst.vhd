@@ -34,7 +34,7 @@ package PkgLvFpgaConst is
   constant kInsertLowLatencyBufferMig  : boolean := false;
   constant kAuxMgtClipPresent  : boolean :=  false;
   constant kAuxDioDefaultVoltage : natural := 3300;
-  constant kCfgSubsysId : std_logic_vector(15 downto 0) := X"798C";
+  constant kCfgSubsysId : std_logic_vector(15 downto 0) := X"7A7C";
   constant kDram2DPBaseAddress : natural := 16#20000#;
   
 end PkgLvFpgaConst;

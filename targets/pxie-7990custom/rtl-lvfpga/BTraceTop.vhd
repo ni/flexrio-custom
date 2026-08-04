@@ -1123,7 +1123,7 @@ begin  -- architecture struct
     generic map (
       kSizeOfMemBuffers   => kSizeOfMemBuffers,
       kMaxNumOfMemBuffers => kMaxNumOfMemBuffers,
-      kDmaChannelNum      => to_unsigned(kHmbDmaChannelNum, 7),
+      kDmaChannelNum      => to_unsigned(kHmbDmaChannelNum, 6),
       kHmbInUse           => work.PkgLvFpgaConst.kInsertHostMemoryBufferMig,  -- in  boolean := true
       kLlbInUse           => work.PkgLvFpgaConst.kInsertLowLatencyBufferMig,  -- in  boolean := true
       kDefaultBaggage     => SetField(0, 16#00#, kNiDmaBaggageWidth),

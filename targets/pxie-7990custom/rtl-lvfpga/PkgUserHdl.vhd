@@ -111,4 +111,17 @@ package PkgUserHdl is
   constant kReaderStrobeIdx    : natural := 7;  -- offset 88
   constant kReaderDataIdx      : natural := 8;  -- offset 92
 
+  ---------------------------------------------------------------------------
+  -- Digital IO register layout -- RESERVED
+  ---------------------------------------------------------------------------
+  -- This target has NO DIO hardware and instantiates no DIO registers. The
+  -- reserved address-layout constants below are defined only so the shared
+  -- register map (and the shared testbench) can refer to the DIO region
+  -- uniformly across targets; the 0x20 region is otherwise unused here.
+  constant kDioRegsBaseAddress : natural := 16#20#;
+
+  constant kDioDirectionIdx  : natural := 0;  -- offset 0x20
+  constant kDioOutputDataIdx : natural := 1;  -- offset 0x24
+  constant kDioStatusIdx     : natural := 2;  -- offset 0x28
+
 end PkgUserHdl;

@@ -1,1 +1,0 @@
-LVName,HDLName,Direction,SignalType,DataType,UseInLabVIEWSingleCycleTimedLoop,ZeroSyncRegs,OutputReadback,RequiredClockDomain,DutyCycleHighMax,DutyCycleHighMin,AccuracyInPPM,JitterInPicoSeconds,FreqMaxInHertz,FreqMinInHertz

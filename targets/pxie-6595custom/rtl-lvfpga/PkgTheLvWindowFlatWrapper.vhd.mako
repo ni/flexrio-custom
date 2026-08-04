@@ -119,74 +119,6 @@ package PkgTheLvWindowFlatWrapper is
 
   % if include_board_io:
       -----------------------------------
-      -- IO Node ports
-      -----------------------------------
-      aLvAuxDio0OutputData   : out std_logic;
-      aLvAuxDio0InputData    : in  std_logic;
-      aLvAuxDio0OutputEnable : out std_logic;
-      oClkaLvAuxDio0         : in  std_logic;
-      aoResetaLvAuxDio0      : in  std_logic;
-      oDoneaLvAuxDio0        : in  std_logic;
-      oDirectionaLvAuxDio0   : out std_logic;
-      oRequestaLvAuxDio0     : out std_logic;
-      aLvAuxDio1OutputData   : out std_logic;
-      aLvAuxDio1InputData    : in  std_logic;
-      aLvAuxDio1OutputEnable : out std_logic;
-      oClkaLvAuxDio1         : in  std_logic;
-      aoResetaLvAuxDio1      : in  std_logic;
-      oDoneaLvAuxDio1        : in  std_logic;
-      oDirectionaLvAuxDio1   : out std_logic;
-      oRequestaLvAuxDio1     : out std_logic;
-      aLvAuxDio2OutputData   : out std_logic;
-      aLvAuxDio2InputData    : in  std_logic;
-      aLvAuxDio2OutputEnable : out std_logic;
-      oClkaLvAuxDio2         : in  std_logic;
-      aoResetaLvAuxDio2      : in  std_logic;
-      oDoneaLvAuxDio2        : in  std_logic;
-      oDirectionaLvAuxDio2   : out std_logic;
-      oRequestaLvAuxDio2     : out std_logic;
-      aLvAuxDio3OutputData   : out std_logic;
-      aLvAuxDio3InputData    : in  std_logic;
-      aLvAuxDio3OutputEnable : out std_logic;
-      oClkaLvAuxDio3         : in  std_logic;
-      aoResetaLvAuxDio3      : in  std_logic;
-      oDoneaLvAuxDio3        : in  std_logic;
-      oDirectionaLvAuxDio3   : out std_logic;
-      oRequestaLvAuxDio3     : out std_logic;
-      aLvAuxDio4OutputData   : out std_logic;
-      aLvAuxDio4InputData    : in  std_logic;
-      aLvAuxDio4OutputEnable : out std_logic;
-      oClkaLvAuxDio4         : in  std_logic;
-      aoResetaLvAuxDio4      : in  std_logic;
-      oDoneaLvAuxDio4        : in  std_logic;
-      oDirectionaLvAuxDio4   : out std_logic;
-      oRequestaLvAuxDio4     : out std_logic;
-      aLvAuxDio5OutputData   : out std_logic;
-      aLvAuxDio5InputData    : in  std_logic;
-      aLvAuxDio5OutputEnable : out std_logic;
-      oClkaLvAuxDio5         : in  std_logic;
-      aoResetaLvAuxDio5      : in  std_logic;
-      oDoneaLvAuxDio5        : in  std_logic;
-      oDirectionaLvAuxDio5   : out std_logic;
-      oRequestaLvAuxDio5     : out std_logic;
-      aLvAuxDio6OutputData   : out std_logic;
-      aLvAuxDio6InputData    : in  std_logic;
-      aLvAuxDio6OutputEnable : out std_logic;
-      oClkaLvAuxDio6         : in  std_logic;
-      aoResetaLvAuxDio6      : in  std_logic;
-      oDoneaLvAuxDio6        : in  std_logic;
-      oDirectionaLvAuxDio6   : out std_logic;
-      oRequestaLvAuxDio6     : out std_logic;
-      aLvAuxDio7OutputData   : out std_logic;
-      aLvAuxDio7InputData    : in  std_logic;
-      aLvAuxDio7OutputEnable : out std_logic;
-      oClkaLvAuxDio7         : in  std_logic;
-      aoResetaLvAuxDio7      : in  std_logic;
-      oDoneaLvAuxDio7        : in  std_logic;
-      oDirectionaLvAuxDio7   : out std_logic;
-      oRequestaLvAuxDio7     : out std_logic;
-
-      -----------------------------------
       -- CLIP Socket ports
       -----------------------------------
 
@@ -234,63 +166,29 @@ package PkgTheLvWindowFlatWrapper is
       xClipAxi4LiteMasterWValid  : out std_logic;
       xClipAxi4LiteInterrupt     : in  std_logic;
 
-      --Configuration Interface
-      -- Config Interface TX
-      aConfigTxClkLvds          : out std_logic;
-      aConfigTxClkSe            : out std_logic;
-      aConfigTxDataSe           : out std_logic_vector(6 downto 0);
-
-      -- Config Interface RX
-      aConfigRxClkLvds          : in std_logic;
-      aConfigRxClkSe            : in std_logic;
-      aConfigRxDataSe           : in std_logic_vector(6 downto 0);
-
-      -- Reserved GPIO
-      aRsrvGpio_n              : inout std_logic_vector(4 downto 0);
-      aRsrvGpio_p              : inout std_logic_vector(4 downto 0);
-
       --Reserved CLIP Signals
-      aReservedToClip          : in std_logic_vector(15 downto 0);
-      aReservedFromClip        : out std_logic_vector(15 downto 0);
       stIoModuleSupportsFRAGLs : out std_logic;
 
-      --General purpose Synchronization Signals
-      aGpoSync                 : out std_logic_vector(1 downto 0);
-      aTriggerIn               : in  std_logic;
-      aTriggerOut              : out std_logic;
-
-      --Synchronization Signals
-        DeviceClk              : in  std_logic;
-        aJesd204SyncReqIn_n    : in  std_logic;
-        aJesd204SyncReqOut_n   : out std_logic;
-        dvJesd204SysRef        : in  std_logic;
-        dvTdcAssert            : out std_logic;
-        dtTdcAssert            : in  std_logic;
-        dtDevClkEn             : out std_logic;
-
-      --MGT Reference Clocks
-        MgtRefClk_p       : in  std_logic_vector(3 downto 0);
-        MgtRefClk_n       : in  std_logic_vector(3 downto 0);
-        ExportedMgtRefClk : out std_logic;
-
-        DioMgtRefClk_p         : in  std_logic;
-        DioMgtRefClk_n         : in  std_logic;
-        DioMgtRefClkFromFam    : in  std_logic;
-
-      --MGT Ports
-        MgtPortRx_n       : in  std_logic_vector(15 downto 0);
-        MgtPortRx_p       : in  std_logic_vector(15 downto 0);
-        MgtPortTx_n       : out std_logic_vector(15 downto 0);
-        MgtPortTx_p       : out std_logic_vector(15 downto 0);
-
-      --Nanopitch I/O
-        DioMgtRX_n               : in  std_logic_vector(3 downto 0);
-        DioMgtRX_p               : in  std_logic_vector(3 downto 0);
-        DioMgtTX_n               : out std_logic_vector(3 downto 0);
-        DioMgtTX_p               : out std_logic_vector(3 downto 0);
-        SocketClk80              : in  std_logic;
-      --Synchronous to SocketClk80
-        sDioMgtRefClkFromFamPresent : in  std_logic;
+      -- RefClks
+      MgtRefClk_p               : in    std_logic_vector (3 downto 0);
+      MgtRefClk_n               : in    std_logic_vector (3 downto 0);
+      -- MGTs
+      MgtPortRx_p               : in    std_logic_vector (15 downto 0);
+      MgtPortRx_n               : in    std_logic_vector (15 downto 0);
+      MgtPortTx_p               : out   std_logic_vector (15 downto 0);
+      MgtPortTx_n               : out   std_logic_vector (15 downto 0);
+      -- TimeBase Clock
+      DeviceClk                 : in    std_logic;
+      -- SubClass 1 Synchronization
+      dvJesd204SysRef           : in    std_logic;
+      -- Configuration
+      aPllI2cSda                : inout std_logic;
+      aPllI2cScl                : inout std_logic;
+      aPllPdn_n                 : out   std_logic;
+      aPllStatus0               : in    std_logic;
+      aPllStatus1               : in    std_logic;
+      aPllGpio0                 : out   std_logic;
+      aExtRefClkEn              : out   std_logic;
   % endif
 
       -----------------------------------
@@ -377,6 +275,18 @@ package PkgTheLvWindowFlatWrapper is
       du1DramWrFifoFull : in std_logic;
       du1DramWrFifoMaskData : out std_logic_vector(63 downto 0);
       du1DramWrFifoWrEn : out std_logic;
+
+  % if include_board_io:
+      -- PCIe DRP socket
+      -- PCIe Utility signals expected to be useful for DPR. Leave open if not used.
+      ext_ch_gt_drpaddr : out std_logic_vector(79 downto 0);
+      ext_ch_gt_drpclk  : in  std_logic;
+      ext_ch_gt_drpdi   : out std_logic_vector(127 downto 0);
+      ext_ch_gt_drpdo   : in  std_logic_vector(127 downto 0);
+      ext_ch_gt_drpen   : out std_logic_vector(7 downto 0);
+      ext_ch_gt_drprdy  : in  std_logic_vector(7 downto 0);
+      ext_ch_gt_drpwe   : out std_logic_vector(7 downto 0);
+  % endif
 
       -----------------------------------------------------------------------------
       --HMB Interface

@@ -117,74 +117,6 @@ entity TheLvWindowFlatWrapper is
 
 % if include_board_io:
     -----------------------------------
-    -- IO Node ports
-    -----------------------------------
-    aLvAuxDio0OutputData   : out std_logic;
-    aLvAuxDio0InputData    : in  std_logic;
-    aLvAuxDio0OutputEnable : out std_logic;
-    oClkaLvAuxDio0         : in  std_logic;
-    aoResetaLvAuxDio0      : in  std_logic;
-    oDoneaLvAuxDio0        : in  std_logic;
-    oDirectionaLvAuxDio0   : out std_logic;
-    oRequestaLvAuxDio0     : out std_logic;
-    aLvAuxDio1OutputData   : out std_logic;
-    aLvAuxDio1InputData    : in  std_logic;
-    aLvAuxDio1OutputEnable : out std_logic;
-    oClkaLvAuxDio1         : in  std_logic;
-    aoResetaLvAuxDio1      : in  std_logic;
-    oDoneaLvAuxDio1        : in  std_logic;
-    oDirectionaLvAuxDio1   : out std_logic;
-    oRequestaLvAuxDio1     : out std_logic;
-    aLvAuxDio2OutputData   : out std_logic;
-    aLvAuxDio2InputData    : in  std_logic;
-    aLvAuxDio2OutputEnable : out std_logic;
-    oClkaLvAuxDio2         : in  std_logic;
-    aoResetaLvAuxDio2      : in  std_logic;
-    oDoneaLvAuxDio2        : in  std_logic;
-    oDirectionaLvAuxDio2   : out std_logic;
-    oRequestaLvAuxDio2     : out std_logic;
-    aLvAuxDio3OutputData   : out std_logic;
-    aLvAuxDio3InputData    : in  std_logic;
-    aLvAuxDio3OutputEnable : out std_logic;
-    oClkaLvAuxDio3         : in  std_logic;
-    aoResetaLvAuxDio3      : in  std_logic;
-    oDoneaLvAuxDio3        : in  std_logic;
-    oDirectionaLvAuxDio3   : out std_logic;
-    oRequestaLvAuxDio3     : out std_logic;
-    aLvAuxDio4OutputData   : out std_logic;
-    aLvAuxDio4InputData    : in  std_logic;
-    aLvAuxDio4OutputEnable : out std_logic;
-    oClkaLvAuxDio4         : in  std_logic;
-    aoResetaLvAuxDio4      : in  std_logic;
-    oDoneaLvAuxDio4        : in  std_logic;
-    oDirectionaLvAuxDio4   : out std_logic;
-    oRequestaLvAuxDio4     : out std_logic;
-    aLvAuxDio5OutputData   : out std_logic;
-    aLvAuxDio5InputData    : in  std_logic;
-    aLvAuxDio5OutputEnable : out std_logic;
-    oClkaLvAuxDio5         : in  std_logic;
-    aoResetaLvAuxDio5      : in  std_logic;
-    oDoneaLvAuxDio5        : in  std_logic;
-    oDirectionaLvAuxDio5   : out std_logic;
-    oRequestaLvAuxDio5     : out std_logic;
-    aLvAuxDio6OutputData   : out std_logic;
-    aLvAuxDio6InputData    : in  std_logic;
-    aLvAuxDio6OutputEnable : out std_logic;
-    oClkaLvAuxDio6         : in  std_logic;
-    aoResetaLvAuxDio6      : in  std_logic;
-    oDoneaLvAuxDio6        : in  std_logic;
-    oDirectionaLvAuxDio6   : out std_logic;
-    oRequestaLvAuxDio6     : out std_logic;
-    aLvAuxDio7OutputData   : out std_logic;
-    aLvAuxDio7InputData    : in  std_logic;
-    aLvAuxDio7OutputEnable : out std_logic;
-    oClkaLvAuxDio7         : in  std_logic;
-    aoResetaLvAuxDio7      : in  std_logic;
-    oDoneaLvAuxDio7        : in  std_logic;
-    oDirectionaLvAuxDio7   : out std_logic;
-    oRequestaLvAuxDio7     : out std_logic;
-
-    -----------------------------------
     -- CLIP Socket ports
     -----------------------------------
 
@@ -232,63 +164,29 @@ entity TheLvWindowFlatWrapper is
     xClipAxi4LiteMasterWValid  : out std_logic;
     xClipAxi4LiteInterrupt     : in  std_logic;
 
-    --Configuration Interface
-    -- Config Interface TX
-    aConfigTxClkLvds          : out std_logic;
-    aConfigTxClkSe            : out std_logic;
-    aConfigTxDataSe           : out std_logic_vector(6 downto 0);
-
-    -- Config Interface RX
-    aConfigRxClkLvds          : in std_logic;
-    aConfigRxClkSe            : in std_logic;
-    aConfigRxDataSe           : in std_logic_vector(6 downto 0);
-
-    -- Reserved GPIO
-    aRsrvGpio_n              : inout std_logic_vector(4 downto 0);
-    aRsrvGpio_p              : inout std_logic_vector(4 downto 0);
-
     --Reserved CLIP Signals
-    aReservedToClip          : in std_logic_vector(15 downto 0);
-    aReservedFromClip        : out std_logic_vector(15 downto 0);
     stIoModuleSupportsFRAGLs : out std_logic;
 
-    --General purpose Synchronization Signals
-    aGpoSync                 : out std_logic_vector(1 downto 0);
-    aTriggerIn               : in  std_logic;
-    aTriggerOut              : out std_logic;
-
-    --Synchronization Signals
-    DeviceClk              : in  std_logic;
-    aJesd204SyncReqIn_n    : in  std_logic;
-    aJesd204SyncReqOut_n   : out std_logic;
-    dvJesd204SysRef        : in  std_logic;
-    dvTdcAssert            : out std_logic;
-    dtTdcAssert            : in  std_logic;
-    dtDevClkEn             : out std_logic;
-
-    --MGT Reference Clocks
-    MgtRefClk_p       : in  std_logic_vector(3 downto 0);
-    MgtRefClk_n       : in  std_logic_vector(3 downto 0);
-    ExportedMgtRefClk : out std_logic;
-
-    DioMgtRefClk_p         : in  std_logic;
-    DioMgtRefClk_n         : in  std_logic;
-    DioMgtRefClkFromFam    : in  std_logic;
-
-    --MGT Ports
-    MgtPortRx_n       : in  std_logic_vector(15 downto 0);
-    MgtPortRx_p       : in  std_logic_vector(15 downto 0);
-    MgtPortTx_n       : out std_logic_vector(15 downto 0);
-    MgtPortTx_p       : out std_logic_vector(15 downto 0);
-
-    --Nanopitch I/O
-    DioMgtRX_n               : in  std_logic_vector(3 downto 0);
-    DioMgtRX_p               : in  std_logic_vector(3 downto 0);
-    DioMgtTX_n               : out std_logic_vector(3 downto 0);
-    DioMgtTX_p               : out std_logic_vector(3 downto 0);
-    SocketClk80              : in  std_logic;
-    --Synchronous to SocketClk80
-    sDioMgtRefClkFromFamPresent : in  std_logic;
+    -- RefClks
+    MgtRefClk_p               : in    std_logic_vector (3 downto 0);
+    MgtRefClk_n               : in    std_logic_vector (3 downto 0);
+    -- MGTs
+    MgtPortRx_p               : in    std_logic_vector (15 downto 0);
+    MgtPortRx_n               : in    std_logic_vector (15 downto 0);
+    MgtPortTx_p               : out   std_logic_vector (15 downto 0);
+    MgtPortTx_n               : out   std_logic_vector (15 downto 0);
+    -- TimeBase Clock
+    DeviceClk                 : in    std_logic;
+    -- SubClass 1 Synchronization
+    dvJesd204SysRef           : in    std_logic;
+    -- Configuration
+    aPllI2cSda                : inout std_logic;
+    aPllI2cScl                : inout std_logic;
+    aPllPdn_n                 : out   std_logic;
+    aPllStatus0               : in    std_logic;
+    aPllStatus1               : in    std_logic;
+    aPllGpio0                 : out   std_logic;
+    aExtRefClkEn              : out   std_logic;
 % endif
 
     -----------------------------------
@@ -375,6 +273,18 @@ entity TheLvWindowFlatWrapper is
     du1DramWrFifoFull : in std_logic;
     du1DramWrFifoMaskData : out std_logic_vector(63 downto 0);
     du1DramWrFifoWrEn : out std_logic;
+
+% if include_board_io:
+    -- PCIe DRP socket
+    -- PCIe Utility signals expected to be useful for DPR. Leave open if not used.
+    ext_ch_gt_drpaddr : out std_logic_vector(79 downto 0);
+    ext_ch_gt_drpclk  : in  std_logic;
+    ext_ch_gt_drpdi   : out std_logic_vector(127 downto 0);
+    ext_ch_gt_drpdo   : in  std_logic_vector(127 downto 0);
+    ext_ch_gt_drpen   : out std_logic_vector(7 downto 0);
+    ext_ch_gt_drprdy  : in  std_logic_vector(7 downto 0);
+    ext_ch_gt_drpwe   : out std_logic_vector(7 downto 0);
+% endif
 
     -----------------------------------------------------------------------------
     --HMB Interface
@@ -619,80 +529,9 @@ begin
 
   % if include_board_io:
       -----------------------------------
-      -- IO Node ports
-      -----------------------------------
-      aLvAuxDio0OutputData => aLvAuxDio0OutputData,
-      aLvAuxDio0InputData => aLvAuxDio0InputData,
-      aLvAuxDio0OutputEnable => aLvAuxDio0OutputEnable,
-      oClkaLvAuxDio0 => oClkaLvAuxDio0,
-      aoResetaLvAuxDio0 => aoResetaLvAuxDio0,
-      oDoneaLvAuxDio0 => oDoneaLvAuxDio0,
-      oDirectionaLvAuxDio0 => oDirectionaLvAuxDio0,
-      oRequestaLvAuxDio0 => oRequestaLvAuxDio0,
-      aLvAuxDio1OutputData => aLvAuxDio1OutputData,
-      aLvAuxDio1InputData => aLvAuxDio1InputData,
-      aLvAuxDio1OutputEnable => aLvAuxDio1OutputEnable,
-      oClkaLvAuxDio1 => oClkaLvAuxDio1,
-      aoResetaLvAuxDio1 => aoResetaLvAuxDio1,
-      oDoneaLvAuxDio1 => oDoneaLvAuxDio1,
-      oDirectionaLvAuxDio1 => oDirectionaLvAuxDio1,
-      oRequestaLvAuxDio1 => oRequestaLvAuxDio1,
-      aLvAuxDio2OutputData => aLvAuxDio2OutputData,
-      aLvAuxDio2InputData => aLvAuxDio2InputData,
-      aLvAuxDio2OutputEnable => aLvAuxDio2OutputEnable,
-      oClkaLvAuxDio2 => oClkaLvAuxDio2,
-      aoResetaLvAuxDio2 => aoResetaLvAuxDio2,
-      oDoneaLvAuxDio2 => oDoneaLvAuxDio2,
-      oDirectionaLvAuxDio2 => oDirectionaLvAuxDio2,
-      oRequestaLvAuxDio2 => oRequestaLvAuxDio2,
-      aLvAuxDio3OutputData => aLvAuxDio3OutputData,
-      aLvAuxDio3InputData => aLvAuxDio3InputData,
-      aLvAuxDio3OutputEnable => aLvAuxDio3OutputEnable,
-      oClkaLvAuxDio3 => oClkaLvAuxDio3,
-      aoResetaLvAuxDio3 => aoResetaLvAuxDio3,
-      oDoneaLvAuxDio3 => oDoneaLvAuxDio3,
-      oDirectionaLvAuxDio3 => oDirectionaLvAuxDio3,
-      oRequestaLvAuxDio3 => oRequestaLvAuxDio3,
-      aLvAuxDio4OutputData => aLvAuxDio4OutputData,
-      aLvAuxDio4InputData => aLvAuxDio4InputData,
-      aLvAuxDio4OutputEnable => aLvAuxDio4OutputEnable,
-      oClkaLvAuxDio4 => oClkaLvAuxDio4,
-      aoResetaLvAuxDio4 => aoResetaLvAuxDio4,
-      oDoneaLvAuxDio4 => oDoneaLvAuxDio4,
-      oDirectionaLvAuxDio4 => oDirectionaLvAuxDio4,
-      oRequestaLvAuxDio4 => oRequestaLvAuxDio4,
-      aLvAuxDio5OutputData => aLvAuxDio5OutputData,
-      aLvAuxDio5InputData => aLvAuxDio5InputData,
-      aLvAuxDio5OutputEnable => aLvAuxDio5OutputEnable,
-      oClkaLvAuxDio5 => oClkaLvAuxDio5,
-      aoResetaLvAuxDio5 => aoResetaLvAuxDio5,
-      oDoneaLvAuxDio5 => oDoneaLvAuxDio5,
-      oDirectionaLvAuxDio5 => oDirectionaLvAuxDio5,
-      oRequestaLvAuxDio5 => oRequestaLvAuxDio5,
-      aLvAuxDio6OutputData => aLvAuxDio6OutputData,
-      aLvAuxDio6InputData => aLvAuxDio6InputData,
-      aLvAuxDio6OutputEnable => aLvAuxDio6OutputEnable,
-      oClkaLvAuxDio6 => oClkaLvAuxDio6,
-      aoResetaLvAuxDio6 => aoResetaLvAuxDio6,
-      oDoneaLvAuxDio6 => oDoneaLvAuxDio6,
-      oDirectionaLvAuxDio6 => oDirectionaLvAuxDio6,
-      oRequestaLvAuxDio6 => oRequestaLvAuxDio6,
-      aLvAuxDio7OutputData => aLvAuxDio7OutputData,
-      aLvAuxDio7InputData => aLvAuxDio7InputData,
-      aLvAuxDio7OutputEnable => aLvAuxDio7OutputEnable,
-      oClkaLvAuxDio7 => oClkaLvAuxDio7,
-      aoResetaLvAuxDio7 => aoResetaLvAuxDio7,
-      oDoneaLvAuxDio7 => oDoneaLvAuxDio7,
-      oDirectionaLvAuxDio7 => oDirectionaLvAuxDio7,
-      oRequestaLvAuxDio7 => oRequestaLvAuxDio7,
-
-      -----------------------------------
       -- CLIP Socket ports
       -----------------------------------
-
-      -- AxiClk is the same as BusCLk is the same as PllClk80
       AxiClk => AxiClk,
-
       xDiagramAxiStreamFromClipTData => xDiagramAxiStreamFromClipTData,
       xDiagramAxiStreamFromClipTLast => xDiagramAxiStreamFromClipTLast,
       xDiagramAxiStreamFromClipTReady => xDiagramAxiStreamFromClipTReady,
@@ -701,7 +540,6 @@ begin
       xDiagramAxiStreamToClipTLast => xDiagramAxiStreamToClipTLast,
       xDiagramAxiStreamToClipTReady => xDiagramAxiStreamToClipTReady,
       xDiagramAxiStreamToClipTValid => xDiagramAxiStreamToClipTValid,
-
       xHostAxiStreamFromClipTData => xHostAxiStreamFromClipTData,
       xHostAxiStreamFromClipTLast => xHostAxiStreamFromClipTLast,
       xHostAxiStreamFromClipTReady => xHostAxiStreamFromClipTReady,
@@ -710,9 +548,6 @@ begin
       xHostAxiStreamToClipTLast => xHostAxiStreamToClipTLast,
       xHostAxiStreamToClipTReady => xHostAxiStreamToClipTReady,
       xHostAxiStreamToClipTValid => xHostAxiStreamToClipTValid,
-
-
-      -- Axi4Lite Interface from the CLIP to FixedLogic
       xClipAxi4LiteMasterARAddr => xClipAxi4LiteMasterARAddr,
       xClipAxi4LiteMasterARProt => xClipAxi4LiteMasterARProt,
       xClipAxi4LiteMasterARReady => xClipAxi4LiteMasterARReady,
@@ -733,64 +568,22 @@ begin
       xClipAxi4LiteMasterWStrb => xClipAxi4LiteMasterWStrb,
       xClipAxi4LiteMasterWValid => xClipAxi4LiteMasterWValid,
       xClipAxi4LiteInterrupt => xClipAxi4LiteInterrupt,
-
-      --Configuration Interface
-      -- Config Interface TX
-      aConfigTxClkLvds => aConfigTxClkLvds,
-      aConfigTxClkSe => aConfigTxClkSe,
-      aConfigTxDataSe => aConfigTxDataSe,
-
-      -- Config Interface RX
-      aConfigRxClkLvds => aConfigRxClkLvds,
-      aConfigRxClkSe => aConfigRxClkSe,
-      aConfigRxDataSe => aConfigRxDataSe,
-
-      -- Reserved GPIO
-      aRsrvGpio_n => aRsrvGpio_n,
-      aRsrvGpio_p => aRsrvGpio_p,
-
-      --Reserved CLIP Signals
-      aReservedToClip => aReservedToClip,
-      aReservedFromClip => aReservedFromClip,
       stIoModuleSupportsFRAGLs => stIoModuleSupportsFRAGLs,
-
-      --General purpose Synchronization Signals
-      aGpoSync => aGpoSync,
-      aTriggerIn => aTriggerIn,
-      aTriggerOut => aTriggerOut,
-
-      --Synchronization Signals
-      DeviceClk => DeviceClk,
-      aJesd204SyncReqIn_n => aJesd204SyncReqIn_n,
-      aJesd204SyncReqOut_n => aJesd204SyncReqOut_n,
-      dvJesd204SysRef => dvJesd204SysRef,
-      dvTdcAssert => dvTdcAssert,
-      dtTdcAssert => dtTdcAssert,
-      dtDevClkEn => dtDevClkEn,
-
-      --MGT Reference Clocks
       MgtRefClk_p => MgtRefClk_p,
       MgtRefClk_n => MgtRefClk_n,
-      ExportedMgtRefClk => ExportedMgtRefClk,
-
-      DioMgtRefClk_p => DioMgtRefClk_p,
-      DioMgtRefClk_n => DioMgtRefClk_n,
-      DioMgtRefClkFromFam => DioMgtRefClkFromFam,
-
-      --MGT Ports
-      MgtPortRx_n => MgtPortRx_n,
       MgtPortRx_p => MgtPortRx_p,
-      MgtPortTx_n => MgtPortTx_n,
+      MgtPortRx_n => MgtPortRx_n,
       MgtPortTx_p => MgtPortTx_p,
-
-      --Nanopitch I/O
-      DioMgtRX_n => DioMgtRX_n,
-      DioMgtRX_p => DioMgtRX_p,
-      DioMgtTX_n => DioMgtTX_n,
-      DioMgtTX_p => DioMgtTX_p,
-      SocketClk80 => SocketClk80,
-      --Synchronous to SocketClk80
-      sDioMgtRefClkFromFamPresent => sDioMgtRefClkFromFamPresent,
+      MgtPortTx_n => MgtPortTx_n,
+      DeviceClk => DeviceClk,
+      dvJesd204SysRef => dvJesd204SysRef,
+      aPllI2cSda => aPllI2cSda,
+      aPllI2cScl => aPllI2cScl,
+      aPllPdn_n => aPllPdn_n,
+      aPllStatus0 => aPllStatus0,
+      aPllStatus1 => aPllStatus1,
+      aPllGpio0 => aPllGpio0,
+      aExtRefClkEn => aExtRefClkEn,
   % endif
 
       -----------------------------------
@@ -877,6 +670,16 @@ begin
       du1DramWrFifoFull => du1DramWrFifoFull,
       du1DramWrFifoMaskData => du1DramWrFifoMaskData,
       du1DramWrFifoWrEn => du1DramWrFifoWrEn,
+
+  % if include_board_io:
+      ext_ch_gt_drpaddr => ext_ch_gt_drpaddr,
+      ext_ch_gt_drpclk => ext_ch_gt_drpclk,
+      ext_ch_gt_drpdi => ext_ch_gt_drpdi,
+      ext_ch_gt_drpdo => ext_ch_gt_drpdo,
+      ext_ch_gt_drpen => ext_ch_gt_drpen,
+      ext_ch_gt_drprdy => ext_ch_gt_drprdy,
+      ext_ch_gt_drpwe => ext_ch_gt_drpwe,
+  % endif
 
       -----------------------------------------------------------------------------
       --HMB Interface

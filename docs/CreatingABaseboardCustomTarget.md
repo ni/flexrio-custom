@@ -104,7 +104,7 @@ of the same board family (for the 79xx boards, another Macallan target).
 | `vivadoprojectsources.txt` | Author | Ordered synthesis source list — see [below](#vivadoprojectsourcestxt--synthesis-source-list). |
 | `modelsimprojectsources.txt` | Author | Curated simulation source list for `tb_UserHdl` — see [below](#modelsimprojectsourcestxt--simulation-source-list). |
 | `rtl-lvfpga/<Board>Top.vhd` | Copy (base) + modify | The top level — see [Step 3](#5-step-3--copy-and-modify-the-top-level-hdl). The only base source you copy. |
-| `rtl-lvfpga/UserHdl.vhd`, `PkgUserHdl.vhd` | Copy (sibling) + adjust | The example user design (registers, loopbacks, DMA FIFOs, DIO) and its register/FIFO map — see [Step 3](#5-step-3--copy-and-modify-the-top-level-hdl). |
+| `rtl-lvfpga/UserHdl.vhd`, `PkgUserHdl.vhd` | Copy (sibling) + adjust | The example user design (registers, loopbacks, DMA FIFOs, DIO) and its register/FIFO map — see [Step 3](#5-step-3--copy-and-modify-the-top-level-hdl). **Board-I/O ports are _not_ inherited from the sibling: re-derive the complete `% if include_board_io:` set from *this* board's base `TheWindow.vhd.mako` — routing is vertical, never copied from another board.** |
 | `rtl-lvfpga/TheLvWindowFlatWrapper.vhd.mako`, `PkgTheLvWindowFlatWrapper.vhd.mako` | Copy (sibling) + match ports | The window flat wrapper and its component declaration — see [Step 4](#6-step-4--author-the-window-wrappers-mako). Ports must match the base `TheWindow.vhd.mako`. |
 | `rtl-lvfpga/testbenches/tb_UserHdl.vhd` | Copy (sibling) + adjust | Thin testbench wrapper — see [below](#rtl-lvfpgatestbenchestb_userhdlvhd--testbench-wrapper). |
 | `lvFpgaTarget/LVTargetBoardIO.csv` | Author | Custom-I/O CSV — see [below](#lvfpgatargetlvtargetboardiocsv--custom-io-csv). Header-only (no signal rows) when board I/O is routed to `UserHdl` instead of the window. |
@@ -211,11 +211,27 @@ Copy the base target's top (`deps/flexrio/targets/pxie-7912/rtl-lvfpga/MacallanT
   This set is **board-specific** — read it from this board's own base window, never copy it from
   another board (see Step 3's recipe step 9 and [Digital IO](DigitalIO.md)).
 
+> **Board-I/O routing is _vertical_, never _horizontal_.** For one target there is exactly **one**
+> board-I/O list, and it flows straight down that target's *own* stack:
+>
+> **this board's base `TheWindow.vhd.mako` `% if include_board_io:` block(s)  →  its
+> `TheLvWindowFlatWrapper` (the same ports, just rendered off)  →  its `UserHdl`.**
+>
+> All three are the **identical set**, and it comes **solely from _this_ board's own base window**.
+> **Never** derive, copy, or infer a target's board-I/O routing from another module — not from a
+> sibling's `UserHdl`, top, wrapper, or window. Sibling files are a typing shortcut for the
+> **board-agnostic** body only; the instant you touch board I/O, discard the sibling's version and
+> re-read *this* board's `TheWindow.vhd.mako`. Grafting another board's board-I/O ports (e.g. a
+> baseboard-I2C / QSFP interface that this board doesn't have) is the #1 cause of `… is not declared`
+> elaboration failures.
+
 **Author the `UserHdl` stub (`UserHdl.vhd` / `PkgUserHdl.vhd`).** `UserHdl` is the block where the
-customer's design lives; ship it as a small, working example rather than an empty shell. Don't write
-it from scratch — **copy the `UserHdl.vhd` / `PkgUserHdl.vhd` from the nearest sibling custom target**
-and adjust it for this board. A good starter stub demonstrates the pieces a customer will actually
-reuse:
+customer's design lives; ship it as a small, working example rather than an empty shell. You may copy
+a sibling custom target's `UserHdl.vhd` / `PkgUserHdl.vhd` as a starting point **for the board-agnostic
+parts only** (registers, loopbacks, DMA FIFOs). Its board-I/O port set is *that sibling's*, not
+yours — **delete every board-I/O port and re-derive the complete set from this board's own
+`% if include_board_io:` block** (see the vertical-routing rule above). A good starter stub
+demonstrates the pieces a customer will actually reuse:
 
 - **Registers** — a few host-writable/readable control-and-status registers on the HDL register
   interface (sized by `set_max_hdl_reg_offset`).
@@ -548,7 +564,7 @@ targets — add your new target to the sweep.
 - [ ] `nihdl install-deps` (base target lands under `deps/flexrio/targets/<device>`).
 - [ ] Scaffold `targets/<device>custom/` (copy nearest sibling).
 - [ ] Copy + modify the top-level HDL: instantiate `TheLvWindowFlatWrapper` as a component (from `PkgTheLvWindowFlatWrapper`); route board I/O into `UserHdl.vhd` / `PkgUserHdl.vhd`.
-- [ ] Author the `UserHdl` stub (copy nearest sibling) with example registers, register loopbacks, DMA FIFOs, and DIO.
+- [ ] Author the `UserHdl` stub (copy nearest sibling **for the board-agnostic parts only**) with example registers, register loopbacks, DMA FIFOs, and DIO — then **re-derive the board-I/O port set from _this_ board's `% if include_board_io:` block** (never keep the sibling's board I/O; routing is vertical within one target).
 - [ ] Author `TheLvWindowFlatWrapper.vhd.mako` + `Pkg…` with **identical ports** to the base `TheWindow.vhd.mako` (board I/O off — `set_include_board_io_on_lv_window(False)`).
 - [ ] Write `nihdlsettings.py` (unique `lv_target_name` + fresh `nihdl get-guid`; file lists; generated VHDL; excludes; `max_hdl_reg_offset` / `num_hdl_fifos`).
 - [ ] Provide `blankLvWindowNetlist/` and the custom I/O CSV / constraints.

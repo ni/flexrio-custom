@@ -410,17 +410,30 @@ level instantiates (Step 3). For the full rationale — and why the window is a 
 [The Window Netlist and Constraints Processing](https://github.com/ni/labview-fpga-hdl-tools/blob/main/docs/WindowNetlistAndConstraints.md)
 and [Generated VHDL](https://github.com/ni/labview-fpga-hdl-tools/blob/main/docs/GeneratedVHDL.md).
 
-**Start from an existing example target.** Copy the two wrapper makos from the nearest sibling custom
-target — the flatten/unflatten body is boilerplate you reuse almost verbatim. The one thing that
-actually matters is that **every port on your wrapper matches the base `TheWindow.vhd.mako` exactly**;
-mismatched ports = elaboration failure. If elaboration complains, render the base `TheWindow.vhd.mako`
-with your target's flags and diff its port list against your wrapper — and diff it against **all three**
-places a port name appears: the wrapper **entity**, the **component declaration** in
-`PkgTheLvWindowFlatWrapper`, and the **internal `TheWindow` instantiation's port-map formals**. A stray
-formal in the internal port map fails the same way (`formal <name> is not declared`) even when the
-entity and component agree, so verify the port map separately. A quick check is to compare port-name
-sets both **with and without** `include_board_io` so the board-I/O blocks stay port-compatible too
-(see below).
+**The wrapper is a DIRECT TRANSLATION of *this board's* `TheWindow.vhd.mako` — do not copy the port
+list from a sibling.** Only the flatten/unflatten *architecture body* (the `Build*` / `Flatten*` /
+`Unflatten*` calls and the `gen_master_*` generates) is board-agnostic boilerplate you can reuse. The
+**entire port list** — entity, component declaration, and internal `TheWindow` port map — is generated
+**directly from the base target's own `TheWindow.vhd.mako`**, port for port, in the same order:
+
+- **Record-type ports** (`bRegPortIn` / `bRegPortOut`, the `dInput/dOutputStreamInterface*` streams,
+  `bIrqToInterface`, the eight `dNiFpgaMaster*` master ports) become flattened `std_logic_vector`s in
+  the wrapper — that is the wrapper's whole reason to exist.
+- **Every other port** — clocks, trigger routing, the memory interface (`du*Dram*` / `dHmbDram*` /
+  `dLlbDram*`), the `% if include_board_io:` blocks, and the target-method / property ports — is passed
+  through **verbatim**, with the *same name, direction, type, and `% if` guards* as the base window.
+
+Copying a sibling's wrapper and then "fixing up" the differences is exactly how the wrong board I/O
+(e.g. another board's Aux-DIO instead of this board's MGT / JESD204 / PLL frontend) ends up in the
+wrapper. Generate the port list from *this* window instead.
+
+**Every port must match the base `TheWindow.vhd.mako` exactly** — mismatched ports = elaboration
+failure. Render the base `TheWindow.vhd.mako` with your target's flags and diff its port list against
+your wrapper in **all three** places a port name appears: the wrapper **entity**, the **component
+declaration** in `PkgTheLvWindowFlatWrapper`, and the **internal `TheWindow` instantiation's port-map
+formals**. A stray formal in the internal port map fails the same way (`formal <name> is not declared`)
+even when the entity and component agree, so verify the port map separately. Compare port-name sets both
+**with and without** `include_board_io` so the board-I/O blocks stay port-compatible too (see below).
 
 > **A top-level port tied `open` is *not* a window port — don't plumb it into the wrapper.** Some
 > signals appear on the base *top* entity but are intentionally left unconnected there (e.g. an
@@ -430,22 +443,32 @@ sets both **with and without** `include_board_io` so the board-I/O blocks stay p
 > plus a cascade of `<other> has no actual or default value` as named association breaks. When in doubt,
 > the wrapper's port set is defined solely by the base `TheWindow.vhd.mako` — never by the top's entity.
 
-Because the flatten/unflatten body is board-agnostic, the only edits when adapting a sibling wrapper
-are the **board-specific port sections** — chiefly the memory interface and its clocks (e.g.
-`dHmbDram*`/`dLlbDram*` + `dHmbDmaClkSocket`/`dLlbDmaClkSocket` → `du0Dram*`/`du1Dram*` +
-`DramClkLvFpga` / `Dram0/1ClkSocket` / `Dram0/1ClkUser`), plus any board-specific pins (e.g.
-`aPxieDstar*`). Apply the **same** swap in all three places these ports appear: the wrapper **entity**,
-its internal `TheWindow` instantiation, and the **component declaration** in
-`PkgTheLvWindowFlatWrapper` — they must stay identical or the component won't bind.
+If you do start from a sibling to save typing the flatten/unflatten body, treat **every port as
+suspect** until you have re-derived it from this board's `TheWindow.vhd.mako`. The sections that differ
+most between boards are the memory interface and its clocks (e.g. `dHmbDram*`/`dLlbDram*` +
+`dHmbDmaClkSocket`/`dLlbDmaClkSocket` vs `du0Dram*`/`du1Dram*` + `DramClkLvFpga` / `Dram0/1ClkSocket` /
+`Dram0/1ClkUser`), the `% if include_board_io:` blocks (see below), and any board-specific pins (e.g.
+`aPxieDstar*`). Whatever you change must be applied identically in all three places these ports appear —
+the wrapper **entity**, its internal `TheWindow` instantiation, and the **component declaration** in
+`PkgTheLvWindowFlatWrapper` — or the component won't bind.
 
 **Board I/O is off on a custom target.** `nihdlsettings.py` sets
 `config.set_include_board_io_on_lv_window(False)`, which renders both `TheWindow.vhd.mako` and your
 flat wrapper with `include_board_io = False` — the ports guarded by `% if include_board_io:` are
 **omitted**. `include_board_io` exists to route all board I/O *into the LabVIEW FPGA window* so it can
 be used from CLIP and the VI diagram. On an HDL-customized target you instead consume that I/O in the
-top HDL and route it into `UserHdl` (see [Digital IO](DigitalIO.md)), so you leave it off. Author the
-wrapper's `% if include_board_io:` blocks to mirror the window's so the two stay port-compatible if
-the flag is ever flipped.
+top HDL and route it into `UserHdl` (see [Digital IO](DigitalIO.md)), so you leave it off.
+
+Even though it is rendered off, the wrapper's `% if include_board_io:` block(s) must still be a
+**verbatim, direct translation of this board's `TheWindow.vhd.mako` `% if include_board_io:` block(s)**
+— the *same ports, directions, types, number of blocks, and positions*. A board may split its board I/O
+into more than one `% if include_board_io:` block around the memory interface (e.g. a CLIP / MGT / PLL
+block **before** the DRAM interface and a GT-DRP block **after** it) — reproduce that structure exactly.
+This is the board's frontend, and it is **completely different** from board to board (one board's
+`aLvAuxDio*` Aux-DIO vs another's `MgtPort*` / `dvJesd204SysRef` / `aPll*` / `ext_ch_gt_drp*`
+MGT-JESD204 frontend), so it must come from *this* window — never inherited from the sibling you copied
+the body from. That same board-I/O set, routed to `UserHdl`, is what the top consumes (Step 3, step 9):
+the two are the identical list.
 
 ## 7. Step 5 — Write `nihdlsettings.py`
 

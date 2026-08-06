@@ -47,7 +47,8 @@ rtl-lvfpga/PkgUserHdl.vhd
 rtl-lvfpga/UserHdl.vhd
 
 # Single-sourced test stimulus (shared package) and the board-agnostic test
-# core, plus this target's tb wrapper that instantiates UserHdl directly.
+# core, plus this target's tb wrapper that instantiates UserHdl directly and
+# ties off its board IO.
 ../common/rtl-lvfpga/testbenches/PkgUserHdlTest.vhd
 ../common/rtl-lvfpga/testbenches/UserHdlTestCore.vhd
 rtl-lvfpga/testbenches/tb_UserHdl.vhd

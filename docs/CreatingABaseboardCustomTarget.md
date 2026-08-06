@@ -443,8 +443,11 @@ Copying a sibling's wrapper and then "fixing up" the differences is exactly how 
 (e.g. another board's Aux-DIO instead of this board's MGT / JESD204 / PLL frontend) ends up in the
 wrapper. Generate the port list from *this* window instead.
 
-**Every port must match the base `TheWindow.vhd.mako` exactly** — mismatched ports = elaboration
-failure. Render the base `TheWindow.vhd.mako` with your target's flags and diff its port list against
+**Every port must match the base `TheWindow.vhd.mako` exactly.** A mismatch on any *non-gated* port
+(clocks, the memory interface, trigger routing, …) is a hard elaboration failure. A mismatch **inside**
+`% if include_board_io:` is more dangerous: on a custom target it is **silent** — the build and sim
+never see it (see the ⚠️ warning at the end of this step). Render the base `TheWindow.vhd.mako` with
+your target's flags and diff its port list against
 your wrapper in **all three** places a port name appears: the wrapper **entity**, the **component
 declaration** in `PkgTheLvWindowFlatWrapper`, and the **internal `TheWindow` instantiation's port-map
 formals**. A stray formal in the internal port map fails the same way (`formal <name> is not declared`)
@@ -485,6 +488,31 @@ This is the board's frontend, and it is **completely different** from board to b
 MGT-JESD204 frontend), so it must come from *this* window — never inherited from the sibling you copied
 the body from. That same board-I/O set, routed to `UserHdl`, is what the top consumes (Step 3, step 9):
 the two are the identical list.
+
+> **⚠️ A board-I/O mismatch here is SILENT — a green build does NOT prove parity.** This is the single
+> most important thing to check by hand, and it is exactly how real targets have shipped with drifted
+> board-I/O wrappers (extra QSFP ports on one board, a missing Aux-MGT socket on another). Because
+> `set_include_board_io_on_lv_window(False)` strips every `% if include_board_io:` port out of *both*
+> the base `TheWindow` **and** your flat wrapper *before* anything compiles, Vivado and ModelSim never
+> see the two board-I/O port lists side by side. A flat wrapper whose board-I/O block has **extra**,
+> **missing**, or **wrong-width** ports relative to this board's window still passes `gen-vivado`,
+> `gen-target`, and `sim-modelsim` **cleanly** — the defect only becomes a hard error if the target is
+> ever built with `include_board_io = True`. (This is the opposite of the *non-gated* ports — the
+> memory interface, DRAM clocks, `aPxieDstar*`, or an `open` top-level port plumbed in by mistake —
+> which are always rendered and so fail loudly with `formal <name> is not declared`. Board-I/O drift
+> gives you no such signal.)
+>
+> So do **not** treat a passing build as proof. After any board-I/O edit, **manually diff** the
+> `% if include_board_io:` port set across the four views that must be identical:
+>
+> 1. this board's base `TheWindow.vhd.mako`;
+> 2. `TheLvWindowFlatWrapper.vhd.mako` — both the **entity** *and* the internal `TheWindow` **port map**;
+> 3. `PkgTheLvWindowFlatWrapper.vhd.mako` — the **component declaration**; and
+> 4. `UserHdl.vhd` / `PkgUserHdl.vhd` — which declare the same set and are the one place it is actually
+>    exercised (in isolation, via `tb_UserHdl`).
+>
+> Render the base window with `include_board_io=True` so the ports are present to compare — diffing
+> with it *off* only confirms the *rest* of the boundary matches, not the board I/O itself.
 
 ## 7. Step 5 — Write `nihdlsettings.py`
 
@@ -565,7 +593,7 @@ targets — add your new target to the sweep.
 - [ ] Scaffold `targets/<device>custom/` (copy nearest sibling).
 - [ ] Copy + modify the top-level HDL: instantiate `TheLvWindowFlatWrapper` as a component (from `PkgTheLvWindowFlatWrapper`); route board I/O into `UserHdl.vhd` / `PkgUserHdl.vhd`.
 - [ ] Author the `UserHdl` stub (copy nearest sibling **for the board-agnostic parts only**) with example registers, register loopbacks, DMA FIFOs, and DIO — then **re-derive the board-I/O port set from _this_ board's `% if include_board_io:` block** (never keep the sibling's board I/O; routing is vertical within one target).
-- [ ] Author `TheLvWindowFlatWrapper.vhd.mako` + `Pkg…` with **identical ports** to the base `TheWindow.vhd.mako` (board I/O off — `set_include_board_io_on_lv_window(False)`).
+- [ ] Author `TheLvWindowFlatWrapper.vhd.mako` + `Pkg…` with **identical ports** to the base `TheWindow.vhd.mako` (board I/O off — `set_include_board_io_on_lv_window(False)`). **Manually diff the `% if include_board_io:` port set** (base window ↔ flat wrapper entity + internal `TheWindow` port map ↔ `Pkg` component decl ↔ `UserHdl`), rendered with `include_board_io=True` — a board-I/O mismatch is **silent**; the build and sim will **not** catch it.
 - [ ] Write `nihdlsettings.py` (unique `lv_target_name` + fresh `nihdl get-guid`; file lists; generated VHDL; excludes; `max_hdl_reg_offset` / `num_hdl_fifos`).
 - [ ] Provide `blankLvWindowNetlist/` and the custom I/O CSV / constraints.
 - [ ] Add a `tb_UserHdl.vhd` testbench; register the target in the test sweep.
@@ -618,6 +646,17 @@ board doesn't have); or (2) a top-level port that the base *top* leaves `open`
 internal `TheWindow` port map**; delete any port not in the base window. Note the first undeclared
 formal breaks named association, which is what triggers the `has no actual` cascade — fix the undeclared
 port and the cascade clears.
+
+**Q: My flat wrapper's board-I/O ports are wrong, but `gen-vivado` / `sim-modelsim` all pass — how did
+that slip through?**
+Board I/O is rendered *off* on a custom target (`set_include_board_io_on_lv_window(False)`), so the
+`% if include_board_io:` ports are stripped from *both* the base `TheWindow` and your flat wrapper
+before anything compiles — the build and sim never compare the two board-I/O lists, so a mismatch is
+**silent**. A green build is **not** proof of board-I/O parity. Verify it by hand: render this board's
+base `TheWindow.vhd.mako` with `include_board_io=True` and diff its board-I/O port set against your
+`TheLvWindowFlatWrapper` (entity **and** internal `TheWindow` port map), `PkgTheLvWindowFlatWrapper`
+(component declaration), and `UserHdl` / `PkgUserHdl`. The mismatch only becomes a hard elaboration
+error if the target is built with `include_board_io = True`.
 
 **Q: Vivado reports `syntax error near �` at line 1.**
 The file has a UTF-8 BOM. Save it as BOM-free UTF-8 — PowerShell's `Out-File` / `Set-Content -Encoding

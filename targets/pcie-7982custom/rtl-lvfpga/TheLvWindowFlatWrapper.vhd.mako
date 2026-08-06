@@ -273,6 +273,18 @@ entity TheLvWindowFlatWrapper is
     MgtRefClk_n       : in  std_logic_vector(2 downto 0);
     ExportedMgtRefClk : out std_logic;
 
+    --Nanopitch I/O
+    DioMgtRefClk_p              : in  std_logic;
+    DioMgtRefClk_n              : in  std_logic;
+    DioMgtRefClkFromFam         : in  std_logic;
+    DioMgtRX_n                  : in  std_logic_vector(3 downto 0);
+    DioMgtRX_p                  : in  std_logic_vector(3 downto 0);
+    DioMgtTX_n                  : out std_logic_vector(3 downto 0);
+    DioMgtTX_p                  : out std_logic_vector(3 downto 0);
+    SocketClk80                 : in  std_logic;
+    --Synchronous to SocketClk80
+    sDioMgtRefClkFromFamPresent : in  std_logic;
+
 % endif
 
     -----------------------------------
@@ -730,6 +742,18 @@ begin
       MgtRefClk_p => MgtRefClk_p,
       MgtRefClk_n => MgtRefClk_n,
       ExportedMgtRefClk => ExportedMgtRefClk,
+
+      --Nanopitch I/O
+      DioMgtRefClk_p => DioMgtRefClk_p,
+      DioMgtRefClk_n => DioMgtRefClk_n,
+      DioMgtRefClkFromFam => DioMgtRefClkFromFam,
+      DioMgtRX_n => DioMgtRX_n,
+      DioMgtRX_p => DioMgtRX_p,
+      DioMgtTX_n => DioMgtTX_n,
+      DioMgtTX_p => DioMgtTX_p,
+      SocketClk80 => SocketClk80,
+      --Synchronous to SocketClk80
+      sDioMgtRefClkFromFamPresent => sDioMgtRefClkFromFamPresent,
 
   % endif
 

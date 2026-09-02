@@ -8,6 +8,10 @@ These exercises walk through both **compile flows**. Exercise 2 builds a bitfile
 > [LabVIEW FPGA Target and Compile Flow](https://github.com/ni/labview-fpga-hdl-tools/blob/main/docs/LabVIEWFpgaTargetFlow.md),
 > and [ModelSim Simulation Flow](https://github.com/ni/labview-fpga-hdl-tools/blob/main/docs/ModelSimSimulationFlow.md).
 
+## Where you add your HDL: `rtl-lvfpga/UserHdl.vhd`
+
+[`rtl-lvfpga/UserHdl.vhd`](../targets/pxie-7903custom/rtl-lvfpga/UserHdl.vhd) is the entity you extend with your custom HDL. Add your logic in its architecture body (between `begin` and `end architecture rtl`), and communicate with the host PC through the **register** and **DMA FIFO** ports on its entity. The rest of the target connects `UserHdl` to the host and to LabVIEW FPGA. The exercises below cover building and installing the target.
+
 ## Exercise 1 - Read the LabVIEW FPGA HDL Tools README and Theory of Operation
 https://github.com/ni/labview-fpga-hdl-tools/blob/main/README.md
 
@@ -43,10 +47,10 @@ Run `nihdl gen-guid` to generate a new GUID
 
 Copy the new GUID into the `set_lv_target_guid(...)` call
 
-### 3) Edit the top-level FPGA file
-Open rtl-lvfpga/UserHdl
+### 3) Add your HDL in `rtl-lvfpga/UserHdl.vhd`
+[`rtl-lvfpga/UserHdl.vhd`](../targets/pxie-7903custom/rtl-lvfpga/UserHdl.vhd) is the entity you extend with your custom HDL. Add your logic in its architecture body (between `begin` and `end architecture rtl`); its entity exposes the host **register** and **DMA FIFO** ports for communicating with the host PC.
 
-Find `NiSharedCommonHostRegs_inst` and set `kSignature` to `x"7903FEED"`
+As a first change to confirm your build loaded, open `rtl-lvfpga/UserHdl.vhd`, find `NiSharedCommonHostRegs_inst`, and set `kSignature` to `x"7903FEED"`.
 
 ### 4) Create a Vivado project
 > nihdl gen-vivado

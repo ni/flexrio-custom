@@ -86,6 +86,7 @@ def pre_all(context):
 
     # --- HDL-to-Host Interfaces ---
     config.set_max_hdl_reg_offset(0)  # This example does not use any HDL registers
+    config.set_num_hdl_fifos(0)  # This example does not use any HDL DMA FIFOs
 
     # --- CLIP Migration Settings ---
     config.set_clip_input_xml(f"{clip_deps}/xml/PXIe7903_Aurora64b66b_Framing_Crcx4_28p0GHz.xml")

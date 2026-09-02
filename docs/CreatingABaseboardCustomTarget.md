@@ -537,7 +537,7 @@ config.set_generated_vhdl_output_folder("objects/GeneratedHDL")
 
 # Custom LabVIEW FPGA target identity (unique name + GUID -> the base Resource.xml.mako custom_target branch)
 config.set_lv_target_name("PXIe-7912Custom")
-config.set_lv_target_guid("<run: nihdl get-guid>")
+config.set_lv_target_guid("<run: nihdl gen-guid>")
 config.add_lv_target_xml_template(f"{base_deps}/lvFpgaTarget/Resource.xml.mako")
 config.add_lv_target_xml_template(f"{base_deps}/lvFpgaTarget/Macallan7912.xml.mako")
 
@@ -594,7 +594,7 @@ targets — add your new target to the sweep.
 - [ ] Copy + modify the top-level HDL: instantiate `TheLvWindowFlatWrapper` as a component (from `PkgTheLvWindowFlatWrapper`); route board I/O into `UserHdl.vhd` / `PkgUserHdl.vhd`.
 - [ ] Author the `UserHdl` stub (copy nearest sibling **for the board-agnostic parts only**) with example registers, register loopbacks, DMA FIFOs, and DIO — then **re-derive the board-I/O port set from _this_ board's `% if include_board_io:` block** (never keep the sibling's board I/O; routing is vertical within one target).
 - [ ] Author `TheLvWindowFlatWrapper.vhd.mako` + `Pkg…` with **identical ports** to the base `TheWindow.vhd.mako` (board I/O off — `set_include_board_io_on_lv_window(False)`). **Manually diff the `% if include_board_io:` port set** (base window ↔ flat wrapper entity + internal `TheWindow` port map ↔ `Pkg` component decl ↔ `UserHdl`), rendered with `include_board_io=True` — a board-I/O mismatch is **silent**; the build and sim will **not** catch it.
-- [ ] Write `nihdlsettings.py` (unique `lv_target_name` + fresh `nihdl get-guid`; file lists; generated VHDL; excludes; `max_hdl_reg_offset` / `num_hdl_fifos`).
+- [ ] Write `nihdlsettings.py` (unique `lv_target_name` + fresh `nihdl gen-guid`; file lists; generated VHDL; excludes; `max_hdl_reg_offset` / `num_hdl_fifos`).
 - [ ] Provide `blankLvWindowNetlist/` and the custom I/O CSV / constraints.
 - [ ] Add a `tb_UserHdl.vhd` testbench; register the target in the test sweep.
 - [ ] Validate: `gen-vivado` / `launch-vivado`; `gen-target` / `install-target`; `gen-modelsim` / `sim-modelsim`.

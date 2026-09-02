@@ -192,7 +192,7 @@ Use NI Package Manager to install the following software:
 
 Install the following 3rd party software:
 * Install latest version Git  – https://git-scm.com/downloads
-* Install Python (version 3.11.8 officially tested) –  https://www.python.org/downloads/
+* Install Python 3.10 or newer (tested with 3.10–3.14) –  https://www.python.org/downloads/
 
 ## 1) Clone this repo
 In a dev folder (e.g. c:\dev\github) clone the repo:

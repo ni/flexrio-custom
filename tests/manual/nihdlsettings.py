@@ -15,7 +15,7 @@ the target settings:
   * ``set_lv_window_vivado_project_export_xpr`` is ALWAYS overridden to
     ``c:\temp\testVPE\<vpe_folder>\VivadoProject\<xpr>``, where ``<xpr>`` is the
     VPE project file and ``<vpe_folder>`` is ``<targetname>_VPE`` for a
-    single-VPE target (``BlankRunningVI.xpr`` for most targets, ``FifoTestFPGA.xpr``
+    single-VPE target (``BlankRunningVI.xpr`` for most targets, ``FifoTestLvFPGA.xpr``
     for PXIe-7912fifotest). Targets with several VPEs (LabVIEW examples) pick one
     per run via ``--set vpe=<key>``; each VPE names its own export folder via a
     suffix, so an empty suffix keeps the default ``<targetname>_VPE`` while a

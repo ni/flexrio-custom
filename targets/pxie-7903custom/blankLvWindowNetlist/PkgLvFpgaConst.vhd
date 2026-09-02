@@ -1,81 +1,46 @@
-`protect begin_protected
-`protect version = 2
-`protect encrypt_agent = "NI LabVIEW FPGA" , encrypt_agent_info = "2.0"
-`protect begin_commonblock
-`protect license_proxyname = "NI_LV_proxy"
-`protect license_attributes = "USER,MAC,PROXYINFO=2.0"
-`protect license_keyowner = "NI_LV"
-`protect license_keyname = "NI_LV_2.0"
-`protect license_symmetric_key_method = "aes128-cbc"
-`protect license_public_key_method = "rsa"
-`protect license_public_key
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxngMPQrDv/s/Rz/ED4Ri
-j3tGzeObw/Topab4sl+WDRl/up6SWpAfcgdqb2jvLontfkiQS2xnGoq/Ye0JJEp2
-h0NYydCB5GtcEBEe+2n5YJxgiHJ5fGaPguuM6pMX2GcBfKpp3dg8hA/KVTGwvX6a
-L4ThrFgEyCSRe2zVd4DpayOre1LZlFVO8X207BNIJD29reTGSFzj5fbVsHSyRpPl
-kmOpFQiXMjqOtYFAwI9LyVEJpfx2B6GxwA+5zrGC/ZptmaTTj1a3Z815q1GUZu1A
-dpBK2uY9B4wXer6M8yKeqGX0uxDAOW1zh7tvzBysCJoWkZD39OJJWaoaddvhq6HU
-MwIDAQAB
-`protect end_commonblock
-`protect begin_toolblock
-`protect key_keyowner = "Xilinx" , key_keyname = "xilinxt_2021_01"
-`protect key_method = "rsa"
-`protect encoding = ( enctype = "base64" , line_length = 64 , bytes = 256 )
-`protect key_block
-IgOTH1wT2t6yHQA1IgT0wFwgPatW2Jp/RTRHk5MxuiHA8X4ynLUzI58EdQSlUKl9
-BcczkDww7vIFJjy4IDhH7CXlRCB18fRGmB5BVSIJ5lfL/tx2/Ri15uwqHjHYwGW/
-7L+kuUNdi1UJOijNi1jBQWfJdWwRCP7Ys4hJCuZx57dE1CMcIBHYWCvgCpL3IYft
-VtgIVPO7+xpPDpymev70tJkv1ouHzI0acBTJCxxHlGv1F+L4jl+FcwVdCinkQsYi
-u6eP6JGcTEUu/SvlPWBlJlO7weZc1I9iwd7VgOX46sVU7d2r5/W4SoTdME/r5DEY
-SbYFMOAcod2AOCXQfL3H+g==
-`protect control xilinx_schematic_visibility = "true"
-`protect rights_digest_method = "sha256"
-`protect end_toolblock="4O8xbesWDe0sNt2AZHSVNAdbz4O+I8N397iuSyIxUt8="
-`protect begin_toolblock
-`protect key_keyowner = "Mentor Graphics Corporation" , key_keyname = "MGC-VERIF-SIM-RSA-1"
-`protect key_method = "rsa"
-`protect encoding = ( enctype = "base64" , line_length = 64 , bytes = 128 )
-`protect key_block
-kpti9IfYMYbtW7/sirzicFCzKwBH5pPLVabYUqdOR44kL+o22QLvnjuBXvJ5PjX+
-BoeEF9fambVxezh2hHRU9RvYwxKYPdLvoqwagy5QBpz2ngIXBYxfi9asCT/NRZmC
-v3XnnMudk8j59yETqe1zS/lS7CCf0g0MNudhKTYrzuA=
-`protect rights_digest_method = "sha256"
-`protect end_toolblock="MzKN9JlPuVaDPlgAH2UPbh7N4eQXu/RIeebh7wtSIBA="
-`protect data_method = "aes128-cbc"
-`protect encoding = ( enctype = "base64", line_length = 64 , bytes = 1616 )
-`protect data_block
-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
-`protect end_protected
+-------------------------------------------------------------------------------
+--
+-- File: PkgLvFpgaConst.vhd
+-- Original Project: Puma 1.5
+-- Date: 24 Jan 2008
+--
+-------------------------------------------------------------------------------
+-- (c) 2008 Copyright National Instruments Corporation
+-- All Rights Reserved
+-- National Instruments Internal Information
+-------------------------------------------------------------------------------
+--
+-- Purpose:
+--  This file will be generated by LV FPGA to set constants required for
+--  Puma 1.5 compilation.
+--
+-------------------------------------------------------------------------------
+
+library ieee;
+  use ieee.std_logic_1164.all;
+  use ieee.numeric_std.all;
+
+package PkgLvFpgaConst is
+
+  -----------------------------------------------------------------------------
+  -- LV FPGA generated constants
+  -----------------------------------------------------------------------------
+
+  constant kExpectedTbId   : std_logic_vector(31 downto 0) := X"1093FFFF";
+  constant kExpectDumbTb   : std_logic := '0';
+  constant kInsertBank0Mig  : boolean := false;
+  constant kInsertBank1Mig  : boolean := false;
+  constant kInsertHostMemoryBufferMig  : boolean := false;
+  constant kInsertLowLatencyBufferMig  : boolean := false;
+  constant kAuxMgtClipPresent  : boolean :=  false;
+  constant kAuxDioDefaultVoltage : natural := 3300;
+  constant kCfgSubsysId : std_logic_vector(15 downto 0) := X"7AEC";
+  constant kDram2DPBaseAddress : natural := 16#20000#;
+  
+end PkgLvFpgaConst;
+
+package body PkgLvFpgaConst is
+
+  
+end PkgLvFpgaConst;
+

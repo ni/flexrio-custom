@@ -7,7 +7,7 @@ This guide will take you through taking the base PXIe-7903 FlexRIO board and add
 We recommend going through the material in the following order:
 
 1. Look over the [PXIe-7903 architecture](https://github.com/ni/flexrio/blob/main/targets/pxie-7903/docs/public/PXie-7903%20Architecture.md)
-2. Read the [LabVIEW FPGA HDL Tools Theory of Operation](https://github.com/ni/labview-fpga-hdl-tools/blob/main/docs/Theory%20of%20Operation.md)
+2. Read the [LabVIEW FPGA HDL Tools Theory of Operation](https://github.com/ni/labview-fpga-hdl-tools/blob/main/docs/TheoryOfOperation.md)
 3. Read the steps in this migration guide
     1. Don’t try to perform this workflow the first time through!  We recommend that you fully read the guide and then go through it again to execute the steps.
     2. When you reach a step that uses one of the tools (e.g. nihdl gen-vivado), refer to the [LabVIEW FPGA HDL Tools README](https://github.com/ni/labview-fpga-hdl-tools/blob/main/README.md) for details on the project settings and how the tool works

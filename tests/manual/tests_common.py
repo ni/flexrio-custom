@@ -67,6 +67,15 @@ class DiscoveredTarget:
 
     path: Path
     display_name: str
+    # For a multi-VPE target (see MULTI_VPE_TARGETS), the ``vpe`` key selecting
+    # which VPE (LabVIEW example) to build; forwarded as ``--set vpe=<key>``.
+    # Empty for ordinary single-VPE targets.
+    vpe_key: str = ""
+    # Vivado project output folder (relative to the target dir). Multi-VPE
+    # targets use a per-VPE folder so their builds do not collide; this is
+    # forwarded as ``--set vivado_project=<name>`` and is also where the harness
+    # looks for the compile/syntax/timing logs.
+    vivado_project_subdir: str = "VivadoProject"
 
 
 @dataclass
@@ -250,22 +259,28 @@ _POST_ROUTE_TIMING_RE = re.compile(
 
 _TIMING_METRICS = ("WNS", "TNS", "WHS", "THS")
 
-# Log verdict patterns written by the nihdl Tcl scripts.
+# Log verdict patterns written by the nihdl Tcl scripts. The log_file is
+# relative to the target's Vivado project folder (which is per-VPE for
+# multi-VPE targets), so callers pass that folder in.
 _LOG_VERDICTS = {
     "compile": {
-        "log_file": "VivadoProject/compile_project.log",
+        "log_file": "compile_project.log",
         "pass_token": "NIHDL_COMPILE_PROJECT=PASSED",
         "fail_token": "NIHDL_COMPILE_PROJECT=FAILED",
     },
     "syntax": {
-        "log_file": "VivadoProject/check_syntax.log",
+        "log_file": "check_syntax.log",
         "pass_token": "NIHDL_CHECK_SYNTAX=PASSED",
         "fail_token": "NIHDL_CHECK_SYNTAX=FAILED",
     },
 }
 
 
-def check_log_verdict(target_dir: Path, log_verdict_key: str) -> tuple[str, str]:
+def check_log_verdict(
+    target_dir: Path,
+    log_verdict_key: str,
+    vivado_project_subdir: str = "VivadoProject",
+) -> tuple[str, str]:
     """Check the Vivado log for the nihdl pass/fail verdict token.
 
     Returns (verdict, message) where verdict is:
@@ -278,7 +293,7 @@ def check_log_verdict(target_dir: Path, log_verdict_key: str) -> tuple[str, str]
     if info is None:
         return ("", "")
 
-    log_path = target_dir / info["log_file"]
+    log_path = target_dir / vivado_project_subdir / info["log_file"]
     if not log_path.is_file():
         return ("WARN", f"Log not found: {log_path}")
 
@@ -308,14 +323,16 @@ def check_log_verdict(target_dir: Path, log_verdict_key: str) -> tuple[str, str]
     return ("WARN", f"Neither PASSED nor FAILED token found in {log_path.name}")
 
 
-def check_timing(target_dir: Path) -> TimingResult:
-    """Parse VivadoProject/compile_project.log for post-routing timing.
+def check_timing(
+    target_dir: Path, vivado_project_subdir: str = "VivadoProject"
+) -> TimingResult:
+    """Parse the Vivado project's compile_project.log for post-routing timing.
 
     Returns PASS if all slack values are non-negative, FAIL if any are
     negative, or WARN if the log is missing or the summary line cannot
     be found/parsed.
     """
-    log_path = target_dir / "VivadoProject" / "compile_project.log"
+    log_path = target_dir / vivado_project_subdir / "compile_project.log"
     if not log_path.is_file():
         return TimingResult(
             status="WARN",
@@ -413,6 +430,70 @@ def discover_targets(targets_dirs: list[Path]) -> list[DiscoveredTarget]:
                     )
                 )
     return found
+
+
+# ---------------------------------------------------------------------------
+# Multi-VPE target expansion
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class VpeVariant:
+    """One VPE (LabVIEW example) build of a multi-VPE target."""
+
+    key: str  # forwarded to the wrapper as --set vpe=<key>
+    label: str  # display suffix and Vivado project folder suffix
+
+
+# Targets that build more than one VPE (LabVIEW example), keyed by target
+# *directory* name (lower-case). Each such target runs once per VPE variant.
+#
+# Aurora is the only one: it has an "Aurora 2-port" example and a plain "Blank
+# Running VI" example. Only the Blank Running VI window netlist is committed to
+# GitHub (the Aurora 2-port netlist is too large), so the "always" variant
+# (BlankRunningVI) is built in every mode like the other targets, while the
+# "objects_only" variant (Aurora2port) is built only in the objects-window mode
+# -- where netlists are regenerated into the scratch objects/ folder and never
+# committed -- so both examples get exercised end to end. The ``key`` values
+# must match VPE_VARIANTS_BY_TARGET in the wrapper nihdlsettings.py.
+MULTI_VPE_TARGETS: dict[str, dict[str, list[VpeVariant]]] = {
+    "pxie-7903aurora": {
+        "always": [VpeVariant(key="blankrunningvi", label="BlankRunningVI")],
+        "objects_only": [VpeVariant(key="aurora2port", label="Aurora2port")],
+    },
+}
+
+
+def expand_target_variants(
+    targets: list[DiscoveredTarget], use_objects_lv_window: bool
+) -> list[DiscoveredTarget]:
+    """Expand multi-VPE targets into one entry per VPE they should build.
+
+    Ordinary targets are returned unchanged. A multi-VPE target (see
+    MULTI_VPE_TARGETS) is expanded into its ``always`` variants plus, when
+    ``use_objects_lv_window`` is set (the objects-window mode), its
+    ``objects_only`` variants. Each expanded entry carries the ``vpe`` key and a
+    per-VPE Vivado project folder so the builds stay separate.
+    """
+    expanded: list[DiscoveredTarget] = []
+    for target in targets:
+        variants = MULTI_VPE_TARGETS.get(target.path.name.lower())
+        if variants is None:
+            expanded.append(target)
+            continue
+        selected = list(variants["always"])
+        if use_objects_lv_window:
+            selected += variants["objects_only"]
+        for variant in selected:
+            expanded.append(
+                DiscoveredTarget(
+                    path=target.path,
+                    display_name=f"{target.display_name} [{variant.label}]",
+                    vpe_key=variant.key,
+                    vivado_project_subdir=f"VivadoProject_{variant.label}",
+                )
+            )
+    return expanded
 
 
 # A target is intended to be simulated only when its nihdlsettings.py sets a
@@ -635,19 +716,28 @@ def run_test(
 
         # Run every nihdl command through the shared test wrapper settings so
         # the tests use machine-independent paths instead of the per-developer
-        # paths in each target's own nihdlsettings.py.
+        # paths in each target's own nihdlsettings.py. Multi-VPE targets add
+        # their per-VPE overrides on top of the run-wide ones.
+        target_overrides = list(set_overrides)
+        if target.vpe_key:
+            target_overrides += ["--set", f"vpe={target.vpe_key}"]
+        if target.vivado_project_subdir != "VivadoProject":
+            target_overrides += [
+                "--set",
+                f"vivado_project={target.vivado_project_subdir}",
+            ]
         command = [
             nihdl_cmd,
             "--verbose",
             *test.subcommand,
             f"--config={WRAPPER_SETTINGS}",
-            *set_overrides,
+            *target_overrides,
         ]
         command_result = run_command(command, target.path)
 
         if test.log_verdict_key and command_result.return_code == 0:
             verdict, verdict_msg = check_log_verdict(
-                target.path, test.log_verdict_key
+                target.path, test.log_verdict_key, target.vivado_project_subdir
             )
             command_result.log_verdict = verdict
             command_result.log_verdict_message = verdict_msg
@@ -657,7 +747,7 @@ def run_test(
         timing_result = TimingResult(status="N/A")
         if test.check_timing and command_result.return_code == 0:
             print("    Checking post-routing timing ...")
-            timing_result = check_timing(target.path)
+            timing_result = check_timing(target.path, target.vivado_project_subdir)
             print(f"    Timing: {timing_result.status}")
             if timing_result.message:
                 print(f"      {timing_result.message}")

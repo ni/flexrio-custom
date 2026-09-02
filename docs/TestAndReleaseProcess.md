@@ -55,6 +55,14 @@ You can set Publish to false - the nuget artifacts are not needed
 
 This copies the filtered repo contents into the `githubstaging` branches.
 
+> **Important — run Step B immediately after the CI completes.** The `githubstaging` branches
+> (`ni/githubstaging/flexrio`, `ni/githubstaging/flexrio-deps-source`, `ni/githubstaging/clips`) are a
+> single **shared** location. **Anyone** who runs the Global CI on **any** branch overwrites them, so
+> there is no lock protecting your run. As soon as this pipeline finishes, go straight to Step B and
+> run the `encryptdeps` + `pushgithub` flows **and** the `pushgithubclip` flow before someone else's
+> CI run clobbers your freshly staged `main` contents. This applies to **both** the flexrio and the
+> clips publish workflows — don't stage now and push later.
+
 We run the pipeline manually on `main` when we are ready to push to GitHub. Other runs of the pipeline on dev branches may overwrite the `githubstaging` branches, so we want to be sure they are freshly staged with the `main` branch contents before pushing.
 
 **Iterating with pre-releases (recommended before merging hw-flexrio changes).** While developing hw-flexrio changes, run this publish process **and** the internal GitHub test pipeline off an hw-flexrio **dev branch** to produce **`.dev0` pre-releases** of `flexrio` / `flexrio-deps` / `flexrio-clips` and validate the full stack (flexrio-custom examples + deps + tools) before merging. Once validated, PR the hw-flexrio dev branch to `main` and re-run the process on the `main` CI result to produce the final release. The build mechanics of this dev → main loop are documented in hw-flexrio `docs/githubrelease/GitHubReleaseBuild.md` ("the hw-flexrio dev → main workflow").
@@ -65,6 +73,11 @@ When the pipeline has completed, inspect the staging branches to make sure they 
 - `ni/githubstaging/clips`
 
 ### Step B) Publish the githubstaging branches to GitHub
+
+> **Do this right after Step A, without delay.** The `githubstaging` branches are shared and are
+> overwritten by any CI run on any branch, so encrypt and push while your `main` staging is still
+> intact. Complete **both** publish paths in this step — the flexrio path (`encryptdeps` +
+> `pushgithub`) and the clips path (`pushgithubclip`).
 
 Clone the hw-flexrio repo:
 ```

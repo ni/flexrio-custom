@@ -117,6 +117,8 @@ and are customized through their socketed CLIP, just like the other IO modules.
 
 This section is the high-level map of *what you are actually customizing* and the **two ways** to do it. The step-by-step exercises live in [Getting Started](docs/GettingStarted.md) and the [CLIP Migration Hands-On Guide](docs/CLIPMigrationHandsOnGuide.md); read this first to decide which path you want.
 
+> **Where your HDL goes: [`rtl-lvfpga/UserHdl.vhd`](targets/pxie-7903custom/rtl-lvfpga/UserHdl.vhd).** In every target, `UserHdl.vhd` is the entity you extend with your custom logic. Its ports expose the host registers and DMA FIFOs (and the board IO), so it is where you implement your design and connect it to the host. The rest of a target — the top-level wrapper, the LabVIEW FPGA window, the register/FIFO plumbing, and the build and target-generation files — is scaffolding that supports it. A natively supported FlexRIO target can only be extended in a LabVIEW FPGA VI; a custom target gives you this HDL entity to own directly.
+
 ## Background: integrated IO and the socketed CLIP (the pre-HDL-workflow model)
 
 A FlexRIO device with **integrated IO** is a **baseboard + an IO module** built into one product. To make that device do anything, it needs HDL that knows how to run the integrated IO module (the high-speed serial link, the digital IO, etc.).
@@ -250,6 +252,7 @@ Step-by-step exercises for building bitfiles, customizing a target, and migratin
             * `lvFpgaTarget` - LabVIEW FPGA target plugin source files
             * `blankLvWindowNetlist` - placeholder LabVIEW window netlist content
             * `rtl-lvfpga` - target HDL sources
+                * `UserHdl.vhd` - the entity you extend with your custom HDL; its ports expose the host registers and DMA FIFOs
             * `xdc` - timing constraints
             * `VivadoProject` - Vivado project files (ignored in .gitignore)
             * `ModelSimProject` - ModelSim simulation project files (ignored in .gitignore)

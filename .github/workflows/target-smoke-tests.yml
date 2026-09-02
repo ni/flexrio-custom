@@ -138,11 +138,13 @@ jobs:
               Invoke-Nihdl $target @("gen-vivado")
               Invoke-Nihdl $target @("check-vivado")
 
-              # ModelSim flow: generate the project, then run sim-modelsim in
-              # validation-only mode. skip_modelsim (tests/pipeline/nihdlsettings.py)
-              # short-circuits before launching vsim, so this validates the project
-              # and .do file without ModelSim installed. Only targets that declare a
-              # testbench (set_modelsim_top_entity) have one.
+              # ModelSim flow: generate + validate the ModelSim project, then run
+              # sim-modelsim in validation-only mode. With skip_modelsim
+              # (tests/pipeline/nihdlsettings.py), gen-modelsim still generates the
+              # VHDL, validates every source file exists, and writes the .do scripts
+              # without compiling; sim-modelsim then validates the project without
+              # launching vsim. Only targets that declare a testbench
+              # (set_modelsim_top_entity) have one.
               if ($hasModelSim) {
                 Invoke-Nihdl $target @("gen-modelsim", "--overwrite")
                 Invoke-Nihdl $target @("sim-modelsim")

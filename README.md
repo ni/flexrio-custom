@@ -53,9 +53,9 @@ can additionally drive a digital frontend using the **Aurora** or **100 GbE** CL
 ## FlexRIO FPGA Modules
 
 FPGA modules are baseboards with no integrated IO — you add your own IO in `UserHdl`.
-The supported ones ship as a customizable custom target; the rest are not yet supported
-(no custom target yet). The **PCIe-798x** rows are the PCIe form-factor (Garrison)
-equivalents of the Macallan modules.
+Each one now ships as a customizable custom target — start from its target folder. The
+**PCIe-798x** rows are the PCIe form-factor (Garrison) equivalents of the Macallan modules;
+the **PXIe-799x** rows are the BTrace family (PXIe-7993 is the Blackadder baseboard).
 
 | Device | Status |
 | --- | --- |
@@ -63,19 +63,20 @@ equivalents of the Macallan modules.
 | PXIe-7982 | ✅ Supported — customizable target |
 | PXIe-7985 | ✅ Supported — customizable target |
 | PXIe-7986 | ✅ Supported — customizable target |
+| PXIe-7990 | ✅ Supported — customizable target |
+| PXIe-7991 | ✅ Supported — customizable target |
+| PXIe-7992 | ✅ Supported — customizable target |
+| PXIe-7993 | ✅ Supported — customizable target |
 | PXIe-7994 | ✅ Supported — customizable target |
-| PXIe-7991 | ⬜ Not yet supported — no custom target yet |
-| PXIe-7992 | ⬜ Not yet supported — no custom target yet |
-| PXIe-7993 | ⬜ Not yet supported — no custom target yet |
-| PCIe-7981 | ⬜ Not yet supported — no custom target yet |
-| PCIe-7982 | ⬜ Not yet supported — no custom target yet |
-| PCIe-7985 | ⬜ Not yet supported — no custom target yet |
+| PCIe-7981 | ✅ Supported — customizable target |
+| PCIe-7982 | ✅ Supported — customizable target |
+| PCIe-7985 | ✅ Supported — customizable target |
 
 ## FlexRIO Digital Modules
 
 | Device | Baseboard | Status |
 | --- | --- | --- |
-| PXIe-6569 | PXIe-7991 / PXIe-7992 | ⬜ Not yet supported — CLIP available; baseboard target not yet in the workflow |
+| PXIe-6569 | PXIe-7991 / PXIe-7992 | 🟨 Buildable — CLIP available, no example yet |
 
 ## FlexRIO High-Speed Serial Modules
 
@@ -96,8 +97,8 @@ equivalents of the Macallan modules.
 
 | Device | Baseboard | Status |
 | --- | --- | --- |
-| PXIe-1486 / PXIe-1487 | PXIe-7993 | ⬜ Not yet supported — CLIP available; baseboard target not yet in the workflow |
-| PXIe-1488 / PXIe-1489 | PXIe-7993 | ⬜ Not yet supported — CLIP available; baseboard target not yet in the workflow |
+| PXIe-1486 / PXIe-1487 | PXIe-7993 | 🟨 Buildable — CLIP available, no example yet |
+| PXIe-1488 / PXIe-1489 | PXIe-7993 | 🟨 Buildable — CLIP available, no example yet |
 
 ## FlexRIO Digitizer and Transceiver Modules
 
@@ -109,11 +110,14 @@ and are customized through their socketed CLIP, just like the other IO modules.
 | PXIe-5763 / PXIe-5764 | PXIe-7981 / 7982 / 7985 | 🟨 Buildable — CLIP available, no example yet |
 | PXIe-5785 / PXIe-5775 / PXIe-5745 | PXIe-7981 / 7982 / 7985 | 🟨 Buildable — CLIP available, no example yet |
 | PXIe-5774 | PXIe-7982 / 7985 | 🟨 Buildable — CLIP available, no example yet |
-<br><br><br>
+
+<br><br>
 
 # How You Customize a FlexRIO Board
 
 This section is the high-level map of *what you are actually customizing* and the **two ways** to do it. The step-by-step exercises live in [Getting Started](docs/GettingStarted.md) and the [CLIP Migration Hands-On Guide](docs/CLIPMigrationHandsOnGuide.md); read this first to decide which path you want.
+
+> **Where your HDL goes: [`rtl-lvfpga/UserHdl.vhd`](targets/pxie-7903custom/rtl-lvfpga/UserHdl.vhd).** In every target, `UserHdl.vhd` is the entity you extend with your custom logic. Its ports expose the host registers and DMA FIFOs (and the board IO), so it is where you implement your design and connect it to the host. The rest of a target — the top-level wrapper, the LabVIEW FPGA window, the register/FIFO plumbing, and the build and target-generation files — is scaffolding that supports it. A natively supported FlexRIO target can only be extended in a LabVIEW FPGA VI; a custom target gives you this HDL entity to own directly.
 
 ## Background: integrated IO and the socketed CLIP (the pre-HDL-workflow model)
 
@@ -190,7 +194,7 @@ Use NI Package Manager to install the following software:
 
 Install the following 3rd party software:
 * Install latest version Git  – https://git-scm.com/downloads
-* Install Python (version 3.11.8 officially tested) –  https://www.python.org/downloads/
+* Install Python 3.10 or newer (tested with 3.10–3.14) –  https://www.python.org/downloads/
 
 ## 1) Clone this repo
 In a dev folder (e.g. c:\dev\github) clone the repo:
@@ -248,6 +252,7 @@ Step-by-step exercises for building bitfiles, customizing a target, and migratin
             * `lvFpgaTarget` - LabVIEW FPGA target plugin source files
             * `blankLvWindowNetlist` - placeholder LabVIEW window netlist content
             * `rtl-lvfpga` - target HDL sources
+                * `UserHdl.vhd` - the entity you extend with your custom HDL; its ports expose the host registers and DMA FIFOs
             * `xdc` - timing constraints
             * `VivadoProject` - Vivado project files (ignored in .gitignore)
             * `ModelSimProject` - ModelSim simulation project files (ignored in .gitignore)

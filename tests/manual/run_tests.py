@@ -41,6 +41,7 @@ from tests_common import (
     TEST_SEQUENCES,
     add_common_arguments,
     create_run_logger,
+    expand_target_variants,
     print_test_summary,
     resolve_targets,
     run_test,
@@ -279,6 +280,11 @@ def main() -> int:
     if not targets:
         print("No targets with nihdlsettings.py found.")
         return 1
+
+    # Expand multi-VPE targets (e.g. Aurora) into one run per VPE. Aurora builds
+    # BlankRunningVI in every mode and additionally Aurora2port in the
+    # objects-window mode, so the expansion depends on the netlist mode.
+    targets = expand_target_variants(targets, use_objects_lv_window)
 
     print(f"Found {len(targets)} targets.")
     if args.sequence:

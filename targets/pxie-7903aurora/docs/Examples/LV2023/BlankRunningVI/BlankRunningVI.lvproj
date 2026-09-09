@@ -2176,7 +2176,7 @@ IO Socket.Port0 User ClockResourceName=IO Socket.Port0 User Clock;TopSignalConne
 				<Property Name="NI.LV.FPGA.Version" Type="Int">5</Property>
 			</Item>
 			<Item Name="Routing" Type="FPGA Component Level IP">
-				<Property Name="NI.FPGA.79XXR.NormalizeCLIPPath" Type="Str">true</Property>
+				<Property Name="NI.FPGA.79XXR.NormalizeCLIPPath" Type="Str">false</Property>
 				<Property Name="NI.LV.CLIP.ClockConnections" Type="Xml">
 <CLIPConnections>
    <CLIPSignal name="DataClk">

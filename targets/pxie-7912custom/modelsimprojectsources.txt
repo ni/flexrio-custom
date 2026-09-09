@@ -1,7 +1,7 @@
 # ModelSim simulation sources for tb_UserHdl.
 #
 # Curated subset for simulating UserHdl in isolation. This deliberately
-# excludes MacallanTop, the generated LV Window, and netlist-based IP
+# excludes the top-level design, the generated LV Window, and netlist-based IP
 # (instruction FIFO, DRAM, timing engine, fixed logic, PCIe DMA) that is
 # part of the full synthesis design but cannot be compiled/simulated in a
 # plain vcom flow. The shared infrastructure packages UserHdl depends on

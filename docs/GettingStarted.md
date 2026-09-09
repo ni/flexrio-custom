@@ -8,6 +8,10 @@ These exercises walk through both **compile flows**. Exercise 2 builds a bitfile
 > [LabVIEW FPGA Target and Compile Flow](https://github.com/ni/labview-fpga-hdl-tools/blob/main/docs/LabVIEWFpgaTargetFlow.md),
 > and [ModelSim Simulation Flow](https://github.com/ni/labview-fpga-hdl-tools/blob/main/docs/ModelSimSimulationFlow.md).
 
+## Where you add your HDL: `rtl-lvfpga/UserHdl.vhd`
+
+[`rtl-lvfpga/UserHdl.vhd`](../targets/pxie-7903custom/rtl-lvfpga/UserHdl.vhd) is the entity you extend with your custom HDL. Add your logic in its architecture body (between `begin` and `end architecture rtl`), and communicate with the host PC through the **register** and **DMA FIFO** ports on its entity. The rest of the target connects `UserHdl` to the host and to LabVIEW FPGA. The exercises below cover building and installing the target.
+
 ## Exercise 1 - Read the LabVIEW FPGA HDL Tools README and Theory of Operation
 https://github.com/ni/labview-fpga-hdl-tools/blob/main/README.md
 
@@ -36,17 +40,17 @@ In Vivado, click "Generate Bitstream" in left-hand tools menu
 ### 1) Make a copy of the custom target folder
 > C:\dev\github\flexrio-custom\targets\pxie-7903custom-mycopy
 
-### 2) Edit the projectsettings.ini file in pxie-7903-mycopy
-Set `LVTargetName` to `PXIe-7903custom-mycopy`
+### 2) Edit the nihdlsettings.py file in pxie-7903custom-mycopy
+Set `set_lv_target_name(...)` to `PXIe-7903custom-mycopy`
 
-Run `nihdl get-guid` to generate a new GUID
+Run `nihdl gen-guid` to generate a new GUID
 
-Copy the new GUID into the `LVTargetGUID` setting
+Copy the new GUID into the `set_lv_target_guid(...)` call
 
-### 3) Edit the top-level FPGA file
-Open rtl-lvfpga/UserHdl
+### 3) Add your HDL in `rtl-lvfpga/UserHdl.vhd`
+[`rtl-lvfpga/UserHdl.vhd`](../targets/pxie-7903custom/rtl-lvfpga/UserHdl.vhd) is the entity you extend with your custom HDL. Add your logic in its architecture body (between `begin` and `end architecture rtl`); its entity exposes the host **register** and **DMA FIFO** ports for communicating with the host PC.
 
-Find `HdlSharedCommonHostRegs_inst` and set `kSigniature` to `x"7903FEED"`
+As a first change to confirm your build loaded, open `rtl-lvfpga/UserHdl.vhd`, find `NiSharedCommonHostRegs_inst`, and set `kSignature` to `x"7903FEED"`.
 
 ### 4) Create a Vivado project
 > nihdl gen-vivado
@@ -56,7 +60,7 @@ Find `HdlSharedCommonHostRegs_inst` and set `kSigniature` to `x"7903FEED"`
 
 In Vivado, click "Generate Bitstream" in left-hand tools menu
 
-### 7) Generate and install the custom LabVIEW FPGA Target (LabVIEW FPGA compile flow)
+### 6) Generate and install the custom LabVIEW FPGA Target (LabVIEW FPGA compile flow)
 > nihdl gen-target
 
 Close all LabVIEW instances before installing the target.
@@ -65,7 +69,7 @@ Close all LabVIEW instances before installing the target.
 
 After installing, (re)start LabVIEW so it picks up the new target — LabVIEW only scans for target plugins at startup.
 
-### 8) Test the target in LabVIEW 
+### 7) Test the target in LabVIEW 
 Use the NI-RIO API to download and run the bitfile
 
 > **Use _Open Dynamic Bitfile Reference_, not _Open FPGA VI Reference_.** The standard
@@ -89,7 +93,7 @@ Use the following register map for the common registers:
 | --- | ---: | --- |
 | kSignatureOffset | 0 | read-only |
 | kVersionOffset | 4 | read-only |
-| kOldestCompatibleVersionOffset` | 8 | read-only |
+| kOldestCompatibleVersionOffset | 8 | read-only |
 | kScratchOffset | 12 | read-write |
 
 ## Exercise 4 - Migrate a Socketed CLIP to use a custom LabVIEW FPGA target

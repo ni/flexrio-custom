@@ -7,8 +7,8 @@
 github_dependencies = [
     "ni/flexrio~=26.4.0.dev0",
     "ni/flexrio-deps~=26.4.0.dev0",
-    "ni/flexrio-clips~=26.3.0",
-    "ni/hdl-shared~=1.1.0.dev0",    
+    "ni/flexrio-clips~=26.4.0.dev0",
+    "ni/hdl-shared~=1.1.0.dev0",
 ]
 
 python_dependencies = [

@@ -173,6 +173,8 @@ current_instance $RoutingClipInstanceRestore
 
 # END_LV_FPGA_CLIP_CONSTRAINTS
 
+set TopInstanceLvTargetFromTo [current_instance .]
+current_instance TheLvWindowWrapper
 # BEGIN_LV_FPGA_FROM_TO_CONSTRAINTS
 
  set TNM_Custom1 [get_cells {*n_bushold/*ShiftRegister/SyncBusReset/*iHoldSigInx/*FDCPEx} -filter {IS_SEQUENTIAL==true}]
@@ -310,4 +312,6 @@ set_false_path -through [get_nets {*DiagramResetx*aDiagramResetLoc*}]
 
 
 # END_LV_FPGA_FROM_TO_CONSTRAINTS
+current_instance -quiet
+current_instance $TopInstanceLvTargetFromTo
 

@@ -1,0 +1,15 @@
+objects/GeneratedHDL/TheWindow.vhd
+objects/GeneratedHDL/TheLvWindowFlatWrapper.vhd
+objects/GeneratedHDL/PkgTheLvWindowFlatWrapper.vhd
+objects/GeneratedHDL/PkgNiHdlSettings.vhd
+rtl-lvfpga/BTraceTop.vhd
+rtl-lvfpga/UserHdl.vhd
+rtl-lvfpga/PkgUserHdl.vhd
+../../deps/hdl-shared/host_interfaces/register/HDL/NiSharedHostRegister.vhd
+../../deps/hdl-shared/host_interfaces/register/HDL/NiSharedCommonHostRegs.vhd
+../../deps/hdl-shared/host_interfaces/register/HDL/NiSharedHostRegisterArray.vhd
+../../deps/hdl-shared/host_interfaces/fifo/HDL/NiSharedFifoWriterCore.vhd
+../../deps/hdl-shared/host_interfaces/fifo/HDL/NiSharedFifoWriter.vhd
+../../deps/hdl-shared/host_interfaces/fifo/HDL/NiSharedFifoReaderCore.vhd
+../../deps/hdl-shared/host_interfaces/fifo/HDL/NiSharedFifoReader.vhd
+../../deps/hdl-shared/host_interfaces/fifo/HDL/PkgNiSharedFifo.vhd

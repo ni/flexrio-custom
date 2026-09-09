@@ -16,13 +16,40 @@ from pathlib import Path
 try:
     import tomllib
 except ModuleNotFoundError:
-    import tomli as tomllib
+    try:
+        import tomli as tomllib
+    except ModuleNotFoundError:
+        tomllib = None  # Fall back to _load_string_arrays on Python < 3.11 without tomli.
+
+
+def _load_string_arrays(toml_path, keys):
+    """Minimal reader for top-level ``key = ["a", "b"]`` string arrays.
+
+    Used only when neither tomllib (3.11+) nor tomli is available, so nisetup can
+    still bootstrap on older Pythons. Not a general TOML parser: it handles only
+    string arrays and strips ``#`` comments.
+    """
+    lines = []
+    for line in Path(toml_path).read_text(encoding="utf-8").splitlines():
+        hash_index = line.find("#")
+        if hash_index != -1:
+            line = line[:hash_index]
+        lines.append(line)
+    text = "\n".join(lines)
+    result = {}
+    for key in keys:
+        match = re.search(rf"{re.escape(key)}\s*=\s*\[(.*?)\]", text, re.DOTALL)
+        result[key] = re.findall(r'"([^"]*)"', match.group(1)) if match else []
+    return result
 
 
 def _read_config(toml_path):
     """Read python dependencies and supported interpreter versions from dependencies.toml."""
-    with open(toml_path, "rb") as f:
-        data = tomllib.load(f)
+    if tomllib is not None:
+        with open(toml_path, "rb") as f:
+            data = tomllib.load(f)
+    else:
+        data = _load_string_arrays(toml_path, ("python_dependencies", "python_supported"))
     return {
         "packages": data.get("python_dependencies", []),
         "supported": data.get("python_supported", []),

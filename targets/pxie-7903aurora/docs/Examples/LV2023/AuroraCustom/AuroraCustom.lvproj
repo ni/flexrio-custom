@@ -17686,9 +17686,9 @@ IO Socket.DIO InNumberOfSyncRegistersForReadInProject=0;resource=/BoardIO/IO Soc
 					<Property Name="Comp.Xilinx.SynthGoal" Type="Str">speed</Property>
 					<Property Name="Comp.Xilinx.UseRecommended" Type="Bool">true</Property>
 					<Property Name="DefaultBuildSpec" Type="Bool">false</Property>
-					<Property Name="DestinationDirectory" Type="Path">/C/Temp/testVPE/PXIe-7903Aurora_VPE</Property>
+					<Property Name="DestinationDirectory" Type="Path">/C/Temp/testVPE/PXIe-7903Aurora_2port_VPE</Property>
 					<Property Name="IsVivadoProjectExport" Type="Bool">true</Property>
-					<Property Name="ProjectPath" Type="Path">/C/dev/github/flexrio-custom/targets/pxie-7903aurora/docs/Examples/LV2023/AuroraCustom.lvproj</Property>
+					<Property Name="ProjectPath" Type="Path">/C/dev/github29-test/flexrio-custom/targets/pxie-7903aurora/docs/Examples/LV2023/AuroraCustom/AuroraCustom.lvproj</Property>
 					<Property Name="RelativePath" Type="Bool">false</Property>
 					<Property Name="RunWhenLoaded" Type="Bool">false</Property>
 					<Property Name="TargetName" Type="Str">FPGA Target</Property>

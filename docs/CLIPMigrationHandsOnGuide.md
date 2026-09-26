@@ -772,34 +772,6 @@ Close and don’t save the original PXIe-7903 project.
 
 Save the PXIe-7903Aurora project.
 
-### Add the Dummy CLIP
-
-Due to some dependencies within LabVIEW FPGA and the FlexRIO driver, we need to put something in the CLIP IO Socket of the custom PXIe-7903 device that we are using.  This is something we will resolve in a future release.  For now, we have created a Dummy CLIP that you can use to work around this issue.  You can find this in the flexrio-custom GitHub repo that is cloned onto your computer: `C:\dev\github\flexrio-custom\targets\pxie-7903aurora\DummyCLIP`
-
-#### Add the Dummy CLIP to the FPGA Target
-
-Right click on the FPGA Target and select Properties
-
-Go to the Component-Level IP tab and click the + button
-
-Select the Dummy CLIP you got from the flexrio-custom repo:
-
-```text
-C:\dev\github\flexrio-custom\targets\pxie-7903aurora\DummyCLIP\DummyCLIP.xml
-```
-
-![](images/image12.png)
-
-#### Add the Dummy CLIP to the IO Socket
-
-Right click on the IO Socket and select Properties
-
-You should see DummyCLIP already in the list
-
-Click OK
-
-![](images/image13.png)
-
 ## Modify the FPGA VI IO Constants
 
 CLIP IO supports backslash characters and hierarchy that is not supported by the LV FPGA target board IO.  To work around this, the gen-target tool automatically replaces characters from from the LVTargetBoardIO CSV file with periods.  You will need to re-select all of the FPGA IO in the VI to use these new IO names.

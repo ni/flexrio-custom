@@ -11,6 +11,10 @@ If you are new to the repo, read the [README](../README.md) and the
 first, then come back here when you want to understand *where the files come
 from* and *how to customize them*.
 
+> **Standing up a brand-new baseboard target?** This document is the companion reference to
+> [Creating a FlexRIO Baseboard Custom Target](CreatingABaseboardCustomTarget.md), which walks
+> the full file-by-file process of producing a new `<device>custom` example.
+
 ## The two repositories
 
 | Repository | Role |
@@ -46,7 +50,7 @@ sources without duplicating them.
 | --- | --- |
 | **flexrio** | The base FlexRIO target support (the target you customize on top of). |
 | **flexrio-deps** | Additional base target support; these files are **encrypted**. |
-| **hdl-shared** | Shared HDL such as host interfaces (registers, DMA FIFOs). Optional, but recommended. |
+| **hdl-shared** | Shared HDL host interfaces — the [register](https://github.com/ni/hdl-shared/blob/main/host_interfaces/register/docs/instantiation-guide.md) and [DMA-FIFO](https://github.com/ni/hdl-shared/blob/main/host_interfaces/fifo/docs/instantiation-guide.md) blocks you instantiate in `UserHdl`. Optional, but recommended. |
 | **flexrio-clips** | The existing **socketed CLIP** VHDL normally used with FlexRIO boards in LabVIEW FPGA. You can instantiate this CLIP IP directly in the top-level `UserHdl.vhd` of your custom target to replicate a traditional socketed-CLIP LabVIEW FPGA target. |
 
 Install (or refresh) all four with:

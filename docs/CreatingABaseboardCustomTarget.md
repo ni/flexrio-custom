@@ -1,15 +1,12 @@
 # Creating a FlexRIO Baseboard Custom Target
 
-**Audience:** developers standing up a new `<device>custom` baseboard example in `flexrio-custom`
-(for example `pxie-7912custom`) on top of a released NI base target.
+**Audience:** developers standing up a brand new custom device example in `ni/flexrio-custom` built on top of one of the base targets from `ni/flexrio`.
 
-> This guide is the **customer-facing half** of the workflow: it takes an already-released base
-> target and turns it into the basic `<device>custom` example. Producing the base targets themselves
-> is a separate NI-internal step.
+If you are modifying an existing custom device example (e.g., `pxie-7912custom`), then you may use this document as a reference to understand how the custom devices are designed so that you can be successful in modifying one.
 
 ---
 
-## 1. What you're building
+## What you're building
 
 NI publishes each supported FlexRIO baseboard as a **base target** in
 [`ni/flexrio`](https://github.com/ni/flexrio) (source + pre-computed dependency/file lists) plus its
@@ -30,8 +27,8 @@ graph LR
 target **copies only the top-level HDL file** and **references everything else in place** from the
 released base target, so it inherits base-target updates without duplicating sources.
 
-The `pxie-7912custom` example (`targets/pxie-7912custom/`) contains every file below. Section
-[§2](#2-file-by-file-reference) documents each one; the inline notes here are the one-line summary.
+The `pxie-7912custom` example (`targets/pxie-7912custom/`) contains every file below. The
+[File-by-file reference](#file-by-file-reference) section documents each one; the inline notes here are the one-line summary.
 
 ```
 pxie-7912custom/
@@ -79,7 +76,7 @@ targets/common/
 
 ---
 
-## 2. File-by-file reference
+## File-by-file reference
 
 A custom target is small, and almost every file is either copied from the base target, copied from the
 nearest sibling custom target, or generated. This section lists **every** file so a new target can be
@@ -100,12 +97,12 @@ of the same board family (for the 79xx boards, another Macallan target).
 |------|--------|--------------------------|
 | `.gitignore` | Copy (sibling) | Ignores `objects/`, `VivadoProject*/`, `ModelSimProject*/`, `*.log`. Keep the `# githubvisible=true` tag line — it marks the file for the release. |
 | `nisetup.bat` | Copy (sibling) | One-line shim that calls the repo-root `nisetup.bat`. Identical across targets. |
-| `nihdlsettings.py` | Author (from sibling) | The single source of truth — see [Step 5](#7-step-5--write-nihdlsettingspy). Copy a sibling's and change device values (`base_deps`, FPGA part, `lv_target_name`, a fresh GUID, register offset, FIFO count). |
+| `nihdlsettings.py` | Author (from sibling) | The single source of truth — see [Step 5](#step-5--write-nihdlsettingspy). Copy a sibling's and change device values (`base_deps`, FPGA part, `lv_target_name`, a fresh GUID, register offset, FIFO count). |
 | `vivadoprojectsources.txt` | Author | Ordered synthesis source list — see [below](#vivadoprojectsourcestxt--synthesis-source-list). |
 | `modelsimprojectsources.txt` | Author | Curated simulation source list for `tb_UserHdl` — see [below](#modelsimprojectsourcestxt--simulation-source-list). |
-| `rtl-lvfpga/<Board>Top.vhd` | Copy (base) + modify | The top level — see [Step 3](#5-step-3--copy-and-modify-the-top-level-hdl). The only base source you copy. |
-| `rtl-lvfpga/UserHdl.vhd`, `PkgUserHdl.vhd` | Copy (sibling) + adjust | The example user design (registers, loopbacks, DMA FIFOs, DIO) and its register/FIFO map — see [Step 3](#5-step-3--copy-and-modify-the-top-level-hdl). **Board-I/O ports are _not_ inherited from the sibling: re-derive the complete `% if include_board_io:` set from *this* board's base `TheWindow.vhd.mako` — routing is vertical, never copied from another board.** |
-| `rtl-lvfpga/TheLvWindowFlatWrapper.vhd.mako`, `PkgTheLvWindowFlatWrapper.vhd.mako` | Copy (sibling) + match ports | The window flat wrapper and its component declaration — see [Step 4](#6-step-4--author-the-window-wrappers-mako). Ports must match the base `TheWindow.vhd.mako`. |
+| `rtl-lvfpga/<Board>Top.vhd` | Copy (base) + modify | The top level — see [Step 3](#step-3--copy-and-modify-the-top-level-hdl). The only base source you copy. |
+| `rtl-lvfpga/UserHdl.vhd`, `PkgUserHdl.vhd` | Copy (sibling) + adjust | The example user design (registers, loopbacks, DMA FIFOs, DIO) and its register/FIFO map — see [Step 3](#step-3--copy-and-modify-the-top-level-hdl). **Board-I/O ports are _not_ inherited from the sibling: re-derive the complete `% if include_board_io:` set from *this* board's base `TheWindow.vhd.mako` — routing is vertical, never copied from another board.** |
+| `rtl-lvfpga/TheLvWindowFlatWrapper.vhd.mako`, `PkgTheLvWindowFlatWrapper.vhd.mako` | Copy (sibling) + match ports | The window flat wrapper and its component declaration — see [Step 4](#step-4--author-the-window-wrappers-mako). Ports must match the base `TheWindow.vhd.mako`. |
 | `rtl-lvfpga/testbenches/tb_UserHdl.vhd` | Copy (sibling) + adjust | Thin testbench wrapper — see [below](#rtl-lvfpgatestbenchestb_userhdlvhd--testbench-wrapper). |
 | `lvFpgaTarget/LVTargetBoardIO.csv` | Author | Custom-I/O CSV — see [below](#lvfpgatargetlvtargetboardiocsv--custom-io-csv). Header-only (no signal rows) when board I/O is routed to `UserHdl` instead of the window. |
 | `xdc/custom_constraints.xdc` | Author | Target-specific Vivado constraints. Often an empty stub; add pin/timing constraints unique to your design. |
@@ -165,7 +162,7 @@ the board-I/O tie-offs to this target's `UserHdl` interface, and run it with
 
 The single source that drives any custom I/O placed **into the LabVIEW FPGA window** (board I/O
 signals and clocks). On these HDL-customized targets board I/O is routed into `UserHdl` instead of the
-window ([Step 3](#5-step-3--copy-and-modify-the-top-level-hdl) /
+window ([Step 3](#step-3--copy-and-modify-the-top-level-hdl) /
 `set_include_board_io_on_lv_window(False)`), so the CSV is typically **just the header row** (no
 signal rows). Keep it present and header-correct; add rows only if you deliberately expose custom
 I/O/clocks to the VI. See
@@ -174,7 +171,7 @@ I/O/clocks to the VI. See
 ### `blankLvWindowNetlist/` — placeholder window netlist
 
 Lets `nihdl gen-vivado` build **before** a real window netlist has been exported from a LabVIEW FPGA
-VI — see [Step 6](#8-step-6--provide-a-placeholder-window-netlist). It holds a stub
+VI — see [Step 6](#step-6--provide-a-placeholder-window-netlist). It holds a stub
 `TheLvWindowFlatWrapper.v` plus the LV packages the netlist references (`PkgCommIntConfiguration.vhd`,
 `PkgDmaPortCommIfcRegs.vhd`, `PkgDmaPortDmaFifos.vhd`, `PkgLvFpgaConst.vhd`), `TheWindowConstraints.xdc`,
 and `CodeGenerationResults.lvtxt`. Copy a sibling's folder; once you export a real VI, regenerate with
@@ -182,20 +179,20 @@ and `CodeGenerationResults.lvtxt`. Copy a sibling's folder; once you export a re
 
 ---
 
-## 3. Step 1 — Install the dependencies
+## Step 1 — Install the dependencies
 
 From the repo root, `nihdl install-deps` clones the four dependency repos into `deps/` per
 `dependencies.toml` (`ni/flexrio`, `ni/flexrio-deps`, `ni/hdl-shared`, `ni/flexrio-clips`). Keep the
 NI-versioned deps on the same quarterly version. The base target lands at
 `deps/flexrio/targets/pxie-7912/`.
 
-## 4. Step 2 — Scaffold the target folder
+## Step 2 — Scaffold the target folder
 
 The fastest path is to **copy the nearest existing custom example** (e.g. `pxie-7903custom` or a
 sibling Macallan custom target) and rename it, then fix up the device-specific values. Create the
 folder `targets/pxie-7912custom/` and populate the files listed above.
 
-## 5. Step 3 — Copy and modify the top-level HDL
+## Step 3 — Copy and modify the top-level HDL
 
 Copy the base target's top (`deps/flexrio/targets/pxie-7912/rtl-lvfpga/MacallanTop.vhd`) into
 `rtl-lvfpga/MacallanTop.vhd`. This is the *only* base source you copy. Inside it you make two changes:
@@ -408,7 +405,7 @@ board's:**
 > mark makes Vivado fail with *"syntax error near �"* at line 1. (PowerShell's `Out-File` /
 > `Set-Content -Encoding utf8` prepend a BOM — use a BOM-free writer instead.)
 
-## 6. Step 4 — Author the window wrappers (Mako)
+## Step 4 — Author the window wrappers (Mako)
 
 > **Coupled with the top (Step 3).** The flat wrapper and the top level are generated **together** —
 > the wrapper's ports must match both the top's `TheLvWindowFlatWrapper` instantiation and this
@@ -514,7 +511,7 @@ the two are the identical list.
 > Render the base window with `include_board_io=True` so the ports are present to compare — diffing
 > with it *off* only confirms the *rest* of the boundary matches, not the board I/O itself.
 
-## 7. Step 5 — Write `nihdlsettings.py`
+## Step 5 — Write `nihdlsettings.py`
 
 `nihdlsettings.py` is the single source of truth. It references the base target with a `base_deps`
 prefix and wires up file lists, generated VHDL, constraints, the custom LabVIEW FPGA target identity,
@@ -564,14 +561,14 @@ config.set_num_hdl_fifos(2)           # user HDL DMA FIFOs
 See [nihdlsettings-single-source](https://github.com/ni/labview-fpga-hdl-tools/blob/main/docs/GeneratedVHDL.md)
 for the register-map and DMA-channel single-sourcing details.
 
-## 8. Step 6 — Provide a placeholder window netlist
+## Step 6 — Provide a placeholder window netlist
 
 Populate `blankLvWindowNetlist/` (a `TheLvWindowFlatWrapper.v` plus the LV packages) and point
 `set_lv_window_netlist_folder("blankLvWindowNetlist")`. This lets `nihdl gen-vivado` build before you
 have exported a real netlist from a LabVIEW FPGA VI. Later you regenerate it with `nihdl gen-window`
 and repoint the setting at `objects/TheLvWindowNetlist`.
 
-## 9. Step 7 — Validate
+## Step 7 — Validate
 
 Run the customer flows from the target folder:
 
@@ -587,7 +584,7 @@ targets — add your new target to the sweep.
 
 ---
 
-## 10. Checklist
+## Checklist
 
 - [ ] `nihdl install-deps` (base target lands under `deps/flexrio/targets/<device>`).
 - [ ] Scaffold `targets/<device>custom/` (copy nearest sibling).
@@ -601,7 +598,7 @@ targets — add your new target to the sweep.
 
 ---
 
-## 11. FAQ
+## FAQ
 
 **Q: Do I add ports to the base `TheWindow.vhd.mako`?**
 No — don't edit the base window. Its port *content* comes from the board-I/O CSV via `custom_signals`

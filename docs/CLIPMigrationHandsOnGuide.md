@@ -15,73 +15,26 @@ We recommend going through the material in the following order:
 
 # System Setup
 
-## Install Git
+Complete the one-time machine setup in the
+**[flexrio-custom README → System Setup](../README.md#system-setup)** (prerequisite software,
+clone, `nisetup`, and `nihdl install-deps`). That README is the single source for setup so
+this guide doesn't drift from it.
 
-Go to: [https://git-scm.com/downloads](https://git-scm.com/downloads)
-
-Install the latest version
-
-## Install Python
-
-Go to: [https://www.python.org/downloads/](https://www.python.org/downloads/)
-
-Install the latest version
-
-If you are using PyEnv, configure it to use 3.11 or newer
-
-## Create a GitHub development folder
-
-Create a GitHub development folder on your computer:
-
-```text
-c:\dev\github
-```
-
-## Clone the flexrio-custom repo
-
-Open a command prompt in that folder and clone the repo:
-
-```text
-git clone https://github.com/ni/flexrio-custom
-```
-
-This guide builds the Aurora CLIP example, so all command line operations are performed from within the Aurora target folder:
+**This guide works in the Aurora target folder** — run all commands from:
 
 ```text
 C:\dev\github\flexrio-custom\targets\pxie-7903aurora
 ```
 
-## Set up the Python environment
+Run `nisetup` there (once per terminal — it works in Command Prompt or PowerShell), then
+`nihdl install-deps` to pull the CLIP and base-target dependencies into `deps/`.
 
-Open a command prompt in the target folder and run:
-
-```text
-nisetup
-```
-
-This creates a virtual environment, installs the correct version of the LabVIEW FPGA HDL Tools, and activates the environment.
-
-**Important:** You must run `nisetup` every time you open a new command prompt.  The virtual environment is only active for the current terminal session.  You will see `(flexrio-custom)` in your command prompt when the environment is active.
-
-Run the `nihdl --help` command to see the list of available commands:
-
-```text
-nihdl --help
-```
-
-## Install Dependencies
-
-From the target folder, install the GitHub dependencies specified in dependencies.toml:
-
-```text
-nihdl install-deps
-```
-
-This clones the FlexRIO and shared HDL dependencies into the deps folder.  The dependency versions are specified in:
-
-```text
-C:\dev\github\flexrio-custom\dependencies.toml
-```
+> **How to use this guide — read-along vs. do-it-yourself.** The `pxie-7903aurora` target is
+> the **completed** result of every step below (it is already checked in). You can either
+> (a) **read along** and compare against the finished files (`git diff` / `git stash`, or
+> browse [on GitHub](https://github.com/ni/flexrio-custom)), or (b) **do it yourself** by
+> copying `pxie-7903custom` to a new folder and performing the steps from a clean baseline.
+> Either way, read the whole guide once before executing — don't perform it on the first pass.
 
 ## Create and Synthesize the Vivado Project
 
@@ -119,12 +72,10 @@ Note: If you run the gen-vivado command before generating a LabVIEW FPGA netlist
 
 ## NI Software
 
-Use NI Package Manager to install the following software.  This workflow has been tested with:
-
-- LabVIEW 2023 (or newer) — tested with 2023, 2024, and 2025
-- LabVIEW FPGA 2023 (or newer)
-- LabVIEW FPGA Compilation tool for Vivado 2021.1
-- FlexRIO 2026 Q3 (or newer)
+The required NI Package Manager modules — LabVIEW, **LabVIEW FPGA Module**, **LabVIEW FPGA
+Compilation Tool for Vivado 2021.1**, and **FlexRIO 2026 Q3+** — are listed in the
+[flexrio-custom README → Prerequisite Software](../README.md#prerequisite-software). Note the
+**LabVIEW 2026+** requirement if you build the bitfile in LabVIEW FPGA.
 
 # CLIP Migration Overview
 
@@ -171,16 +122,16 @@ By default the tool auto-discovers the latest installed LabVIEW (2023–2030).  
 config.set_labview_path("C:/Program Files/National Instruments/LabVIEW 2024")
 ```
 
-Locate the Aurora CLIP on your computer:
+Locate the Aurora CLIP on your computer (installed by `nihdl install-deps`):
 
 ```text
-C:\dev\github\flexrio-custom\dependencies\githubdeps\ni.hw-flexrio.sasquatch_aurora64b66b_clip.25.5.0.11-ci-passed-main-f
+C:\dev\github\flexrio-custom\deps\flexrio-clips\PXIe-7903\aurora64b66b_framing_crcx4_28p0GHz
 ```
 
 Set the **inputs** of the CLIP migration to the file paths in the CLIP folder.  A `clip_deps` variable keeps the long path readable:
 
 ```python
-clip_deps = "../../dependencies/githubdeps/ni.hw-flexrio.sasquatch_aurora64b66b_clip.25.5.0.11-ci-passed-main-f/aurora64b66b_framing_crcx4_28p0GHz/CLIP/aurora64b66b_framing_crcx4_28p0GHz/Source"
+clip_deps = "../../deps/flexrio-clips/PXIe-7903/aurora64b66b_framing_crcx4_28p0GHz/Source"
 
 config.set_clip_input_xml(f"{clip_deps}/xml/PXIe7903_Aurora64b66b_Framing_Crcx4_28p0GHz.xml")
 config.set_clip_top_hdl(f"{clip_deps}/vhdl/UserRTL_PXIe7903_Aurora64b66b_Framing_Crcx4_28p0GHz.vhd")
@@ -305,7 +256,7 @@ The LabVIEW FPGA IO interfaces that used to be socketed CLIP IO now become board
 Open the generated TheWindow.vhd stub found here:
 
 ```text
-C:\dev\github\flexrio-custom\targets\pxie-7903aurora\objects\rtl-lvfpga\lvgen\TheWindow.vhd
+C:\dev\github\flexrio-custom\targets\pxie-7903aurora\objects\GeneratedHDL\TheWindow.vhd
 ```
 
 TheWindow.vhd stub is generated during the gen-vivado command.  The first time you ran it, we did not have custom board IO specified in the LVTargetBoardIO CSV file.  If you are looking at that file now (and haven’t run any other steps yet), you won’t see anything in the CUSTOM BOARD IO section of the port.
@@ -371,11 +322,17 @@ signal SAClk : std_logic; -- SAClk (output)
 
 Now we must connect these signals to the component instantiation of TheWindow.vhd inside of SasquatchTopTemplate.vhd.
 
-Open TheWindowInstantiationExample.vhd that was generated during gen-vivado:
+Open TheWindowInstantiationExample.vhd that was generated during gen-vivado. Generated HDL
+examples now live under the target's `objects/GeneratedHDL/` folder:
 
 ```text
-C:\dev\github\flexrio-custom\targets\pxie-7903aurora\objects\rtl-lvfpga\lvgen\TheWindowInstantiationExample.vhd
+C:\dev\github\flexrio-custom\targets\pxie-7903aurora\objects\GeneratedHDL\
 ```
+
+> **Note:** the generated example filenames have changed across tool versions (for example
+> the board-IO connections may appear in `BoardIOSignalAssignmentsExample.vhd`). Open the
+> files in `objects/GeneratedHDL/` and use the port comments in `TheWindow.vhd` as your guide
+> to where the board-IO ports begin and end.
 
 Copy all of the board IO port connections from the port map.  This may be difficult because this instantiation example does not contain comments.  You can use TheWindow.vhd stub file (that has comments) as a guide to where the ports begin and end.
 
@@ -627,17 +584,17 @@ In the PXIe-7903 target folder, create a file called vivadoprojectclipsources.tx
 In a text editor, add this to the file:
 
 ```text
-../../dependencies/githubdeps/ni.hw-flexrio.sasquatch_aurora64b66b_clip.25.5.0.11-ci-passed-main-f/aurora64b66b_framing_crcx4_28p0GHz/CLIP/aurora64b66b_framing_crcx4_28p0GHz/Source/vhdl/AXI4_Lite_to_DRP.vhd
-../../dependencies/githubdeps/ni.hw-flexrio.sasquatch_aurora64b66b_clip.25.5.0.11-ci-passed-main-f/aurora64b66b_framing_crcx4_28p0GHz/CLIP/aurora64b66b_framing_crcx4_28p0GHz/Source/vhdl/AxiLiteToMgtDrp.vhd
-../../dependencies/githubdeps/ni.hw-flexrio.sasquatch_aurora64b66b_clip.25.5.0.11-ci-passed-main-f/aurora64b66b_framing_crcx4_28p0GHz/CLIP/aurora64b66b_framing_crcx4_28p0GHz/Source/vhdl/MgtTest_DRP_bridge.vhd
-../../dependencies/githubdeps/ni.hw-flexrio.sasquatch_aurora64b66b_clip.25.5.0.11-ci-passed-main-f/aurora64b66b_framing_crcx4_28p0GHz/CLIP/aurora64b66b_framing_crcx4_28p0GHz/Source/vhdl/PkgAXI4Lite_GTYE4_Control.vhd
-../../dependencies/githubdeps/ni.hw-flexrio.sasquatch_aurora64b66b_clip.25.5.0.11-ci-passed-main-f/aurora64b66b_framing_crcx4_28p0GHz/CLIP/aurora64b66b_framing_crcx4_28p0GHz/Source/vhdl/PXIe659XR_AXI4_Lite_Address_Map.vhd
-../../dependencies/githubdeps/ni.hw-flexrio.sasquatch_aurora64b66b_clip.25.5.0.11-ci-passed-main-f/aurora64b66b_framing_crcx4_28p0GHz/CLIP/aurora64b66b_framing_crcx4_28p0GHz/Source/vhdl/UserRTL_PXIe7903_Aurora64b66b_Framing_Crcx4_28p0GHz.vhd
-../../dependencies/githubdeps/ni.hw-flexrio.sasquatch_aurora64b66b_clip.25.5.0.11-ci-passed-main-f/aurora64b66b_framing_crcx4_28p0GHz/CLIP/aurora64b66b_framing_crcx4_28p0GHz/Target/aurora64b66b_framing_crcx4_28p0GHz.dcp
-../../dependencies/githubdeps/ni.hw-flexrio.sasquatch_aurora64b66b_clip.25.5.0.11-ci-passed-main-f/aurora64b66b_framing_crcx4_28p0GHz/CLIP/aurora64b66b_framing_crcx4_28p0GHz/Target/AXI4Lite_GTYE4_Control_Regs4.edf
-../../dependencies/githubdeps/ni.hw-flexrio.sasquatch_aurora64b66b_clip.25.5.0.11-ci-passed-main-f/aurora64b66b_framing_crcx4_28p0GHz/CLIP/aurora64b66b_framing_crcx4_28p0GHz/Target/AxiFramingRegx4.edf
-../../dependencies/githubdeps/ni.hw-flexrio.sasquatch_aurora64b66b_clip.25.5.0.11-ci-passed-main-f/aurora64b66b_framing_crcx4_28p0GHz/CLIP/aurora64b66b_framing_crcx4_28p0GHz/Target/AxiLiteClockConverterWrapper.edf
-../../dependencies/githubdeps/ni.hw-flexrio.sasquatch_aurora64b66b_clip.25.5.0.11-ci-passed-main-f/aurora64b66b_framing_crcx4_28p0GHz/CLIP/aurora64b66b_framing_crcx4_28p0GHz/Target/SasquatchClipFixedLogic.dcp
+../../deps/flexrio-clips/PXIe-7903/aurora64b66b_framing_crcx4_28p0GHz/Source/vhdl/AXI4_Lite_to_DRP.vhd
+../../deps/flexrio-clips/PXIe-7903/aurora64b66b_framing_crcx4_28p0GHz/Source/vhdl/AxiLiteToMgtDrp.vhd
+../../deps/flexrio-clips/PXIe-7903/aurora64b66b_framing_crcx4_28p0GHz/Source/vhdl/MgtTest_DRP_bridge.vhd
+../../deps/flexrio-clips/PXIe-7903/aurora64b66b_framing_crcx4_28p0GHz/Source/vhdl/PkgAXI4Lite_GTYE4_Control.vhd
+../../deps/flexrio-clips/PXIe-7903/aurora64b66b_framing_crcx4_28p0GHz/Source/vhdl/PXIe659XR_AXI4_Lite_Address_Map.vhd
+../../deps/flexrio-clips/PXIe-7903/aurora64b66b_framing_crcx4_28p0GHz/Source/vhdl/UserRTL_PXIe7903_Aurora64b66b_Framing_Crcx4_28p0GHz.vhd
+../../deps/flexrio-clips/PXIe-7903/aurora64b66b_framing_crcx4_28p0GHz/Target/aurora64b66b_framing_crcx4_28p0GHz.dcp
+../../deps/flexrio-clips/PXIe-7903/aurora64b66b_framing_crcx4_28p0GHz/Target/AXI4Lite_GTYE4_Control_Regs4.edf
+../../deps/flexrio-clips/PXIe-7903/aurora64b66b_framing_crcx4_28p0GHz/Target/AxiFramingRegx4.edf
+../../deps/flexrio-clips/PXIe-7903/aurora64b66b_framing_crcx4_28p0GHz/Target/AxiLiteClockConverterWrapper.edf
+../../deps/flexrio-clips/PXIe-7903/aurora64b66b_framing_crcx4_28p0GHz/Target/SasquatchClipFixedLogic.dcp
 ```
 
 These are the HDL source files for the CLIP code that you are inserting into the top-level PXIe-7903 VHDL file.

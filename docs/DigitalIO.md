@@ -12,6 +12,12 @@ into `UserHdl`, how to use them, and — kept deliberately separate — the smal
 > your own HDL inside `UserHdl` that drives the hardware interfaces described in
 > Part 1.
 
+> **The host register and DMA-FIFO building blocks** used here (and in any custom `UserHdl`
+> design) come from [hdl-shared](https://github.com/ni/hdl-shared) — see its
+> [register](https://github.com/ni/hdl-shared/blob/main/host_interfaces/register/docs/instantiation-guide.md)
+> and [DMA-FIFO](https://github.com/ni/hdl-shared/blob/main/host_interfaces/fifo/docs/instantiation-guide.md)
+> instantiation guides.
+
 On every custom target the LabVIEW Window has board IO disabled
 (`set_include_board_io_on_lv_window(False)`), so the board's DIO interfaces are
 routed into `UserHdl` instead of the LabVIEW diagram. That is what makes the DIO

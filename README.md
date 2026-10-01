@@ -36,7 +36,7 @@ Follow the same path as #2 but then **export** your top-level LabVIEW FPGA VI to
 
 > **Already have a socketed CLIP?** You can bring an existing socketed CLIP into this new
 > HDL development workflow. See the
-> [CLIP Migration Hands-On Guide](docs/CLIPMigrationHandsOnGuide.md) (also Exercise 3 in
+> [CLIP Migration Hands-On Guide](docs/CLIPMigrationHandsOnGuide.md) (also Exercise 4 in
 > Getting Started).
 
 ![FlexRIO custom workflows](docs/images/workflows.png)

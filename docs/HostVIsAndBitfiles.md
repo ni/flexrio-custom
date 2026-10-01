@@ -7,8 +7,9 @@ host VI, and read/write its registers and DMA FIFOs.
 registers and FIFOs your `UserHdl` exposes.
 
 **Prerequisites:** a built `.lvbitx` for your target (see
-[Getting Started → Exercise 2/3](GettingStarted.md)) and a target device (or its RIO
-resource) you can reach from the host.
+[Getting Started → Exercise 1 or 2](GettingStarted.md)) and a target device (or its RIO
+resource) you can reach from the host. For the step-by-step walkthrough, see
+[Getting Started → Exercise 3](GettingStarted.md#exercise-3---test-the-bitfile-from-a-host-vi-ni-rio-api).
 
 ---
 

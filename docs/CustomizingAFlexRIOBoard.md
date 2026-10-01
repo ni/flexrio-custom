@@ -109,7 +109,7 @@ Take an existing socketed CLIP and instantiate it in your top-level `UserHdl`, t
 [`pxie-7903aurora`](../targets/pxie-7903aurora) migrates the socketed Aurora CLIP into the
 PXIe-7903's top-level HDL while keeping its original LabVIEW interface. The
 [CLIP Migration Hands-On Guide](CLIPMigrationHandsOnGuide.md) walks through exactly how it was
-built (also walked through as Exercise 3 in [Getting Started](GettingStarted.md)).
+built (also walked through as Exercise 4 in [Getting Started](GettingStarted.md)).
 
 **Use this when** you want the new HDL packaging/build flow but still want to do your application logic in LabVIEW FPGA.
 

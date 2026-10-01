@@ -167,7 +167,7 @@ A quarterly base-target bump (a new `flexrio` / `flexrio-deps` version) can intr
 
 Do this for each example target under `targets/` and `test-targets/`, before the flexrio-custom testing stages (Steps 6B–6C):
 
-1. **Diff the old base vs. the new base** version of that target's top-level HDL file to see exactly what changed between releases. Do **not** diff the forked copy against the new base — the fork has drifted too far to read that diff. The detailed mechanics (GitHub compare URLs, local diff) are in the README's [Managing Dependency Versions](../README.md#managing-dependency-versions) section — the same procedure a customer follows for their own fork.
+1. **Diff the old base vs. the new base** version of that target's top-level HDL file to see exactly what changed between releases. Do **not** diff the forked copy against the new base — the fork has drifted too far to read that diff. The detailed mechanics (GitHub compare URLs, local diff) are in [Upgrading to a newer base-target version](DependenciesAndFileManagement.md#upgrading-to-a-newer-base-target-version) — the same procedure a customer follows for their own fork.
 2. **Port the interface-affecting changes** (generics, ports, constants, signal declarations, instantiations) into the forked top-level file, preserving each example's customizations.
 3. **Rebuild** (`nihdl gen-vivado` / `nihdl gen-modelsim`) to confirm the target is healthy.
 

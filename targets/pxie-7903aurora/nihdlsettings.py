@@ -8,7 +8,7 @@ def pre_all(context):
     # --- Settings Variables ---
     base_deps = "../../deps/flexrio/targets/pxie-7903"
     plugin_name = "PXIe-7903Aurora"
-    clip_deps = "../../dependencies/githubdeps/ni.hw-flexrio.sasquatch_aurora64b66b_clip.25.5.0.11-ci-passed-main-f/aurora64b66b_framing_crcx4_28p0GHz/CLIP/aurora64b66b_framing_crcx4_28p0GHz/Source"
+    clip_deps = "../../deps/flexrio-clips/PXIe-7903/aurora64b66b_framing_crcx4_28p0GHz/Source"
 
     # --- Tools ---
     config.set_vivado_tools_folder("C:/NIFPGA/programs/Vivado2021_1")

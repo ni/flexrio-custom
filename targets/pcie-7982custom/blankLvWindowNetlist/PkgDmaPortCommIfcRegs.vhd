@@ -1,674 +1,671 @@
--- © 2012 National Instruments Corporation.
--------------------------------------------------------------------------------
---
--- File: PkgDmaPortCommIfcRegs.vhd
--- Author: Matthew Koenn
--- Original Project: LabVIEW FPGA
--- Date: 6 October 2007
---
--------------------------------------------------------------------------------
--- (c) 2007 Copyright National Instruments Corporation
--- All Rights Reserved
--- National Instruments Internal Information
--------------------------------------------------------------------------------
---
--- Purpose: Package for DMA registers.  
--- 
---   This package controls the offsets for the DMA registers and the bit field
---   locations for the individual flags.  Functions are provided to support 
---   easy access to these values.  Additionally, the reset values for the 
---   individual fields are set here.
---
--------------------------------------------------------------------------------
-
-library ieee;
-  use ieee.std_logic_1164.all;
-  use ieee.numeric_std.all;
-
-
-package PkgDmaPortCommIfcRegs is
-
-  --XML translate_on
-  --<regmap name="DmaPortCommunicationInterface" order="1">
-  --  <group name="DmaRegMap">
-  --    <info>
-  --      {p}
-  --        These registers control the DMA input and output stream circuits
-  --        and read the status of the DMA channel.  The base offset is accessed
-  --        relative to the base offset for each DMA channel.
-  --      {/p}
-  --    </info>
-  --    <register name="DmaControlRegister" size="32" offset="0x0"
-  --              attributes="Writable">
-  --      <bitfield name="ResetChannel" range="0">
-  --        <info>
-  --          This is a strobe bit used to reset the DMA channel.  Writing a 1
-  --          to this bit triggers the DMA channel to reset.  Writing a 0 to this
-  --          bit has no effect.  Read the corresponding bit in the status
-  --          register to determine when the channel has been reset.  Resetting
-  --          the DMA channel first disables the stream and then resets all
-  --          other registers.  The DMA FIFO is also cleared.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="StartChannel" range="1">
-  --        <info>
-  --          This is a strobe bit used to enable the DMA channel.  Writing a 1
-  --          to this bit enables the channel.  Writing a 1 to the enable bit
-  --          and disable bit simultaneously is undefined and should not be
-  --          done.  Read the disabled status bit in the status register to
-  --          determine whether the channel is enabled/disabled.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="StopChannel" range="2">
-  --        <info>
-  --          This is a strobe bit used to disable the DMA channel.  Writing a 
-  --          1 to this bit disables the channel.  Writing a 1 to the enable 
-  --          bit and disable bit simultaneously is undefined and should not be
-  --          done.  Read the disabled status bit in the status register to
-  --          determine whether the channel is enabled/disabled.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="StopChannelWithFlush" range="3">
-  --        <info>
-  --          This is a strobe bit used to disable the DMA channel after
-  --          flushing all data from the FIFO.  Write a 1 to this bit to perform
-  --          the stop and flush.  Read the disabled status bit in the status 
-  --          register to determine whether the channel is enabled/disabled.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="ResetSatcr" range="4">
-  --        <info>
-  --          This is a strobe bit used to reset the SATCR value.  This action
-  --          is only allowed when the channel is disabled.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="LinkStream" range="5">
-  --        <info>
-  --          This is a strobe bit used to set the channel to the linked state.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="UnlinkStream" range="6">
-  --        <info>
-  --          This is a strobe bit used to set the channel to the unlinked state.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="ClearOverflowStatus" range="7">
-  --        <info>
-  --          This is a strobe bit used to clear the overflow status bit in the
-  --          Dma Status register.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="ClearUnderflowStatus" range="8">
-  --        <info>
-  --          This is a strobe bit used to clear the underflow status bit in the
-  --          Dma Status register.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="EnableSatcrUpdates" range="9">
-  --        <info>
-  --          Write a '1' to this bit to enable SATCR updates.  SATCR updates are
-  --          enabled by default. For P2P sink streams, this enables SATCR updates going
-  --          to the P2P source. For regular input & output streams, this makes the
-  --          SATCR updates from the host be taken into account, thus making SATCR
-  --          throttle DMA transfers. This bit does not apply to P2P source streams.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="DisableSatcrUpdates" range="10">
-  --        <info>
-  --          Write a '1' to this bit to disable SATCR updates.  SATCR updates are
-  --          enabled by default. For P2P sink streams, this disables SATCR updates going
-  --          to the P2P source. For regular input & output streams, this disables the
-  --          need to update SATCR from the host, thus making DMA transfers run
-  --          continuously (e.g. for the RF List Mode). This bit does not apply to P2P
-  --          source streams.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="ClearFlushingStatus" range="11">
-  --        <info>
-  --          This is a strobe bit used to clear the flushing status bit in the
-  --          Dma Status register.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="ClearFlushingFailedStatus" range="12">
-  --        <info>
-  --          This is a strobe bit used to clear the flushing failed status bit in the
-  --          Dma Status register.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="ClearStreamErrorStatus" range="13">
-  --        <info>
-  --          This is a strobe bit used to clear the stream error status bit in the
-  --          Dma Status register.
-  --        </info>
-  --      </bitfield>
-  --    </register>
-  --    <register name="DmaStatusRegister" size="32" offset="0x4"
-  --              attributes="Readable">
-  --      <bitfield name="ResetStatus" range="0">
-  --        <info>
-  --          This bit indicates the reset status of the DMA channel.  The
-  --          channel is in reset while this bit reads a 0.  When this bit
-  --          reads a 1, the channel has been successfully reset.  Upon startup
-  --          or after a reset has been issued, the DMA channel should not be
-  --          enabled and other DMA registers should not be accessed until this
-  --          bit is set.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="DisableStatus" range="1">
-  --        <info>
-  --          This bit indicates whether the channel is currently enabled or
-  --          disabled.  When this bit reads a 1, the channel is disabled, and
-  --          when this bit reads a 0, the channel is enabled.  When the
-  --          channel is disabled, no more data transfers will be initiated,
-  --          but there may be points still in transit.  The host will need to
-  --          check TCR and SATCR to ensure that all points in transit have
-  --          arrived at the destination.  The channel resets into the disabled
-  --          state.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="State" range="2..3">
-  --        <info>
-  --          The state of the stream.  Values are:
-  --            00 - Unlinked
-  --            01 - Stopped
-  --            10 - Started
-  --            11 - Flushing
-  --        </info>
-  --      </bitfield>
-    --      <bitfield name="OverflowStatus" range="4">
-  --        <info>
-  --          This bit is set whenever an overflow occurs on the user diagram.
-  --          This is defined as when a VI is pushing into an input (or source)
-  --          stream and the push times out.  An overflow also occurs when a 
-  --          sink stream receives data while it is full.  The status holds until
-  --          it is cleared with the clear overflow bit in the control register.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="UnderflowStatus" range="5">
-  --        <info>
-  --          This bit is set whenever an underflow occurs on the user diagram.
-  --          This is defined as when a VI is popping from an output (or sink)
-  --          stream and the pop times out.  The status holds until
-  --          it is cleared with the clear underflow bit in the control register.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="SatcrUpdateStatus" range="6">
-  --        <info>
-  --          This bit reads a '1' if SATCR updates are enabled.  SATCR updates are
-  --          enabled by default. This only applies for regular input & output streams
-  --          and for P2P sink streams. It does not apply to P2P source streams.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="FlushingStatus" range="7">
-  --        <info>
-  --          This bit is set whenever a flushing is attempted.  It is cleared
-  --          automatically when the stream enables.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="FlushingFailedStatus" range="8">
-  --        <info>
-  --          This bit is set whenever a flushing was attempted and failed.  It is
-  --          cleared automatically when the stream enables.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="StreamErrorStatus" range="9">
-  --        <info>
-  --          This bit is set whenever a stream error occurs.  It can only be cleared
-  --          by software.
-  --        </info>
-  --      </bitfield>
-  --    </register>
-  --    <register name="DmaSatcrRegister" size="32" offset="0x8"
-  --              attributes="Readable|Writable">
-  --      <bitfield name="SatcrValue" range="31..0">
-  --        <info>
-  --          This is the current transfer count value (in bytes) for the stream.  
-  --          This is an indicator of the number of bytes that the stream
-  --          can transmit (for an input stream) or request (for an output stream).
-  --          Writing to this register increments the value in the register by the 
-  --          amount written.  Reading from this register reads the current SATCR value.
-  --          All writes to this register should be integer multiples of the channel's
-  --          data type.
-  --        </info>
-  --      </bitfield>
-  --    </register>
-  --    <register name="InterruptStatusRegister" size="32" offset="0xC"
-  --              attributes="Readable|Writable">
-  --      <bitfield name="Overflow" range="0">
-  --        <info>
-  --          The interrupt indicating that the user diagram received an overflow or a
-  --          sink stream received data from the bus while it was full.  The
-  --          error occurred when this bit is read as a 1.  Write a 1 to clear.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="Underflow" range="2">
-  --        <info>
-  --          The interrupt indicating that the user diagram received an underflow.  The
-  --          error occurred when this bit is read as a 1.  Write a 1 to clear.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="StartStream" range="4">
-  --        <info>
-  --          Reads a 1 when the target has requested a stream start.  Write a 1 to
-  --          clear.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="StopStream" range="6">
-  --        <info>
-  --          Reads a 1 when the target has requested a stream stop.  Write a 1 to
-  --          clear.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="FlushingStream" range="8">
-  --        <info>
-  --          Reads a 1 when a source stream has started flushing.  Write a 1 to
-  --          clear.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="StreamError" range="10">
-  --        <info>
-  --          Reads a 1 when a stream error has occurred.  Write a 1 to clear.
-  --        </info>
-  --      </bitfield>
-  --    </register>
-  --    <register name="InterruptMaskRegister" size="32" offset="0x10"
-  --              attributes="Readable|Writable">
-  --      <bitfield name="EnableOverflow" range="0">
-  --        <info>
-  --          Strobe bit.  Write with a '1' to enable the overflow interrupt.
-  --          This bit reads a '1' if the mask is enabled and a '0' if not.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="DisableOverflow" range="1">
-  --        <info>
-  --          Strobe bit.  Write with a '1' to disable the overflow interrupt.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="EnableUnderflow" range="2">
-  --        <info>
-  --          Strobe bit.  Write with a '1' to enable the underflow interrupt.
-  --          This bit reads a '1' if the mask is enabled and a '0' if not.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="DisableUnderflow" range="3">
-  --        <info>
-  --          Strobe bit.  Write with a '1' to disable the underflow interrupt.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="EnableStartStream" range="4">
-  --        <info>
-  --          Strobe bit.  Write with a '1' to enable the start stream interrupt.
-  --          This bit reads a '1' if the mask is enabled and a '0' if not.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="DisableStartStream" range="5">
-  --        <info>
-  --          Strobe bit.  Write with a '1' to disable the start stream interrupt.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="EnableStopStream" range="6">
-  --        <info>
-  --          Strobe bit.  Write with a '1' to enable the stop stream interrupt.
-  --          This bit reads a '1' if the mask is enabled and a '0' if not.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="DisableStopStream" range="7">
-  --        <info>
-  --          Strobe bit.  Write with a '1' to disable the stop stream interrupt.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="EnableFlushingStream" range="8">
-  --        <info>
-  --          Strobe bit.  Write with a '1' to enable the flushing stream interrupt.
-  --          This bit reads a '1' if the mask is enabled and a '0' if not.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="DisableFlushingStream" range="9">
-  --        <info>
-  --          Strobe bit.  Write with a '1' to disable the flushing stream interrupt.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="EnableError" range="10">
-  --        <info>
-  --          Strobe bit.  Write with a '1' to enable the stream error interrupt.
-  --          This bit reads a '1' if the mask is enabled and a '0' if not.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="DisableError" range="11">
-  --        <info>
-  --          Strobe bit.  Write with a '1' to disable the stream error interrupt.
-  --        </info>
-  --      </bitfield>
-  --    </register>
-  --    <register name="FifoCountRegister" size="32" offset="0x14"
-  --              attributes="Readable">
-  --      <bitfield name="FifoCount" range="31..0">
-  --        <info>
-  --          The full count of the FIFO, regardless of whether it is a source or a sink.
-  --        </info>
-  --      </bitfield>
-  --    </register>
-  --    <register name="DmaPeerAddressRegisterLow" size="32" offset="0x18"
-  --              attributes="Readable|Writable">
-  --      <bitfield name="PeerAddressLow" range="31..0">
-  --        <info>
-  --          This register is only used for a peer to peer sink stream.  This field
-  --          holds the lower 32 bits of the physical address of the corresponding 
-  --          source's transfer count register.
-  --        </info>
-  --      </bitfield>
-  --    </register>
-  --    <register name="DmaPeerAddressRegisterHigh" size="32" offset="0x1C"
-  --              attributes="Readable|Writable">
-  --      <bitfield name="PeerAddressHigh" range="31..0">
-  --        <info>
-  --          This register is only used for a peer to peer sink stream.  This field
-  --          holds the upper 32 bits of the physical address of the corresponding 
-  --          source's transfer count register.
-  --        </info>
-  --      </bitfield>
-  --    </register>
-  --    <register name="StreamTransferLimitRegister" size="32" offset="0x24"
-  --              attributes="Readable|Writable">
-  --      <bitfield name="StreamMaxPayloadSize" range="31..16">
-  --        <info>
-  --          The value of this field is the largest payload size that can be used by
-  --          the DMA channel.  This field defaults to the max payload size specified
-  --          in PkgNiDmaConfig.  This field can only be set to powers of 2.
-  --        </info>
-  --      </bitfield>
-  --    </register>
-  --    <register name="StreamPacketAlignmentRegister" size="32" offset="0x28"
-  --              attributes="Readable|Writable">
-  --      <bitfield name="StreamEnableAlignment" range="31">
-  --        <info>
-  --          When this bit is set the alignment feature is enabled.  The DMA stream
-  --          will break packets at boundaries of the packet size programmed in the
-  --          StreamTransferLimitRegister.  If alignment is lost, a packet will be
-  --          enforced at the next StreamMaxPayloadSize boundary.
-  --        </info>
-  --      </bitfield>
-  --      <bitfield name="StreamNextBoundary" range="15..0">
-  --        <info>
-  --          This bitfield indicates the bytes remaining until the next 
-  --          StreamMaxPayloadSize boundary.  Software can initialize this field so that
-  --          the alignment feature can correct for a mis-aligned buffer.  Software
-  --          should initialize this field with StreamMaxPayloadSize - 
-  --          (BufferStartAddress mod StreamMaxPayloadSize).  If the result of the
-  --          calculation is 0, software should instead write this field with 
-  --          StreamMaxPayloadSize.  0 is not a valid value to write to this field.
-  --        </info>
-  --      </bitfield>
-  --    </register>
-  --  </group>
-  --</regmap>
-  --XML translate_off
- 
-  ---------------------------------------------------------------------------------------
-  --Types Declaration (DMA Registers):
-  ---------------------------------------------------------------------------------------
-  
-  subtype DmaRegOffset_t is natural;
-  
-  type DmaRegInfo_t is
-    record
-      offset     : DmaRegOffset_t;
-    end record;
-  
-  type DmaReg_t is
-    (Control,
-     Status,
-     Satcr,
-     InterruptStatus,
-     InterruptMask,
-     FifoCount,
-     PeerAddressLow,
-     PeerAddressHigh,
-     TransferLimit,
-     PacketAlignment);
-  
-  type DmaRegArray_t is array (DmaReg_t) of DmaRegInfo_t;
-  constant kDmaRegArray : DmaRegArray_t :=
-    (Control           => (offset=>16#0#),
-     Status            => (offset=>16#4#),
-     Satcr             => (offset=>16#8#),
-     InterruptStatus   => (offset=>16#C#),
-     InterruptMask     => (offset=>16#10#),
-     FifoCount         => (offset=>16#14#),
-     PeerAddressLow    => (offset=>16#18#),
-     PeerAddressHigh   => (offset=>16#1C#),
-     TransferLimit     => (offset=>16#24#),
-     PacketAlignment   => (offset=>16#28#));
-     
-     
-  type DmaBitFields_t is 
-    (
-    
-     ------------------------------------------------------------------------------------
-     -- Control Register bits
-     ------------------------------------------------------------------------------------
-     Reset,
-     StartChannel,
-     StopChannel,
-     StopChannelWithFlush,
-     LinkStream,
-     UnlinkStream,
-     ResetSatcr,
-     ClearOverflowStatus,
-     ClearUnderflowStatus,
-     EnableSatcrUpdates,
-     DisableSatcrUpdates,
-     ClearFlushingStatus,
-     ClearFlushingFailedStatus,
-     ClearStreamErrorStatus,
-     
-     ------------------------------------------------------------------------------------
-     -- Status Register bits
-     ------------------------------------------------------------------------------------
-     ResetStatus,
-     DisableStatus,
-     State,
-     OverflowStatus,
-     UnderflowStatus,
-     SatcrUpdateStatus,
-     FlushingStatus,
-     FlushingFailedStatus,
-     StreamErrorStatus,
-     
-     ------------------------------------------------------------------------------------
-     -- Interrupt Status bits
-     ------------------------------------------------------------------------------------
-     OverflowIrq,
-     UnderflowIrq,
-     StartStreamIrq,
-     StopStreamIrq,
-     FlushingIrq,
-     StreamErrorIrq,
-     
-     ------------------------------------------------------------------------------------
-     -- Interrupt Mask bits
-     ------------------------------------------------------------------------------------
-     EnableOverflowIrq,
-     DisableOverflowIrq,
-     OverflowIrqMaskStatus,
-     EnableUnderflowIrq,
-     DisableUnderflowIrq,
-     UnderflowIrqMaskStatus,
-     EnableStartStreamIrq,
-     DisableStartStreamIrq,
-     StartStreamIrqMaskStatus,
-     EnableStopStreamIrq,
-     DisableStopStreamIrq,
-     StopStreamIrqMaskStatus,
-     EnableFlushingIrq,
-     DisableFlushingIrq,
-     FlushingIrqMaskStatus,
-     EnableStreamErrorIrq,
-     DisableStreamErrorIrq,
-     StreamErrorIrqMaskStatus,
-     
-     ------------------------------------------------------------------------------------
-     -- Transfer Limit bits
-     ------------------------------------------------------------------------------------
-     MaxPayloadSize,
-     
-     ------------------------------------------------------------------------------------
-     -- Stream Packet Alignment bits
-     ------------------------------------------------------------------------------------
-     EnableAlignment,
-     NextBoundary
-     
-    );
-     
-  type DmaBitFieldInfo_t is 
-    record
-      index   : integer;
-      defaultValue : boolean;
-      size    : integer;
-    end record;
-  
-  type DmaBitFieldArray is array (DmaBitFields_t) of DmaBitFieldInfo_t;
-  constant kDmaBitFieldArray : DmaBitFieldArray := 
-    (
-     
-     ------------------------------------------------------------------------------------
-     -- Control Register bits
-     ------------------------------------------------------------------------------------
-     
-     -- Default values don't really apply to these write only bits
-     Reset                     => (index=>0,  defaultValue=>false, size=> 1),
-     StartChannel              => (index=>1,  defaultValue=>false, size=> 1),
-     StopChannel               => (index=>2,  defaultValue=>false, size=> 1),
-     StopChannelWithFlush      => (index=>3,  defaultValue=>false, size=> 1),
-     ResetSatcr                => (index=>4,  defaultValue=>false, size=> 1),
-     LinkStream                => (index=>5,  defaultValue=>false, size=> 1),
-     UnlinkStream              => (index=>6,  defaultValue=>false, size=> 1),
-     ClearOverflowStatus       => (index=>7,  defaultValue=>false, size=> 1),
-     ClearUnderflowStatus      => (index=>8,  defaultValue=>false, size=> 1),
-     EnableSatcrUpdates        => (index=>9,  defaultValue=>false, size=> 1),
-     DisableSatcrUpdates       => (index=>10, defaultValue=>false, size=> 1),
-     ClearFlushingStatus       => (index=>11, defaultValue=>false, size=> 1),
-     ClearFlushingFailedStatus => (index=>12, defaultValue=>false, size=> 1),
-     ClearStreamErrorStatus    => (index=>13, defaultValue=>false, size=> 1),
-     
-     ------------------------------------------------------------------------------------
-     -- Status Register bits
-     ------------------------------------------------------------------------------------
-     
-     -- This bit is used as the default value for the reset state.  Set this to
-     -- true to start in the reset state.
-     ResetStatus              => (index=>0, defaultValue=>false, size=> 1),
-     
-     -- This bit is used as the default value for the disable state.  Set this
-     -- to true to start up in the disabled state, or set to false to start in
-     -- the enabled state.
-     DisableStatus            => (index=>1, defaultValue=>false, size=> 1),
-     
-     -- This field is actually 2 bits wide.  Eventually I will expand the register map
-     -- code to reflect this in the configuration.
-     State                    => (index=>2, defaultValue=>false, size=> 2),
-     
-     -- The overflow and underflow status bits start up in the false state.
-     OverflowStatus           => (index=>4, defaultValue=>false, size=> 1),
-     UnderflowStatus          => (index=>5, defaultValue=>false, size=> 1),
-     
-     -- The SATCR updates are enabled by default.
-     SatcrUpdateStatus        => (index=>6, defaultValue=>true, size=> 1),
-     
-     -- The flushing and flushing failed bits are false by default.
-     FlushingStatus           => (index=>7, defaultValue=>false, size=> 1),
-     FlushingFailedStatus     => (index=>8, defaultValue=>false, size=> 1),
-     
-     -- Stream error is false by default.
-     StreamErrorStatus        => (index=>9, defaultValue=>false, size=> 1),
-     
-     ------------------------------------------------------------------------------------
-     -- Interrupt Status bits
-     ------------------------------------------------------------------------------------
-     OverflowIrq              => (index=>0,  defaultValue=>false, size=> 1),
-     UnderflowIrq             => (index=>2,  defaultValue=>false, size=> 1), 
-     StartStreamIrq           => (index=>4,  defaultValue=>false, size=> 1),
-     StopStreamIrq            => (index=>6,  defaultValue=>false, size=> 1),
-     FlushingIrq              => (index=>8,  defaultValue=>false, size=> 1),
-     StreamErrorIrq           => (index=>10, defaultValue=>false, size=> 1),
-     
-     ------------------------------------------------------------------------------------
-     -- Interrupt Mask bits
-     ------------------------------------------------------------------------------------
-     
-     EnableOverflowIrq        => (index=>0,  defaultValue=>false, size=> 1),
-     DisableOverflowIrq       => (index=>1,  defaultValue=>false, size=> 1),
-     EnableUnderflowIrq       => (index=>2,  defaultValue=>false, size=> 1),
-     DisableUnderflowIrq      => (index=>3,  defaultValue=>false, size=> 1),
-     EnableStartStreamIrq     => (index=>4,  defaultValue=>false, size=> 1),
-     DisableStartStreamIrq    => (index=>5,  defaultValue=>false, size=> 1),
-     EnableStopStreamIrq      => (index=>6,  defaultValue=>false, size=> 1),
-     DisableStopStreamIrq     => (index=>7,  defaultValue=>false, size=> 1),
-     EnableFlushingIrq        => (index=>8,  defaultValue=>false, size=> 1),
-     DisableFlushingIrq       => (index=>9,  defaultValue=>false, size=> 1),
-     EnableStreamErrorIrq     => (index=>10, defaultValue=>false, size=> 1),
-     DisableStreamErrorIrq    => (index=>11, defaultValue=>false, size=> 1),
-     
-     OverflowIrqMaskStatus    => (index=>0,  defaultValue=>false, size=> 1),
-     UnderflowIrqMaskStatus   => (index=>2,  defaultValue=>false, size=> 1),
-     StartStreamIrqMaskStatus => (index=>4,  defaultValue=>false, size=> 1),
-     StopStreamIrqMaskStatus  => (index=>6,  defaultValue=>false, size=> 1),
-     FlushingIrqMaskStatus    => (index=>8,  defaultValue=>false, size=> 1),
-     StreamErrorIrqMaskStatus => (index=>10, defaultValue=>false, size=> 1),
-     
-     ------------------------------------------------------------------------------------
-     -- Transfer Limit bits
-     ------------------------------------------------------------------------------------
-     MaxPayloadSize           => (index=>16,  defaultValue=>false, size=> 16),
-     
-     ------------------------------------------------------------------------------------
-     -- Stream Packet Alignment bits
-     ------------------------------------------------------------------------------------
-     EnableAlignment          => (index=>31, defaultValue=>true,  size=> 1),
-     NextBoundary             => (index=>0,  defaultValue=>false, size=> 16)
-     
-  );
-
-
-  ---------------------------------------------------------------------------------------
-  --Function prototypes:
-  ---------------------------------------------------------------------------------------
-  --Reg info:
-  function OffsetValue(Reg : DmaReg_t) return DmaRegOffset_t;
-  
-  --Reg bit-field info:
-  function BitFieldIndex(RegBit :  DmaBitFields_t) return integer;
-  function BitFieldInitValue(RegBit : DmaBitFields_t) return boolean;
-  function BitFieldSize(RegBit : DmaBitFields_t) return integer;
-  function BitFieldUpperIndex(RegBit : DmaBitFields_t) return integer;
-   
-end PkgDmaPortCommIfcRegs;
-
-package body PkgDmaPortCommIfcRegs is 
-
-  function OffsetValue(Reg : DmaReg_t) return DmaRegOffset_t is
-  begin
-    return kDmaRegArray(Reg).offset;
-  end OffsetValue;
-
-  function BitFieldIndex(RegBit : DmaBitFields_t) return integer is
-  begin
-    return kDmaBitFieldArray(RegBit).index;
-  end BitFieldIndex;
-  
-  function BitFieldInitValue(RegBit : DmaBitFields_t) return boolean is
-  begin
-    return kDmaBitFieldArray(RegBit).defaultValue;
-  end BitFieldInitValue;
-  
-  function BitFieldSize(RegBit : DmaBitFields_t) return integer is
-  begin
-    return kDmaBitFieldArray(RegBit).size;
-  end BitFieldSize;
-  
-  function BitFieldUpperIndex(RegBit : DmaBitFields_t) return integer is
-  begin
-    return BitFieldIndex(RegBit) + BitFieldSize(RegBit) - 1;
-  end BitFieldUpperIndex;
-  
-end PkgDmaPortCommIfcRegs;
+`protect begin_protected
+`protect version = 2
+`protect encrypt_agent = "NI LabVIEW FPGA" , encrypt_agent_info = "2.0"
+`protect begin_commonblock
+`protect license_proxyname = "NI_LV_proxy"
+`protect license_attributes = "USER,MAC,PROXYINFO=2.0"
+`protect license_keyowner = "NI_LV"
+`protect license_keyname = "NI_LV_2.0"
+`protect license_symmetric_key_method = "aes128-cbc"
+`protect license_public_key_method = "rsa"
+`protect license_public_key
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxngMPQrDv/s/Rz/ED4Ri
+j3tGzeObw/Topab4sl+WDRl/up6SWpAfcgdqb2jvLontfkiQS2xnGoq/Ye0JJEp2
+h0NYydCB5GtcEBEe+2n5YJxgiHJ5fGaPguuM6pMX2GcBfKpp3dg8hA/KVTGwvX6a
+L4ThrFgEyCSRe2zVd4DpayOre1LZlFVO8X207BNIJD29reTGSFzj5fbVsHSyRpPl
+kmOpFQiXMjqOtYFAwI9LyVEJpfx2B6GxwA+5zrGC/ZptmaTTj1a3Z815q1GUZu1A
+dpBK2uY9B4wXer6M8yKeqGX0uxDAOW1zh7tvzBysCJoWkZD39OJJWaoaddvhq6HU
+MwIDAQAB
+`protect end_commonblock
+`protect begin_toolblock
+`protect key_keyowner = "Xilinx" , key_keyname = "xilinxt_2021_01"
+`protect key_method = "rsa"
+`protect encoding = ( enctype = "base64" , line_length = 64 , bytes = 256 )
+`protect key_block
+guuWMQlApCyvX+zKWI+67LOfSxr+vWaVPD//pIn8oIsOYZJZ95wuifu/IQNbSu3p
+saX39CfZC5fFQu/1sRgL8qmX7ayi1IYWAxn6VqcEAItQUj5TQvs8ZIBMlc95VRv/
+cozPeBzTf9Fkp92RWG38P3PkYuytS4pQy8m/DvyKLqxiNsy0lykjqkCMwYPZr6PI
+7SfhJOV0Nreub0Axylk78PMggk+hc0fAjYHg8OB08dlH2kYP9rrWHhu/lyJvfJ2t
+zFPwbRnIjtZ3Cys1zLXprIttkOpdGYlwBEie17yF2uqlKFgMIeGC/ouLd8zyYOy9
+CWapmbOJP8fptkwsPxOh9A==
+`protect control xilinx_schematic_visibility = "true"
+`protect rights_digest_method = "sha256"
+`protect end_toolblock="vlTimhfsTdzjm8YB9ajNAU5KHzD+he23wyb2slCN9nE="
+`protect begin_toolblock
+`protect key_keyowner = "Mentor Graphics Corporation" , key_keyname = "MGC-VERIF-SIM-RSA-1"
+`protect key_method = "rsa"
+`protect encoding = ( enctype = "base64" , line_length = 64 , bytes = 128 )
+`protect key_block
+WO4wRQWLvfmc931iWpUgLnA2HCHw5cUsX60Cfz5T2dAOq62m2cauj4mtHcUno70j
+3hoi67hHuM+fvY/LOUhIZ3yp1BkVkq/kMqTxrcgNhDiveKXzgE62HR5ZsRf4HjYF
+03V/F+h3iR934H3zGQpHeXfVKkxTdbyyOOHbpOa96J0=
+`protect rights_digest_method = "sha256"
+`protect end_toolblock="+0YV4uqRLTXLYMMIurmgUpFOXO//B4BuZ/RtX+9jm7Q="
+`protect data_method = "aes128-cbc"
+`protect encoding = ( enctype = "base64", line_length = 64 , bytes = 29952 )
+`protect data_block
+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
+HY/bCl6KW/8B/i/CV+VVL8nDIrSEnK2kRrVqa2xZdeDylPYYy7De8MLpdLKLCSFm
+WzmLsAL4cwjF1IyQOJzM3OetChZevsReFprcRstNslTGJo9uFVQKRvSIkw4bpPOW
+GoLH6jqCvhPtLdbAHOYlI838BPPHgLOjHOH7TaXOVwgexP9seAeMa3z9HSG9GIMC
+UwZctgG2/0Zru1V5aUjRhZYloDZ7lWsOA0N8C5vC8OrCp+VM2fpkFwgMfoo5hHi+
+iAvp4Nmv8bzm8I3AcdKpmrGwLM6OKnnVZrZ5jhLJRO5ha0iLLIYR24xrxDsNbxZN
+XN24kDWAtPYc8ZXM/sybONzuKARXCtQy6yCnoHe+np7OQMMrIZ5HqQpKBfMzqn8w
+tc3DyAbTn3FBGFT4EqcLvFpIzF8VLQ+0gmkF8X+Wck1sose4v2vnySeDrNY2NK77
+4vQ/552xoidNtbFht/XN+U0nFGPq3CGshLASeyiAhMB4jiY8CQkUuq43qf0vaCI6
+Hu0ZhByqeETyIcBsySCaGToVY8+qT/jTgAZBXZ2+5e4RiUwMiByO/E7rVDngnsRk
+HW5TVXzMZ4pjVRftP5Cx+Cdc+M/Ie5EaZDh5bvFOjLjbQkgJGzos+pZWF1WcWUv2
+Jh1xixgjPWfixIY/oz9U0XDeMS8OE0Try0qTMju5PedryhhnZRczvB7JuCkDWD6N
+1DbnS87CDKZsieTpYI2ZvaG/1rmDlPaU0v2C4FKXQKzydbzAMHpweKbeSKR1rtLv
+daCz+ZFqY2fD9X6F4T8wYjMlGuoRbBM8KdKOQ09XErC0vBNJf1mqOumt41+aAYKU
+9VTrw5PbCWaksCa8ZSxOiVEBM5S4wt08XGRiM49qKLpwLESWOUQL49Hvx38/DMqK
+etNxk9dss2M1mgKyYCdmQrZdzzl9fDyyr8+UHnQd6GxeNoimrn2f1HajKd5paxfw
+R6drbeEq7MO2TG0JDCH36ZCax+VO7yqRDaPfIsUdNlaWDsWvNBrl1Tk16500Qqr6
+dWcvY94Ij5MSPZbKp6G+xcQkwHKI7nRJH1NmLqzcoUYZxI+yFd/5SyqYd6nmcLQp
+22fD7kZ/jPLY7h0RH8DwQAg/ms5xu6s6m9PtIcj+DCbWt3d+Zs2oyAg7dgpiGjae
+C9JyVCOv05rsJtp12KxZFJsk1rdtd7qwDBr4Yr5cNvurJ4+Y30m6iBDnjWTkCiNG
+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
+yqRAiXs9nRkMKAiXUJnTMA4R3tGh5eeTNB+PHSZGeOSOzIclcuO1IHTUyLy5C21i
+Rx3UVBHMjitwTvkriHEzIrcuJoTKUw+YT3uU5C21WJgM7/yrk5y2r2OPOZSTvuVu
+Y9Mv6gBRX7Kb6lGr4M98cUURxWKs6pH8nCIIC+heWh0qXQ8poCOrHXoTj7up07Bd
+ZDePNOrtH9U76U58aDY5EGtJ1/0QnHMmyzuTYgHpJjUeeVZ02+vFM0Vza0UNO5Yp
+/fV0KJcPLIIHaBKisSHIItIdeTa/FVs9AfIYuKXYvOPWHVwdojdfSHGk/9ayPmEG
+gTOJ+KS0vi3H0Kh4+0IQTleESTfPgTU2bD/il4zCM70O0C156TBsIRgo8UBiIazk
+jkBHXaHzeItFCn0Jtmz/icJyNawhzWDlJbqnIaSi1VYhiOR8370h93natnGZ2A1A
+UvkR5d7TOOclCS3WONRQuz26MfsYSlzxqZm2kxb/2lXsQlHvN3nrC0vIe6tljxxJ
+09rUYCxs6921zGJBRapzy+qnztAn3sEkNWDryOY6T1B5sI7CCB77no9cboUkulzl
+MtZr25oRVsqpkYS/UXtGSAgJeymW8NP4DHN8v6Lba0I6YLDwblO81kZLo3f4LwbF
+pt3ysEPBO9yvoAQI2STVV6PKle5MV38cN8hUFGC/c7o5gQg5nCX+UDQ3b2Gea++o
+r2JjbLgBQUf2kl/egYJFp3iwMC2aEn5La5Xb1EDDO1LksbsvId41bJe6+SK/8RnG
+2H7LfP4uelhZI2nW4Z9sJz96QbtMQCP6ZCDFT/UjpEZG3ZZ8RDcteLneQoo39aTa
+YcgyfLFuD/j4fhqdnH/z/I6UPiMdrO/FRwSWgvUjIC0wgpJZ8C95OXp+oKFMVDOO
+c5cHe/yPqHq+fcDex6ppSb5gIRHP7cLwkYt3UuNTK/964OFGsTcaQDw9CS25bIhs
+bp7wmwSlk1M3f/kWmJa7ZaftZblpwcWPK6NUWIZuao6QofZw+9G9M1p2Q4c8Ddw4
+ESM92KCHI9MQYrwVafGSxRQpNbsmxNTKSpTa3ucY31Z/RInvs7WNThczJ60v4oXK
+gGaUvf9C0/oFBaM6HaPLVBGo9iJv6B5gUjsdmXCFmon18JywDU7KO5s4OtKV00cI
+jXGdneV63ep1Q+uaDiGr1vRWJZvmutWIsYg0UePljUS1Dq3lmK3YORei2bgA7wa9
+7PdF2aL6aPMCEBHBjKMEjj5PMmfSwdVRJe6usiXL1qPIiQ8O24b1g48YVicu91pN
+hDX5/EwWsJ/Q0WqFlPRgmCD3fAUEQp4io52YvNBHCQFbiMnSqipiDu+q96h+v22f
+4qLsZaGNOF99i+yO2Z2TxWo+I/ngvU8fXyTLI3ZHQ3ln9n0mZB5RQ6Jdh6UXB6i4
+F+ff37CKkU6Yh4uVqvPAXf/gSMqd/pwb6MgD+MsnNE8EljvIY2dN3P8VFUgYQvCu
+slDhYYLDatfQe7bIv06vpkvGXKyQNIJQ9/7RJpc9/BD3KAEwaAFN91ZabQlQcpyU
+9o9PJsIWp5qAH8f25GZFsDhSe7/cY/mAd7BP1hfBJpf4PPCKZ7H+cVas3/yWT9TL
+eYxXuSxcgyGqEasMwZyCBrblIdtG6YY8zlbWSyn+NtlkhOk0ajIMVnd7l05oHr9Y
+M5GIqlIG7maJqdN2BGLPcdXkIVP6uvOYwuPO5XJ7udx0Twz8MSPawlB9u4O0/9Gf
+scGLgd3Ca3AIYVAVaHWfLGgZ5TkG2CrDz6QcQicl7gWmoYwZAX3VeiENszOGsDfj
+XMbCalVS/s2olMETL93Jw4WvNWaMbdF3PnT88BWB+ck5deN+VZqg9xeL7EsCxzZs
+rmgQ4AvOed7qQmfkqxWFQ5aVHP3jz/f8blW0eqe+aCZ0mTaL8REWUaidC2J+EEQs
+AFwBmofLKOJ6z9aXiEUyHmvnxw+yJ9WZt5cGVO3UFJ6NT0jpn+2yKS/G1z7vpaY9
+t7nnGD95FSDQYi0HueWjaghuq5qFfIMhHzIeNNjYp8xgk4r9G7IPCC1EYGEMLYm7
+m+JWH4KDr1bgPkOJlvDqOo6B18/gGG42idCEI6vqxIptTXSg/revJFRHfMvleds4
+q5bYGEUEURhfZn1nj8NDbYnK+qXcj3zc/JAhZpyFbhLvxP21ByUuna9Pw240HeL/
+WAdZ5HwD0Zll6pXqFPpIHLnV0j0LOC6+Hv15zStC7i5mERiyul3fUtNENXODks2S
+/YiNv8xgzWV2yIfyv5S++BHUXtKJq1mQisuW7mv2dWVaWJS+7xIBMs3BLU+hwTLu
+g33JNiqKZvgyxzf2kJmtdZSms8KJoVz+unUdJZR5p2vBmcklCCu94UbJ3+MVf2OH
+4h7i6H4S9D51qMtFKgtIsSUey876caXe310wc6u0hjdkcYaFQsUNG5fHxh0Qm5fO
+S1Q8KG1+H6SnsxZ5Xz1l3P9Xq/HrcxHUYQq1wzipXfoQ+1VbBZKlNDdSxwrTfQcG
+zQafndVvC1zMZZANBf7o1nJYA/2hENqs7mEfB9DFpBJpDG3adpPQF4t/WL/tGcZ+
+p8sIrN/eBxHnTphi797Pzq8hH9K3AaLouX7MaK+90r0EfCJX5KFO9umnEt6jrBcT
+SH4ELuCCSKHvszI0dFcBCMtdBPf7c0uS6OjPLo0KrV8t+PWmrTNiVtuu2pbo6aJc
+3660K35F7g4VC2zRjJyJnZ2SuaoEnzyqR8io0CfCg373P+VJF9Bluy6B8yalp49d
+CpnxXXTPe4IHJvs2RMIl3RfHIymPlOLFWLBNtSqsZhY3hAM7RdsMN5QBNZXgOz46
+JjP/YhjdAOIRS3YqEhZ7gVSOl4Q5AgbdfeiIi/1fCibUQ36Osc+apf7sKTiwihWW
+A/briqgaq5QPxyYxl6V+p054HOlc8G+byA9hlkDbp0qr5u8JoZqLcdaZFOcwddXk
+FZzIPqlfuCa+FK6YdT2IMj/rFSmInHkkbG1VeiS4qwrMhBQp/slWXgXmxM4YEO+z
+C2u5ZrH6PPCJW3SHr6Ay8+g8YRdbDUnJEfBGHvNtQCgYb0J1Yvuoc1zgWo5aZl5n
+Cvj8W511v/1PDOt3iEC1NFZpr4b/1LOdqHWI4LSNo86vPv5MLgBvIpXbVHVDbncv
+dhHVr7VsGVGGG05M0Qr1q8dEP71vlUxXOpVE/OePArRzY42Tyx7MRJU+iBxw+TME
+txgFERS9iZMXGt4eeEr8QFzDr5O4BxTrCe2634YiZNrAmkEjamPpv2OHj2zIYk5B
+ONgseOi02OG3Vs4/W1dCiGiMSoqqLw5ArWIUX7i+t810FlCR5YwYxfVdQmqqqKzc
+5hr3SJZlopSxjAqje1uYqYgFcAlgaVaUUXqULD/3UgYsMNhuhntB57JqX5BztaK3
+K1/Fcj1cIfZJCGRZYNCZqYSGueXyFCOq+ArOhjf27eZ4BRQN3eivPJC7NKF5HMTN
+`protect end_protected

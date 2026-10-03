@@ -304,6 +304,8 @@ For each custom target in the repo:
 
 Note: There is an issue with LabVIEW 2023 related to file permissions for `constraint.xdc`. If you are testing with LabVIEW 2023, you must run LabVIEW as administrator and then open the projects from that instance.
 
+If you are generating netlists for a new release that will ship in the flexrio-custom repo, you should use LV 2023 - this is what was used for past releases.
+
 #### Testing Stage 2A - Generate Netlists for BlankRunningVI Vivado Project Exports and Compile Bitfiles
 Execute version A of this stage if you want to test re-generating netlists from Vivado Project Exports.  You should do this for final or near-final regression testing before release.
 

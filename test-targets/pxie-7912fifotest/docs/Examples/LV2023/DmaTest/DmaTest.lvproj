@@ -3059,6 +3059,11 @@ Host2Target"ControlLogic=0;NumberOfElements=1029;Type=1;ReadArbs=Arbitrate if Mu
 		<Item Name="Dependencies" Type="Dependencies">
 			<Item Name="vi.lib" Type="Folder">
 				<Item Name="Error Cluster From Error Code.vi" Type="VI" URL="/&lt;vilib&gt;/Utility/error.llb/Error Cluster From Error Code.vi"/>
+				<Item Name="Random Number (Range) DBL.vi" Type="VI" URL="/&lt;vilib&gt;/numeric/Random Number (Range) DBL.vi"/>
+				<Item Name="Random Number (Range) I64.vi" Type="VI" URL="/&lt;vilib&gt;/numeric/Random Number (Range) I64.vi"/>
+				<Item Name="Random Number (Range) U64.vi" Type="VI" URL="/&lt;vilib&gt;/numeric/Random Number (Range) U64.vi"/>
+				<Item Name="Random Number (Range).vi" Type="VI" URL="/&lt;vilib&gt;/numeric/Random Number (Range).vi"/>
+				<Item Name="sub_Random U32.vi" Type="VI" URL="/&lt;vilib&gt;/numeric/sub_Random U32.vi"/>
 			</Item>
 			<Item Name="_NiFpga_HdlFifo_GetBaseAddr.vi" Type="VI" URL="../../../../../../../deps/hdl-shared/host_interfaces/fifo/LabVIEW/HdlFifo/private/_NiFpga_HdlFifo_GetBaseAddr.vi"/>
 			<Item Name="_NiFpga_HdlFifo_GetStream.vi" Type="VI" URL="../../../../../../../deps/hdl-shared/host_interfaces/fifo/LabVIEW/HdlFifo/private/_NiFpga_HdlFifo_GetStream.vi"/>
@@ -3098,6 +3103,8 @@ Host2Target"ControlLogic=0;NumberOfElements=1029;Type=1;ReadArbs=Arbitrate if Mu
 			<Item Name="NiFpga_HdlFifo_WriteU16.vi" Type="VI" URL="../../../../../../../deps/hdl-shared/host_interfaces/fifo/LabVIEW/HdlFifo/NiFpga_HdlFifo_WriteU16.vi"/>
 			<Item Name="NiFpga_HdlFifo_WriteU32.vi" Type="VI" URL="../../../../../../../deps/hdl-shared/host_interfaces/fifo/LabVIEW/HdlFifo/NiFpga_HdlFifo_WriteU32.vi"/>
 			<Item Name="NiFpga_HdlFifo_WriteU64.vi" Type="VI" URL="../../../../../../../deps/hdl-shared/host_interfaces/fifo/LabVIEW/HdlFifo/NiFpga_HdlFifo_WriteU64.vi"/>
+			<Item Name="NiFpga_HdlRegister_ReadU32.vi" Type="VI" URL="../../../../../../../deps/hdl-shared/host_interfaces/register/LabVIEW/HdlRegister/NiFpga_HdlRegister_ReadU32.vi"/>
+			<Item Name="NiFpga_HdlRegister_WriteU32.vi" Type="VI" URL="../../../../../../../deps/hdl-shared/host_interfaces/register/LabVIEW/HdlRegister/NiFpga_HdlRegister_WriteU32.vi"/>
 		</Item>
 		<Item Name="Build Specifications" Type="Build"/>
 	</Item>

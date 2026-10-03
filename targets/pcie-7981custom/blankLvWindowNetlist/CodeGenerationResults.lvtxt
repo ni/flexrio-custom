@@ -182,7 +182,7 @@
       <ControlAndIndicatorNamesAndTypes></ControlAndIndicatorNamesAndTypes>
       <RunWhenLoaded>false</RunWhenLoaded>
       <signatures>
-         <fpgaSignature>PjLi+FIy5WSmNi08Xe/awA==</fpgaSignature>
+         <fpgaSignature>cv/NA/jDbArJAKq6zVN/7Q==</fpgaSignature>
          <guidSignature>scD+4QInYRqhu6yvxpG+sw==</guidSignature>
          <namesSignature>1EgErF8vvCCOU5SIOp2dEQ==</namesSignature>
       </signatures>
@@ -203,7 +203,7 @@
 		<BuildSpecVersion />
 		<BuildSpecDescription />
 	</Documentation>
-	<SignatureRegister>3E32E2F85232E564A6362D3C5DEFDAC0</SignatureRegister>
+	<SignatureRegister>72FFCD03F8C36C0AC900AABACD537FED</SignatureRegister>
 	<SignatureGuids>B1C0FEE10227611AA1BBACAFC691BEB3</SignatureGuids>
 	<SignatureNames>D44804AC5F2FBC208E5394883A9D9D11</SignatureNames>
 	<TimeStamp></TimeStamp>

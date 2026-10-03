@@ -90,71 +90,7 @@
                   </Flag>
                </Command>
             </CommandArguments>
-            <PropertyList>
-               <Property name="BITSTREAM.GENERAL.COMPRESS">
-                  <Value>True</Value>
-               </Property>
-               <Property name="BITSTREAM.GENERAL.CRC">
-                  <Value>Enable</Value>
-               </Property>
-               <Property name="BITSTREAM.CONFIG.CCLKPIN">
-                  <Value>Pullup</Value>
-               </Property>
-               <Property name="BITSTREAM.CONFIG.M0PIN">
-                  <Value>Pullnone</Value>
-               </Property>
-               <Property name="BITSTREAM.CONFIG.M1PIN">
-                  <Value>Pullnone</Value>
-               </Property>
-               <Property name="BITSTREAM.CONFIG.M2PIN">
-                  <Value>Pullnone</Value>
-               </Property>
-               <Property name="BITSTREAM.CONFIG.DONEPIN">
-                  <Value>Pullup</Value>
-               </Property>
-               <Property name="BITSTREAM.CONFIG.INITPIN">
-                  <Value>Pullup</Value>
-               </Property>
-               <Property name="BITSTREAM.CONFIG.TCKPIN">
-                  <Value>Pullup</Value>
-               </Property>
-               <Property name="BITSTREAM.CONFIG.TDIPIN">
-                  <Value>Pullup</Value>
-               </Property>
-               <Property name="BITSTREAM.CONFIG.TDOPIN">
-                  <Value>Pullup</Value>
-               </Property>
-               <Property name="BITSTREAM.CONFIG.TMSPIN">
-                  <Value>Pullup</Value>
-               </Property>
-               <Property name="BITSTREAM.CONFIG.UNUSEDPIN">
-                  <Value>Pullnone</Value>
-               </Property>
-               <Property name="BITSTREAM.STARTUP.DONE_CYCLE">
-                  <Value>4</Value>
-               </Property>
-               <Property name="BITSTREAM.STARTUP.MATCH_CYCLE">
-                  <Value>3</Value>
-               </Property>
-               <Property name="BITSTREAM.STARTUP.LCK_CYCLE">
-                  <Value>NoWait</Value>
-               </Property>
-               <Property name="BITSTREAM.STARTUP.GTS_CYCLE">
-                  <Value>5</Value>
-               </Property>
-               <Property name="BITSTREAM.STARTUP.GWE_CYCLE">
-                  <Value>6</Value>
-               </Property>
-               <Property name="BITSTREAM.ENCRYPTION.ENCRYPT">
-                  <Value>No</Value>
-               </Property>
-               <Property name="BITSTREAM.CONFIG.USR_ACCESS">
-                  <Value>TIMESTAMP</Value>
-               </Property>
-               <Property name="BITSTREAM.CONFIG.USERID">
-                  <Value>0x00000003</Value>
-               </Property>
-            </PropertyList>
+            <PropertyList></PropertyList>
          </Process>
          <Process name="Post-Route Optimize Timing">
             <CommandArguments>
@@ -182,7 +118,7 @@
       <ControlAndIndicatorNamesAndTypes></ControlAndIndicatorNamesAndTypes>
       <RunWhenLoaded>false</RunWhenLoaded>
       <signatures>
-         <fpgaSignature>rdSxShp925dcltm98v5jBQ==</fpgaSignature>
+         <fpgaSignature>S7z/vvmoHE7rwT0K+nDoMA==</fpgaSignature>
          <guidSignature>4HfcR1tZtJDreZSwbkdzyQ==</guidSignature>
          <namesSignature>jmBvOCu8AFJ6QGIpIA9ksQ==</namesSignature>
       </signatures>
@@ -204,7 +140,7 @@
 		<BuildSpecVersion />
 		<BuildSpecDescription />
 	</Documentation>
-	<SignatureRegister>ADD4B14A1A7DDB975C96D9BDF2FE6305</SignatureRegister>
+	<SignatureRegister>4BBCFFBEF9A81C4EEBC13D0AFA70E830</SignatureRegister>
 	<SignatureGuids>E077DC475B59B490EB7994B06E4773C9</SignatureGuids>
 	<SignatureNames>8E606F382BBC00527A406229200F64B1</SignatureNames>
 	<TimeStamp></TimeStamp>

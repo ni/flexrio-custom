@@ -1,1181 +1,761 @@
--- © 2012 National Instruments Corporation.
--------------------------------------------------------------------------------
---
--- File: PkgComIntConfiguration.vhd
--- Author: Claudiu Chirap, Florin Hurgoi, Daria Tioc-Deac
--- Original Project: DmaPort Communication Interface
--- Date: 2 February 2012
---
--------------------------------------------------------------------------------
---
--- Purpose:
---
---   This package is only intended to configure the package
---   PkgCommunicationInterface. It is dynamically generated from G code based
---   on configuration of the plug-in used.
---
--------------------------------------------------------------------------------
-
-library ieee, work;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-use work.PkgNiUtilities.all;
-
-package PkgCommIntConfiguration is
-
-  -- CONSTANTS AND TYPES----------------------------------------------------------------
-
-  -- Constants that configure the communication interface
-    constant kAddressWidth          : positive := 19;
-  constant kNumberOfDmaChannels   : natural  := 64;
-  constant kNumberOfIrqs          : natural  := 1;
-  constant kNumberOfMasterPorts   : natural  := 64;
-  constant kNiFpgaFixedInputPorts : natural := 3;
-  constant kNiFpgaFixedOutputPorts : natural := 2;
-  constant kIrqBaseOffset         : natural  := 16#2FFE4#;
-  constant kCommunicationTimeout  : natural  := 512;
-  constant kFifoWriteWindow       : natural  := 4096;
-  constant kFifoReadLatency       : natural  := 4;
-  constant kAutoRun               : boolean  := false;
-  constant kDmaDataWidth          : positive := 256;
-  constant kDmaAddressWidth       : positive := 64;
-  constant kBusBaggageWidth       : natural  := 6;
-  constant kInputMaxTransfer      : natural  := 1024;
-  constant kOutputMaxTransfer     : natural  := 1024;
-
-  -- The two constants below define the address range allocated for writing
-  -- HighSpeedSink FIFOs.  kDmaHighSpeedSinkSize needs to be a power-of-two
-  -- and kDmaHighSpeedSinkBase needs to be naturally aligned to a boundary of
-  -- kDmaHighSpeedSinkSize.
-  -- If kDmaHighSpeedSinkBase is 0 and kDmaHighSpeedSinkSize is 1, then P2P
-  -- is not supported on the respective target.
-  constant kDmaHighSpeedSinkBase     : natural  :=  16#80000#;
-  constant kDmaHighSpeedSinkSize     : positive  :=  16#40000#;
-
-  -- Constants that configure the InChWORM
-    constant kInputMaxRequests      : natural := 2;
-  constant kOutputMaxRequests     : natural := 2;
-  constant kInputDataBuffer       : natural := 2;
-
-  constant kDmaRegBase              : natural := 16#1000#;
-  constant kDmaRegSize              : positive := 16#1000#;
-
-  constant kEnableByteSwapper       : boolean := false;
-  constant kEnableLatchingTtc       : boolean := false;
-  constant kTtcWidth                : natural := 1;
-  constant kEnableFullScatterGather : boolean := false;
-  constant kMaxChunkyLinkSize       : natural := 32;
-  constant kLinkFetchMaxRequests    : natural := 1;
-
-  constant kMaxMuxWidth             : natural := 8;
-
-  constant kAxiMasterMaxBurstLength : integer := 2;
-  constant kAxiSlaveBaseAddress : natural := 16#2#;
-  constant kAxiSlaveIdWidth : integer := 1;
-  constant kAxiMasterIdWidth : integer := 1;
-
-  type MasterPortMode_t is (
-    Disabled, -- MasterPort is disabled
-    NiFpgaMasterPortWrite, -- MasterPort is only writer
-    NiFpgaMasterPortRead, -- MasterPort is only reader
-    NiFpgaMasterPortWriteRead -- MasterPort is both writer and reader
-    );
-
-  type MasterPortConfiguration_t is record
-    Mode : MasterPortMode_t;
-  end record;
-
-  type MasterPortConfArray_t is array (natural range <>)
-    of MasterPortConfiguration_t;
-
-  constant kMasterPortConfArray : MasterPortConfArray_t(0 to kNumberOfMasterPorts - 1) := (
-(Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-, (Mode => Disabled)
-);
-
-
-  type DmaChannelMode_t is (
-    Disabled,               -- channel is disabled (no hardware generated).
-    NiFpgaTargetToHost,     -- input mode using modified mite read interface
-    NiFpgaHostToTarget,     -- output mode using modified mite write interface
-    NiCoreTargetToHost,     -- input mode using standard nicore mite read interface
-    NiCoreHostToTarget,     -- output mode using standard nicore mite write interface
-    NiFpgaPeerToPeerWriter, -- peer to peer input channel
-    NiFpgaPeerToPeerReader  -- peer to peer output channel
-    );
-  
-  type DmaChannelConfiguration_t is record
-    Mode                  : DmaChannelMode_t;
-    FifoDepth             : natural;
-    FifoWidth             : natural;
-    ElementsPerClockCycle : natural;
-    SignedData            : boolean;
-    BaseAddress           : natural;
-    SCL                   : boolean;
-    CountSCL              : boolean;
-    FxpType               : boolean;
-    DisableOnFifoTimeout  : boolean;
-    WriteWindowOffset     : natural;
-    DmaClkIsDefaultClk    : boolean;
-    InterfaceIsHandshaking: boolean;
-  end record;
-
-  type DmaChannelConfArray_t is array (natural range <>)
-    of DmaChannelConfiguration_t;
-
-  constant kDmaChannelConfigurationZero : DmaChannelConfiguration_t :=
-    (FifoDepth              => 0,
-     FifoWidth              => 0,
-     ElementsPerClockCycle  => 0,
-     SignedData             => false,
-     BaseAddress            => 0,
-     Mode                   => Disabled,
-     SCL                    => false,
-     CountSCL               => false,
-     FxpType                => false,
-     DisableOnFifoTimeout   => false,
-     WriteWindowOffset      => 0,
-     DmaClkIsDefaultClk     => false,
-     InterfaceIsHandshaking => false);
-
-    constant kDmaFifoConfArray : DmaChannelConfArray_t(0 to kNumberOfDmaChannels-1) :=
-(    (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-,     (FifoDepth => 0, 
-    FifoWidth => 0,
-    SignedData => false, 
-    BaseAddress =>16#0#,
-    SCL => false,
-    CountSCL => false,
-    FxpType => false,
-    DisableOnFifoTimeout => false,
-    WriteWindowOffset => 16#0#,
-    DmaClkIsDefaultClk => false,
-    Mode => Disabled,
-    ElementsPerClockCycle => 0,
-    InterfaceIsHandshaking => false)
-);
-
-
-  -- FUNCTIONS ----------------------------------------------------------------
-
-  -- Function to return the depths of the DMA FIFOs in samples.
-  function GetFifoDepthsInSamples(ChannelConfig: DmaChannelConfArray_t)
-    return DmaChannelConfArray_t;
-  
-  function DmaMaxWidth(unused : boolean) return natural;
-  function DmaMaxDepth(unused : boolean) return positive;
- 
-  -- Functions to return the number of DMA input, output and sink channels.  
-  function NumOfInStrms(Arg : DmaChannelConfArray_t) return natural;
-  function NumOfOutStrms(Arg : DmaChannelConfArray_t) return natural;
-  function NumOfSinkStrms(Arg : DmaChannelConfArray_t) return natural;
-
-  --Functions to return the numbert of Write and Read Master Ports.
-  function NumOfWriteMasterPorts(Arg : MasterPortConfArray_t) return natural;
-  function NumOfReadMasterPorts(Arg : MasterPortConfArray_t) return natural;
-  
-end PkgCommIntConfiguration;
-
--------------------------------------------------------------------------------
--- PKGCOMMINTCONFIGURATION BODY
--------------------------------------------------------------------------------
-
-package body PkgCommIntConfiguration is
-
-  -- This function returns an array of the FIFO depths in samples.
-  -- The values passed in should come directly from PkgCommIntConfiguration.
-  function GetFifoDepthsInSamples(ChannelConfig: DmaChannelConfArray_t)
-    return DmaChannelConfArray_t is
-
-    variable ReturnVal : DmaChannelConfArray_t(ChannelConfig'range);
-
-  begin
-    -- Set the configuration output equal to the configuration input.
-    ReturnVal := ChannelConfig;
-
-    -- Find the depth for each channel.  
-    for i in ChannelConfig'range loop
-      -- An output channel needs to subtract the size of the pop buffer.
-      if ChannelConfig(i).Mode = NiFpgaTargetToHost or
-         ChannelConfig(i).Mode = NiFpgaPeerToPeerWriter then
-        ReturnVal(i).FifoDepth := ChannelConfig(i).FifoDepth;
-      else
-        ReturnVal(i).FifoDepth := ChannelConfig(i).FifoDepth -
-					              ChannelConfig(i).ElementsPerClockCycle * 6;
-      end if;
-    end loop;
-    return ReturnVal;
-  end GetFifoDepthsInSamples;
-
-  function DmaMaxWidth(unused : boolean) return natural is
-    variable maxWidth : natural := 1;
-  begin
-    for i in 0 to kNumberOfDmaChannels-1 loop
-      maxWidth := Larger(maxWidth,
-                    kDmaFifoConfArray(i).FifoWidth*kDmaFifoConfArray(i).ElementsPerClockCycle);
-    end loop;
-    return maxWidth;
-  end DmaMaxWidth;
-
-  function DmaMaxDepth(unused : boolean) return positive is
-    variable maxDepth : positive := 1;
-  begin
-    for i in 0 to kNumberOfDmaChannels-1 loop
-      maxDepth := Larger(maxDepth, kDmaFifoConfArray(i).FifoDepth);
-    end loop;
-    return maxDepth;
-  end DmaMaxDepth;
-
-  -- This function returns the number of used DMA input channels.  
-  function NumOfInStrms(Arg : DmaChannelConfArray_t) 
-  return natural is
-    variable ReturnVal : natural;
-  begin
-    ReturnVal := 0;
-    for i in arg'range loop
-      if Arg(i).Mode = NiFpgaTargetToHost or Arg(i).Mode = NiFpgaPeerToPeerWriter then
-        ReturnVal := ReturnVal + 1;
-      end if;
-    end loop;
-    return ReturnVal;
-  end NumOfInStrms;
-  
-  -- This function returns the number of used DMA output channels.  This includes
-  -- peer-to-peer sink streams.
-  function NumOfOutStrms(Arg : DmaChannelConfArray_t) 
-  return natural is
-    variable ReturnVal : natural;
-  begin
-    ReturnVal := 0;
-    for i in arg'range loop
-      if Arg(i).Mode = NiFpgaHostToTarget then
-        ReturnVal := ReturnVal + 1;
-      end if;
-    end loop;
-    return ReturnVal;
-  end NumOfOutStrms;
-
-  -- This function returns the number of used DMA sink channels.  
-  function NumOfSinkStrms(Arg : DmaChannelConfArray_t) 
-  return natural is
-    variable ReturnVal : natural;
-  begin
-    ReturnVal := 0;
-    for i in arg'range loop
-      if Arg(i).Mode = NiFpgaPeerToPeerReader then
-        ReturnVal := ReturnVal + 1;
-      end if;
-    end loop;
-    return ReturnVal;
-  end NumOfSinkStrms;
-
-  -- This function returns the number of used Write Master Ports.  
-  function NumOfWriteMasterPorts(Arg : MasterPortConfArray_t) 
-  return natural is
-    variable ReturnVal : natural;
-  begin
-    ReturnVal := 0;
-    for i in arg'range loop
-      if Arg(i).Mode = NiFpgaMasterPortWriteRead or Arg(i).Mode = NiFpgaMasterPortWrite then
-        ReturnVal := ReturnVal + 1;
-      end if;
-    end loop;
-    return ReturnVal;
-  end NumOfWriteMasterPorts;
-  
-  -- This function returns the number of used DMA output channels.  This includes
-  -- peer-to-peer sink streams.
-  function NumOfReadMasterPorts(Arg : MasterPortConfArray_t) 
-  return natural is
-    variable ReturnVal : natural;
-  begin
-    ReturnVal := 0;
-    for i in arg'range loop
-      if Arg(i).Mode = NiFpgaMasterPortWriteRead or Arg(i).Mode = NiFpgaMasterPortRead then
-        ReturnVal := ReturnVal + 1;
-      end if;
-    end loop;
-    return ReturnVal;
-  end NumOfReadMasterPorts;
-  
-end PkgCommIntConfiguration;
+`protect begin_protected
+`protect version = 2
+`protect encrypt_agent = "NI LabVIEW FPGA" , encrypt_agent_info = "2.0"
+`protect begin_commonblock
+`protect license_proxyname = "NI_LV_proxy"
+`protect license_attributes = "USER,MAC,PROXYINFO=2.0"
+`protect license_keyowner = "NI_LV"
+`protect license_keyname = "NI_LV_2.0"
+`protect license_symmetric_key_method = "aes128-cbc"
+`protect license_public_key_method = "rsa"
+`protect license_public_key
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxngMPQrDv/s/Rz/ED4Ri
+j3tGzeObw/Topab4sl+WDRl/up6SWpAfcgdqb2jvLontfkiQS2xnGoq/Ye0JJEp2
+h0NYydCB5GtcEBEe+2n5YJxgiHJ5fGaPguuM6pMX2GcBfKpp3dg8hA/KVTGwvX6a
+L4ThrFgEyCSRe2zVd4DpayOre1LZlFVO8X207BNIJD29reTGSFzj5fbVsHSyRpPl
+kmOpFQiXMjqOtYFAwI9LyVEJpfx2B6GxwA+5zrGC/ZptmaTTj1a3Z815q1GUZu1A
+dpBK2uY9B4wXer6M8yKeqGX0uxDAOW1zh7tvzBysCJoWkZD39OJJWaoaddvhq6HU
+MwIDAQAB
+`protect end_commonblock
+`protect begin_toolblock
+`protect key_keyowner = "Xilinx" , key_keyname = "xilinxt_2021_01"
+`protect key_method = "rsa"
+`protect encoding = ( enctype = "base64" , line_length = 64 , bytes = 256 )
+`protect key_block
+guuWMQlApCyvX+zKWI+67LOfSxr+vWaVPD//pIn8oIsOYZJZ95wuifu/IQNbSu3p
+saX39CfZC5fFQu/1sRgL8qmX7ayi1IYWAxn6VqcEAItQUj5TQvs8ZIBMlc95VRv/
+cozPeBzTf9Fkp92RWG38P3PkYuytS4pQy8m/DvyKLqxiNsy0lykjqkCMwYPZr6PI
+7SfhJOV0Nreub0Axylk78PMggk+hc0fAjYHg8OB08dlH2kYP9rrWHhu/lyJvfJ2t
+zFPwbRnIjtZ3Cys1zLXprIttkOpdGYlwBEie17yF2uqlKFgMIeGC/ouLd8zyYOy9
+CWapmbOJP8fptkwsPxOh9A==
+`protect control xilinx_schematic_visibility = "true"
+`protect rights_digest_method = "sha256"
+`protect end_toolblock="vlTimhfsTdzjm8YB9ajNAU5KHzD+he23wyb2slCN9nE="
+`protect begin_toolblock
+`protect key_keyowner = "Mentor Graphics Corporation" , key_keyname = "MGC-VERIF-SIM-RSA-1"
+`protect key_method = "rsa"
+`protect encoding = ( enctype = "base64" , line_length = 64 , bytes = 128 )
+`protect key_block
+WO4wRQWLvfmc931iWpUgLnA2HCHw5cUsX60Cfz5T2dAOq62m2cauj4mtHcUno70j
+3hoi67hHuM+fvY/LOUhIZ3yp1BkVkq/kMqTxrcgNhDiveKXzgE62HR5ZsRf4HjYF
+03V/F+h3iR934H3zGQpHeXfVKkxTdbyyOOHbpOa96J0=
+`protect rights_digest_method = "sha256"
+`protect end_toolblock="+0YV4uqRLTXLYMMIurmgUpFOXO//B4BuZ/RtX+9jm7Q="
+`protect data_method = "aes128-cbc"
+`protect encoding = ( enctype = "base64", line_length = 64 , bytes = 34256 )
+`protect data_block
+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
+`protect end_protected

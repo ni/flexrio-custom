@@ -12,7 +12,7 @@ github_dependencies = [
 ]
 
 python_dependencies = [
-    "labview-fpga-hdl-tools~=2.0.0.dev0",
+    "labview-fpga-hdl-tools~=2.0.0",
 ]
 
 # Python versions supported by LabVIEW FPGA HDL Tools

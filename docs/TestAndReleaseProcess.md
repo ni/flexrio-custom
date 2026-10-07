@@ -302,7 +302,7 @@ For each custom target in the repo:
    `C:\dev\github\flexrio-custom\targets\pxie-7903custom\docs\Examples\LV2023\BlankRunningVI`
 2. Build the BlankRunningVI Vivado Project Export build specification in the LabVIEW project.
 
-Note: There is an issue with LabVIEW 2023 related to file permissions for `constraint.xdc`. If you are testing with LabVIEW 2023, you must run LabVIEW as administrator and then open the projects from that instance.
+Note: There is an issue with LabVIEW 2023 related to file permissions for `constraint.xdc`. If you are testing with LabVIEW 2023, you must run LabVIEW as administrator and then open the projects from that instance.  After launching LV 2023 in admin mode, open the projects using File > Open to ensure they open in the correct admin instance.
 
 If you are generating netlists for a new release that will ship in the flexrio-custom repo, you should use LV 2023 - this is what was used for past releases.
 
